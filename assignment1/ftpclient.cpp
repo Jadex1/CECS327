@@ -1,6 +1,7 @@
-/**
-    C++ client example using sockets
-*/
+//Assignment 1 - FTP Client
+//CECS 327
+//Brendan McMahon
+
 #include <iostream>    //cout
 #include <string>
 #include <stdio.h> //printf
@@ -13,7 +14,11 @@
 #include <unistd.h>
 #include <netdb.h>
 
+using namespace std;
+
 #define BUFFER_LENGTH 2048
+
+
 
 int createConnection(std::string host, int port)
 {
@@ -28,11 +33,11 @@ int createConnection(std::string host, int port)
     int a1,a2,a3,a4;
     if (sscanf(host.c_str(), "%d.%d.%d.%d", &a1, &a2, &a3, &a4 ) == 4)
     {
-        std::cout << "by ip";
+        cout << "by ip";
         sockaddr.sin_addr.s_addr =  inet_addr(host.c_str());
     }
     else {
-        std::cout << "by name";
+        cout << "by name";
         hostent * record = gethostbyname(host.c_str());
         in_addr * addressptr = (in_addr *) record->h_addr;
         sockaddr.sin_addr = *addressptr;
@@ -47,7 +52,6 @@ int createConnection(std::string host, int port)
 }
 
 std::string requestReply(int sock, std::string message)
-
 {
     char buffer[BUFFER_LENGTH];
     std::string reply;
@@ -90,6 +94,7 @@ int main(int argc , char *argv[])
 {
     int sockpi;
     std::string strReply;
+    std::string myinput;
 
     //TODO  arg[1] can be a dns or an IP address using gethostbyname.
     if (argc > 2)
@@ -101,21 +106,50 @@ int main(int argc , char *argv[])
     else
         sockpi = createConnection("130.179.16.134", 21);
     strReply = reply(sockpi);
-    std::cout << strReply  << std::endl;
+    cout << strReply  << endl;
 
 
     strReply = requestReply(sockpi, "USER anonymous\r\n");
     //TODO parse srtReply to obtain the status. Let the system act according to the status and display
     // friendly user to the user
-    std::cout << strReply  << std::endl;
+    cout << strReply  << endl;
 
     strReply = requestReply(sockpi, "PASS asa@asas.com\r\n");
-    std::cout << strReply  << std::endl;
+    cout << strReply  << endl;
     strReply = requestReply(sockpi, "USER anonymous\r\n");
+    cout << strReply  << endl;
     //TODO parse srtReply to obtain the status. Let the system act according to the status and display
     // friendly user to the user
 
 
+
+    cout << "Please enter a command: (ls,passive,quit,get)" << endl;
+
+    while(cin >> myinput)
+    {
+
+
+        strReply = reply(sockpi);//clear the socket
+
+        //PASV
+        if(myinput == "passive")
+        {
+            strReply = requestReply(sockpi, "PASV\r\n");
+            cout << strReply;
+        }
+        //LIST
+        if(myinput == "ls")
+        {
+            strReply = requestReply(sockpi, "LIST\r\n");
+            cout << "List reply:" << strReply << endl;
+        }
+        //RETR
+        if(myinput == "get")
+        {
+            strReply = requestReply(sockpi, "RTR\r\n");
+            cout << strReply;
+        }
+    }
     //TODO implement PASV, LIST, RETR
 
 
