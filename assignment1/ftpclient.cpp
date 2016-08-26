@@ -18,8 +18,6 @@ using namespace std;
 
 #define BUFFER_LENGTH 2048
 
-
-
 int createConnection(std::string host, int port)
 {
     int sock;
