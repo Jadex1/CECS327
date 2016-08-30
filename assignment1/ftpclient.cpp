@@ -90,6 +90,17 @@ std::string reply(int sock)
     return strReply;
 }
 
+//string stringSplit(string response)
+//{
+//    int parenIndex = response.find("(");
+//    response = response.substr(parenIndex,response.size());
+//    (int byteIndex = response.find(",") < response.size());
+//    {
+//     
+//    }
+//    return response;
+//}
+
 int main(int argc , char *argv[])
 {
     int sockpi;
@@ -116,8 +127,7 @@ int main(int argc , char *argv[])
 
     strReply = requestReply(sockpi, "PASS asa@asas.com\r\n");
     cout << strReply  << endl;
-    strReply = requestReply(sockpi, "USER anonymous\r\n");
-    cout << strReply  << endl;
+    
     //TODO parse srtReply to obtain the status. Let the system act according to the status and display
     // friendly user to the user
 
