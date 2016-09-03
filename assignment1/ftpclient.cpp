@@ -78,90 +78,112 @@ int request(int sock, std::string message)
 
 std::string reply(int sock)
 {
-    std::string strReply;
-    int count;
-    char buffer[BUFFER_LENGTH];
-
-    do {
-        count = recv(sock, buffer, BUFFER_LENGTH-1, 0);
-        buffer[count] = '\0';
-        strReply += buffer;
-    }while (count ==  BUFFER_LENGTH-1);
-    return strReply;
+	std::string strReply;
+	int count;
+	char buffer[BUFFER_LENGTH];
+	do {
+		count = recv(sock, buffer, BUFFER_LENGTH - 1, 0);
+		buffer[count] = '\0';
+		strReply += buffer;
+	} while (count == BUFFER_LENGTH - 1);
+	return strReply;
 }
 
-//string stringSplit(string response)
-//{
-//    int parenIndex = response.find("(");
-//    response = response.substr(parenIndex,response.size());
-//    (int byteIndex = response.find(",") < response.size());
-//    {
-//     
-//    }
-//    return response;
-//}
-
-int main(int argc , char *argv[])
+short PASV(int sockpi)
 {
-    int sockpi;
-    std::string strReply;
-    std::string myinput;
-
-    //TODO  arg[1] can be a dns or an IP address using gethostbyname.
-    if (argc > 2)
-    {
-        sockpi = createConnection(argv[1], atoi(argv[2]));
-    }
-    if (argc == 2)
-        sockpi = createConnection(argv[1], 21);
-    else
-        sockpi = createConnection("130.179.16.134", 21);
-    strReply = reply(sockpi);
-    cout << strReply  << endl;
-
-
-    strReply = requestReply(sockpi, "USER anonymous\r\n");
-    //TODO parse srtReply to obtain the status. Let the system act according to the status and display
-    // friendly user to the user
-    cout << strReply  << endl;
-
-    strReply = requestReply(sockpi, "PASS asa@asas.com\r\n");
-    cout << strReply  << endl;
-    
-    //TODO parse srtReply to obtain the status. Let the system act according to the status and display
-    // friendly user to the user
-
-
-
-    cout << "Please enter a command: (ls,passive,quit,get)" << endl;
-
-    while(cin >> myinput)
-    {
-
-
-        strReply = reply(sockpi);//clear the socket
-
-        //PASV
-        if(myinput == "passive")
-        {
-            strReply = requestReply(sockpi, "PASV\r\n");
-            cout << strReply;
-        }
-        //LIST
-        if(myinput == "ls")
-        {
-            strReply = requestReply(sockpi, "LIST\r\n");
-            cout << "List reply:" << strReply << endl;
-        }
-        //RETR
-        if(myinput == "get")
-        {
-            strReply = requestReply(sockpi, "RTR\r\n");
-            cout << strReply;
-        }
-    }
-    //TODO implement PASV, LIST, RETR
-
-
-    return 0;
+	std::string response = requestReply(sockpi, "PASV\r\n");
+	std::string ip = response.substr(response.find('('), response.length());
+	ip.erase(std::remove(ip.begin(), ip.end(), ')'), ip.end());
+	ip.erase(std::remove(ip.begin(), ip.end(), '('), ip.end());
+	ip = ip.substr(0, ip.length() - 3);
+	std::cout << ip << std::endl;
+	for (int i = 0; i < ip.length(); i++)
+		if (ip[i] == ',')
+			ip[i] = '.';
+	//ip.erase(ip.end()-1);
+	std::cout << "Parsed IP: " << ip << std::endl;
+	std::string port = ip.substr(15, ip.length());
+	std::cout << "port stuff: "<< port << std::endl;
+	short nport = std::stoi(port.substr(0, 3));
+	short nport2 = std::stoi(port.substr(4, port.length()));
+	std::bitset<16> bits = nport;
+	std::bitset<16> bit = nport2;
+	bits = bits << 8;
+	bits = bits | bit;
+	return (short)bits.to_ulong();
 }
+void LIST(int port, int sockpi)
+{
+	std::string strReply;
+	int nsock;
+	nsock = createConnection("130.179.16.134", port);
+	request(sockpi, "LIST \r\n");
+	std::cout << reply(sockpi) << std::endl;
+	std::cout << reply(nsock) << std::endl;
+	request(nsock, "CLOSE \r\n");
+	std::cout << reply(sockpi) << std::endl;
+}
+void RETR(int port, int sockpi)
+{
+	int nsock;
+	std::string file;
+	std::cout << "Enter the name of the file (not a directory) with file extension: ";
+	std::cin >> file;
+	nsock = createConnection("130.179.16.134", port);
+	request(sockpi, "RETR /"+file+"\r\n");
+	std::cout << reply(sockpi) << std::endl;
+	std::cout << reply(nsock) << std::endl;
+	request(nsock, "CLOSE \r\n");
+	std::cout << reply(sockpi) << std::endl;
+
+}
+void QUIT(int nsock)
+{
+	request(nsock, "QUIT \r\n");
+	std::cout << reply(nsock) << std::endl;
+}
+
+int main(int argc, char *argv[])
+{
+	int sockpi;
+	std::string strReply;
+
+	//TODO  arg[1] can be a dns or an IP address using gethostbyname.
+	if (argc > 2)
+	{
+		sockpi = createConnection(argv[1], atoi(argv[2]));
+	}
+	if (argc == 2)
+		sockpi = createConnection(argv[1], 21);
+	else
+		sockpi = createConnection("130.179.16.134", 21);
+	strReply = reply(sockpi);
+	std::cout << strReply << std::endl;
+
+
+	strReply = requestReply(sockpi, "USER anonymous\r\n");
+	//TODO parse srtReply to obtain the status. Let the system act according to the status and display
+	// friendly user to the user
+	std::cout << strReply << std::endl;
+
+	strReply = requestReply(sockpi, "PASS asa@asas.com\r\n");
+	std::cout << strReply << std::endl;
+	//TODO parse srtReply to obtain the status. Let the system act according to the status and display
+	// friendly user to the user
+
+	short port = PASV(sockpi);
+	LIST(port, sockpi);
+	port = PASV(sockpi);
+	RETR(port, sockpi);
+	QUIT(sockpi);
+
+	system("Pause");
+
+
+
+	//TODO implement PASV, LIST, RETR
+
+
+	return 0;
+}
+ 
