@@ -18,8 +18,6 @@ using namespace std;
 
 #define BUFFER_LENGTH 2048
 
-
-
 int createConnection(std::string host, int port)
 {
     int sock;
@@ -66,7 +64,6 @@ std::string requestReply(int sock, std::string message)
     }
     return buffer;
 }
-
 
 int request(int sock, std::string message)
 {
@@ -122,6 +119,7 @@ string responseToIp(string response)
     sprintf(buffer, "%d.%d.%d.%d",a1,a2,a3,a4);
     return buffer;
 }
+
 int PASV(int sockpi)
 {
     string strReply = requestReply(sockpi, "PASV\r\n");
@@ -133,6 +131,20 @@ void LIST(int sockpi)
   request(sockpi, "LIST /\r\n");
   cout << "Server response: " << reply(sockpi) << endl;
   cout << "DTP response:" << endl << reply(sockdtp) << endl;
+  request(sockdtp,"CLOSE \r\n");
+  cout << "Server response: " << reply(sockpi) << endl;
+}
+void RETR(int sockpi)
+{
+  string filename;
+  cout << "Enter the name of the File you wish to retrieve" << endl;
+  cin >> filename;
+  int sockdtp = PASV(sockpi);
+  request(sockpi, "RETR "+filename+"\r\n");
+  cout << "Server response: " << reply(sockpi) << endl;
+  cout << "DTP response:" << reply(sockdtp) << endl;
+  request(sockdtp,"CLOSE \r\n");
+  cout << "Server response: " << reply(sockpi) << endl;
 }
 int QUIT(int sockpi)
 {
@@ -157,7 +169,6 @@ int main(int argc , char *argv[])
     strReply = reply(sockpi);
     cout << strReply  << endl;
 
-
     strReply = requestReply(sockpi, "USER anonymous\r\n");
     //TODO parse srtReply to obtain the status. Let the system act according to the status and display
     // friendly user to the user
@@ -165,48 +176,30 @@ int main(int argc , char *argv[])
 
     strReply = requestReply(sockpi, "PASS asa@asas.com\r\n");
     cout << strReply  << endl;
+    usleep(2000);
+    cout << reply(sockpi);
 
     //TODO parse srtReply to obtain the status. Let the system act according to the status and display
     // friendly user to the user
-
-
 
     cout << "Please enter a command: (ls,passive,quit,get)" << endl;
 
     while(true)
     {
-        myinput = "";
         cin >> myinput;
-        strReply = reply(sockpi);//clear the socket
-        strReply = reply(sockdtp);
-
-        //PASVls
-        if(myinput == "passive")
-        {
-            sockdtp = PASV(sockpi);
-        }
         //LIST
-        else if(myinput == "ls")
+        if(myinput == "ls")
         {
             LIST(sockpi);
         }
         //RETR
         else if(myinput == "get")
         {
-            string filename;
-            cout << "Enter the name of the File you wish to retrieve" << endl;
-            cin >> filename;
-            sockdtp = PASV(sockpi);
-            request(sockpi, "RETR "+filename+"\r\n");
-            cout << "Server response: " << reply(sockpi) << endl;
-            cout << "Server response: " << reply(sockpi) << endl;
-            cout << "DTP response:" << reply(sockdtp) << endl;
+            RETR(sockpi);
         }
         else if(myinput == "quit")
         {
             QUIT(sockpi);
         }
     }
-
-
 }
