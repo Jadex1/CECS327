@@ -146,10 +146,9 @@ void RETR(int sockpi)
   request(sockdtp,"CLOSE \r\n");
   cout << "Server response: " << reply(sockpi) << endl;
 }
-int QUIT(int sockpi)
+void QUIT(int sockpi)
 {
     cout << requestReply(sockpi, "QUIT\r\n");
-    return 0;
 }
 int main(int argc , char *argv[])
 {
@@ -200,6 +199,8 @@ int main(int argc , char *argv[])
         else if(myinput == "quit")
         {
             QUIT(sockpi);
+            return 0;
         }
     }
+    return 0;
 }
