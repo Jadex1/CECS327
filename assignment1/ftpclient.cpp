@@ -175,7 +175,7 @@ int main(int argc , char *argv[])
 
     strReply = requestReply(sockpi, "PASS asa@asas.com\r\n");
     cout << strReply  << endl;
-    usleep(2000);
+    usleep(3000);
     cout << reply(sockpi);
 
     //TODO parse srtReply to obtain the status. Let the system act according to the status and display
@@ -202,5 +202,4 @@ int main(int argc , char *argv[])
             return 0;
         }
     }
-    return 0;
 }
