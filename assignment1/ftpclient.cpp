@@ -18,7 +18,7 @@ using namespace std;
 
 #define BUFFER_LENGTH 2048
 
-int createConnection(std::string host, int port) {
+int createConnection(string host, int port) {
     int sock;
     struct sockaddr_in sockaddr;
 
@@ -44,9 +44,9 @@ int createConnection(std::string host, int port) {
     return sock;
 }
 
-std::string requestReply(int sock, std::string message) {
+string requestReply(int sock, string message) {
     char buffer[BUFFER_LENGTH];
-    std::string reply;
+    string reply;
     int count = send(sock, message.c_str(), message.size(), 0);
     if (count > 0) {
         usleep(1000);
@@ -59,14 +59,14 @@ std::string requestReply(int sock, std::string message) {
     return buffer;
 }
 
-int request(int sock, std::string message) {
+int request(int sock, string message) {
     char buffer[BUFFER_LENGTH];
-    std::string reply;
+    string reply;
     return send(sock, message.c_str(), message.size(), 0);
 }
 
-std::string reply(int sock) {
-    std::string strReply;
+string reply(int sock) {
+    string strReply;
     int count;
     char buffer[BUFFER_LENGTH];
     usleep(1000);
@@ -85,7 +85,7 @@ int responseToPort(string response) {
 
     response = response.substr(parenIndex+1,static_cast<int>(response.size()));
     int responseSize = static_cast<int>(response.find(")"));
-    std::replace(response.begin(), response.end(), ',', '.');
+    replace(response.begin(), response.end(), ',', '.');
     parsedIP = response.substr(0,responseSize);
     sscanf(parsedIP.c_str(), "%hu.%hu.%hu.%hu.%hu.%hu.", &a, &b, &c, &d, &e, &f);
     first = e << 8;
@@ -103,7 +103,7 @@ string responseToIp(string response) {
 
     response = response.substr(parenIndex+1,static_cast<int>(response.size()));
     int responseSize = static_cast<int>(response.find(")"));
-    std::replace(response.begin(), response.end(), ',', '.');
+    replace(response.begin(), response.end(), ',', '.');
     parsedIP = response.substr(0,responseSize);
     sscanf(parsedIP.c_str(), "%d.%d.%d.%d", &a1, &a2, &a3, &a4 );
     sprintf(buffer, "%d.%d.%d.%d",a1,a2,a3,a4);
@@ -138,11 +138,11 @@ void QUIT(int sockpi) {
 }
 int main(int argc , char *argv[]) {
     int sockpi,sockdtp;
-    std::string strReply;
-    std::string myinput;
+    string strReply;
+    string myinput;
 
     //TODO  arg[1] can be a dns or an IP address using gethostbyname.
-    if (argc > 2){ }
+    if (argc > 2){
         sockpi = createConnection(argv[1], atoi(argv[2]));
     }
     if (argc == 2){
