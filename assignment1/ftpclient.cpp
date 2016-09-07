@@ -137,7 +137,7 @@ void QUIT(int sockpi) {
     cout << requestReply(sockpi, "QUIT\r\n");
 }
 int main(int argc , char *argv[]) {
-    int sockpi,sockdtp;
+    int sockpi, sockdtp;
     string strReply;
     string myinput;
 
@@ -150,7 +150,6 @@ int main(int argc , char *argv[]) {
     } else {
         sockpi = createConnection("130.179.16.134", 21);
     }
-
     strReply = reply(sockpi);
     cout << strReply  << endl;
 
@@ -169,17 +168,18 @@ int main(int argc , char *argv[]) {
 
     cout << "Please enter a command: (ls,passive,quit,get)" << endl;
 
-    while (true) {
+    while (true) {// I'm not sure this is suppose to be like this
         cin >> myinput;
         //LIST
         if (myinput == "ls") {
             LIST(sockpi);
-        } else if (myinput == "get") {
-        //RETR
+        } else if (myinput == "get") {//RETR
             RETR(sockpi);
         } else if(myinput == "quit") {
             QUIT(sockpi);
             return 0;
+        } else {
+            cout <<"Please enter a command(ls,passive,quit,get): Once, More..."<< endl;
         }
     }
 }
