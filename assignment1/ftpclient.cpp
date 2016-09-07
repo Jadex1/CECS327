@@ -192,7 +192,7 @@ int main(int argc , char *argv[])
             LIST(sockpi);
         }
         //RETR
-        else if(myinput == "get")
+            else if(myinput == "get")
         {
             RETR(sockpi);
         }
