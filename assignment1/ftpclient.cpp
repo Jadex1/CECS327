@@ -18,8 +18,6 @@ using namespace std;
 
 #define BUFFER_LENGTH 2048
 
-
-
 int createConnection(std::string host, int port)
 {
     int sock;
@@ -33,7 +31,6 @@ int createConnection(std::string host, int port)
     int a1,a2,a3,a4;
     if (sscanf(host.c_str(), "%d.%d.%d.%d", &a1, &a2, &a3, &a4 ) == 4)
     {
-        cout << "by ip";
         sockaddr.sin_addr.s_addr =  inet_addr(host.c_str());
     }
     else {
@@ -68,7 +65,6 @@ std::string requestReply(int sock, std::string message)
     return buffer;
 }
 
-
 int request(int sock, std::string message)
 {
     char buffer[BUFFER_LENGTH];
@@ -81,7 +77,7 @@ std::string reply(int sock)
     std::string strReply;
     int count;
     char buffer[BUFFER_LENGTH];
-
+    usleep(1000);
     do {
         count = recv(sock, buffer, BUFFER_LENGTH-1, 0);
         buffer[count] = '\0';
@@ -90,9 +86,73 @@ std::string reply(int sock)
     return strReply;
 }
 
+int responseToPort(string response)
+{
+    int parenIndex = static_cast<int>(response.find("("));
+    string parsedIP, strReply;
+    uint16_t a, b, c, d, e, f, first,second;
+
+    response = response.substr(parenIndex+1,static_cast<int>(response.size()));
+    int responseSize = static_cast<int>(response.find(")"));
+    std::replace(response.begin(), response.end(), ',', '.');
+    parsedIP = response.substr(0,responseSize);
+    sscanf(parsedIP.c_str(), "%hu.%hu.%hu.%hu.%hu.%hu.", &a, &b, &c, &d, &e, &f);
+    first = e << 8;
+    second = f;
+    uint16_t port = first | second;
+
+    return port;
+}
+
+string responseToIp(string response)
+{
+    int parenIndex = static_cast<int>(response.find("("));
+    string parsedIP, strReply;
+    int a1,a2,a3,a4;
+    char buffer[30];
+
+    response = response.substr(parenIndex+1,static_cast<int>(response.size()));
+    int responseSize = static_cast<int>(response.find(")"));
+    std::replace(response.begin(), response.end(), ',', '.');
+    parsedIP = response.substr(0,responseSize);
+    sscanf(parsedIP.c_str(), "%d.%d.%d.%d", &a1, &a2, &a3, &a4 );
+    sprintf(buffer, "%d.%d.%d.%d",a1,a2,a3,a4);
+    return buffer;
+}
+
+int PASV(int sockpi)
+{
+    string strReply = requestReply(sockpi, "PASV\r\n");
+    return createConnection(responseToIp(strReply),responseToPort(strReply));
+}
+void LIST(int sockpi)
+{
+  int sockdtp = PASV(sockpi);
+  request(sockpi, "LIST /\r\n");
+  cout << "Server response: " << reply(sockpi) << endl;
+  cout << "DTP response:" << endl << reply(sockdtp) << endl;
+  request(sockdtp,"CLOSE \r\n");
+  cout << "Server response: " << reply(sockpi) << endl;
+}
+void RETR(int sockpi)
+{
+  string filename;
+  cout << "Enter the name of the File you wish to retrieve" << endl;
+  cin >> filename;
+  int sockdtp = PASV(sockpi);
+  request(sockpi, "RETR "+filename+"\r\n");
+  cout << "Server response: " << reply(sockpi) << endl;
+  cout << "DTP response:" << reply(sockdtp) << endl;
+  request(sockdtp,"CLOSE \r\n");
+  cout << "Server response: " << reply(sockpi) << endl;
+}
+void QUIT(int sockpi)
+{
+    cout << requestReply(sockpi, "QUIT\r\n");
+}
 int main(int argc , char *argv[])
 {
-    int sockpi;
+    int sockpi,sockdtp;
     std::string strReply;
     std::string myinput;
 
@@ -108,7 +168,6 @@ int main(int argc , char *argv[])
     strReply = reply(sockpi);
     cout << strReply  << endl;
 
-
     strReply = requestReply(sockpi, "USER anonymous\r\n");
     //TODO parse srtReply to obtain the status. Let the system act according to the status and display
     // friendly user to the user
@@ -116,42 +175,31 @@ int main(int argc , char *argv[])
 
     strReply = requestReply(sockpi, "PASS asa@asas.com\r\n");
     cout << strReply  << endl;
-    strReply = requestReply(sockpi, "USER anonymous\r\n");
-    cout << strReply  << endl;
+    usleep(3000);
+    cout << reply(sockpi);
+
     //TODO parse srtReply to obtain the status. Let the system act according to the status and display
     // friendly user to the user
 
-
-
     cout << "Please enter a command: (ls,passive,quit,get)" << endl;
 
-    while(cin >> myinput)
+    while(true)
     {
-
-
-        strReply = reply(sockpi);//clear the socket
-
-        //PASV
-        if(myinput == "passive")
-        {
-            strReply = requestReply(sockpi, "PASV\r\n");
-            cout << strReply;
-        }
+        cin >> myinput;
         //LIST
         if(myinput == "ls")
         {
-            strReply = requestReply(sockpi, "LIST\r\n");
-            cout << "List reply:" << strReply << endl;
+            LIST(sockpi);
         }
         //RETR
-        if(myinput == "get")
+        else if(myinput == "get")
         {
-            strReply = requestReply(sockpi, "RTR\r\n");
-            cout << strReply;
+            RETR(sockpi);
+        }
+        else if(myinput == "quit")
+        {
+            QUIT(sockpi);
+            return 0;
         }
     }
-    //TODO implement PASV, LIST, RETR
-
-
-    return 0;
 }
