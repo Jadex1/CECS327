@@ -18,8 +18,7 @@ using namespace std;
 
 #define BUFFER_LENGTH 2048
 
-int createConnection(std::string host, int port)
-{
+int createConnection(std::string host, int port) {
     int sock;
     struct sockaddr_in sockaddr;
 
@@ -29,18 +28,15 @@ int createConnection(std::string host, int port)
     sockaddr.sin_port= htons(port);
 
     int a1,a2,a3,a4;
-    if (sscanf(host.c_str(), "%d.%d.%d.%d", &a1, &a2, &a3, &a4 ) == 4)
-    {
+    if (sscanf(host.c_str(), "%d.%d.%d.%d", &a1, &a2, &a3, &a4 ) == 4) {
         sockaddr.sin_addr.s_addr =  inet_addr(host.c_str());
-    }
-    else {
+    } else {
         cout << "by name";
         hostent * record = gethostbyname(host.c_str());
         in_addr * addressptr = (in_addr *) record->h_addr;
         sockaddr.sin_addr = *addressptr;
     }
-    if(connect(sock,(struct sockaddr *)&sockaddr,sizeof(struct sockaddr))==-1)
-    {
+    if(connect(sock,(struct sockaddr *)&sockaddr,sizeof(struct sockaddr))==-1) {
         perror("connection fail");
         exit(1);
         return -1;
@@ -48,13 +44,11 @@ int createConnection(std::string host, int port)
     return sock;
 }
 
-std::string requestReply(int sock, std::string message)
-{
+std::string requestReply(int sock, std::string message) {
     char buffer[BUFFER_LENGTH];
     std::string reply;
     int count = send(sock, message.c_str(), message.size(), 0);
-    if (count > 0)
-    {
+    if (count > 0) {
         usleep(1000);
         do {
             count = recv(sock, buffer, BUFFER_LENGTH-1, 0);
@@ -65,15 +59,13 @@ std::string requestReply(int sock, std::string message)
     return buffer;
 }
 
-int request(int sock, std::string message)
-{
+int request(int sock, std::string message) {
     char buffer[BUFFER_LENGTH];
     std::string reply;
     return send(sock, message.c_str(), message.size(), 0);
 }
 
-std::string reply(int sock)
-{
+std::string reply(int sock) {
     std::string strReply;
     int count;
     char buffer[BUFFER_LENGTH];
@@ -86,8 +78,7 @@ std::string reply(int sock)
     return strReply;
 }
 
-int responseToPort(string response)
-{
+int responseToPort(string response) {
     int parenIndex = static_cast<int>(response.find("("));
     string parsedIP, strReply;
     uint16_t a, b, c, d, e, f, first,second;
@@ -104,8 +95,7 @@ int responseToPort(string response)
     return port;
 }
 
-string responseToIp(string response)
-{
+string responseToIp(string response) {
     int parenIndex = static_cast<int>(response.find("("));
     string parsedIP, strReply;
     int a1,a2,a3,a4;
@@ -120,13 +110,11 @@ string responseToIp(string response)
     return buffer;
 }
 
-int PASV(int sockpi)
-{
+int PASV(int sockpi) {
     string strReply = requestReply(sockpi, "PASV\r\n");
     return createConnection(responseToIp(strReply),responseToPort(strReply));
 }
-void LIST(int sockpi)
-{
+void LIST(int sockpi) {
   int sockdtp = PASV(sockpi);
   request(sockpi, "LIST /\r\n");
   cout << "Server response: " << reply(sockpi) << endl;
@@ -134,8 +122,7 @@ void LIST(int sockpi)
   request(sockdtp,"CLOSE \r\n");
   cout << "Server response: " << reply(sockpi) << endl;
 }
-void RETR(int sockpi)
-{
+void RETR(int sockpi) {
   string filename;
   cout << "Enter the name of the File you wish to retrieve" << endl;
   cin >> filename;
@@ -146,25 +133,24 @@ void RETR(int sockpi)
   request(sockdtp,"CLOSE \r\n");
   cout << "Server response: " << reply(sockpi) << endl;
 }
-void QUIT(int sockpi)
-{
+void QUIT(int sockpi) {
     cout << requestReply(sockpi, "QUIT\r\n");
 }
-int main(int argc , char *argv[])
-{
+int main(int argc , char *argv[]) {
     int sockpi,sockdtp;
     std::string strReply;
     std::string myinput;
 
     //TODO  arg[1] can be a dns or an IP address using gethostbyname.
-    if (argc > 2)
-    {
+    if (argc > 2){ }
         sockpi = createConnection(argv[1], atoi(argv[2]));
     }
-    if (argc == 2)
+    if (argc == 2){
         sockpi = createConnection(argv[1], 21);
-    else
+    } else {
         sockpi = createConnection("130.179.16.134", 21);
+    }
+
     strReply = reply(sockpi);
     cout << strReply  << endl;
 
@@ -183,21 +169,15 @@ int main(int argc , char *argv[])
 
     cout << "Please enter a command: (ls,passive,quit,get)" << endl;
 
-    while(true)
-    {
+    while (true) {
         cin >> myinput;
         //LIST
-        if(myinput == "ls")
-        {
+        if (myinput == "ls") {
             LIST(sockpi);
-        }
+        } else if (myinput == "get") {
         //RETR
-            else if(myinput == "get")
-        {
             RETR(sockpi);
-        }
-        else if(myinput == "quit")
-        {
+        } else if(myinput == "quit") {
             QUIT(sockpi);
             return 0;
         }
