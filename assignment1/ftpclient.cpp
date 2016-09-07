@@ -1,6 +1,6 @@
-//Assignment 1 - FTP Client
-//CECS 327
-//Brendan McMahon
+// Assignment 1 - FTP Client
+// CECS 327
+// Brendan McMahon, James Hall, Andrew Camarena
 
 #include <iostream>    //cout
 #include <string>
