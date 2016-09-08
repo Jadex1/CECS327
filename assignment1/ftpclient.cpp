@@ -85,7 +85,7 @@ int responseToPort(string response) {
 
     response = response.substr(parenIndex+1,static_cast<int>(response.size()));
     int responseSize = static_cast<int>(response.find(")"));
-    replace(response.begin(), response.end(), ',', '.');
+    std::replace(response.begin(), response.end(), ',', '.');
     parsedIP = response.substr(0,responseSize);
     sscanf(parsedIP.c_str(), "%hu.%hu.%hu.%hu.%hu.%hu.", &a, &b, &c, &d, &e, &f);
     first = e << 8;
