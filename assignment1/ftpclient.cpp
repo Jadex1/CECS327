@@ -18,12 +18,7 @@ using namespace std;
 
 #define BUFFER_LENGTH 2048
 
-<<<<<<< HEAD
-int createConnection(string host, int port)
-{
-=======
 int createConnection(string host, int port) {
->>>>>>> develop
     int sock;
     struct sockaddr_in sockaddr;
 
@@ -49,7 +44,6 @@ int createConnection(string host, int port) {
     return sock;
 }
 
-<<<<<<< HEAD
 string requestReply(int sock, string message)
 {
     char buffer[BUFFER_LENGTH];
@@ -58,14 +52,6 @@ string requestReply(int sock, string message)
     if (count > 0)
     {
         usleep(10000);
-=======
-string requestReply(int sock, string message) {
-    char buffer[BUFFER_LENGTH];
-    string reply;
-    int count = send(sock, message.c_str(), message.size(), 0);
-    if (count > 0) {
-        usleep(1000);
->>>>>>> develop
         do {
             count = recv(sock, buffer, BUFFER_LENGTH-1, 0);
             buffer[count] = '\0';
@@ -75,23 +61,15 @@ string requestReply(int sock, string message) {
     return buffer;
 }
 
-<<<<<<< HEAD
 int request(int sock, string message)
 {
-=======
-int request(int sock, string message) {
->>>>>>> develop
     char buffer[BUFFER_LENGTH];
     string reply;
     return send(sock, message.c_str(), message.size(), 0);
 }
 
-<<<<<<< HEAD
 string reply(int sock)
 {
-=======
-string reply(int sock) {
->>>>>>> develop
     string strReply;
     int count;
     char buffer[BUFFER_LENGTH];
@@ -162,14 +140,9 @@ void RETR(int sockpi) {
 void QUIT(int sockpi) {
     cout << requestReply(sockpi, "QUIT\r\n");
 }
-<<<<<<< HEAD
 int main(int argc , char *argv[])
 {
     int sockpi,sockdtp;
-=======
-int main(int argc , char *argv[]) {
-    int sockpi, sockdtp;
->>>>>>> develop
     string strReply;
     string myinput;
 
