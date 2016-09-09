@@ -1,0 +1,25 @@
+Welcome to the CECS327 wiki!
+
+Notes:
+
+# 9/8/2016
+
+## UDP features
+* It has a short header that includes the source and destination port numbers, a length field and a checksum
+* UDP offers no guarantee of delivery
+* Provides a means of transmitting messages of to to 64 kbytes in size
+
+## TCP features
+* Provides reliable delivery of arbitrarily long sequences of bytes via stream-based programming abstraction
+* is connection oriented
+* sequencing
+* flow control
+* retransmission
+
+### Characteristics of interprocess communication
+* to communicate, one process sends a message to a destination and another process at the destination receives the message
+* A queue is associated with each message destination
+* Sending processes cause messages to be added to remote queues
+* receiving processes remove messages from local queues
+* Communication between the sending and receiving processes may be either synchronous (blocking) or asynchronous(non-blocking)
+* The receive operation can have blocking and non-blocking variants
