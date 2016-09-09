@@ -6,6 +6,7 @@
 #include <string>
 #include <stdio.h> //printf
 #include <stdlib.h>
+#include <fstream>
 #include <string.h>    //strlen
 #include <sys/socket.h>    //socket
 #include <arpa/inet.h> //inet_addr
@@ -99,10 +100,7 @@ int responseToPort(string response) {
     parsedIP = response.substr(0,responseSize);
     sscanf(parsedIP.c_str(), "%hu.%hu.%hu.%hu.%hu.%hu.", &a, &b, &c, &d, &e, &f);
     first = e << 8;
-    second = f;
-    uint16_t port = first | second;
-
-    return port;
+    return first | f;
 }
 
 string responseToIp(string response) {
@@ -139,7 +137,9 @@ void RETR(int sockpi) {
   int sockdtp = PASV(sockpi);
   request(sockpi, "RETR "+filename+"\r\n");
   cout << "Server response: " << reply(sockpi) << endl;
-  cout << "DTP response:" << reply(sockdtp) << endl;
+  ofstream file(filename);
+  file << reply(sockdtp);
+  cout << "File: " << filename << " sucessfully downloaded!" << endl << endl;
   request(sockdtp,"CLOSE \r\n");
   cout << "Server response: " << reply(sockpi) << endl;
 }
@@ -176,20 +176,19 @@ int main(int argc , char *argv[])
     //TODO parse srtReply to obtain the status. Let the system act according to the status and display
     // friendly user to the user
 
-    cout << "Please enter a command: (ls,quit,get)" << endl;
+    cout << "Please enter a command: (ls,retr,quit)" << endl;
 
-    while (true) {// I'm not sure this is suppose to be like this
+    while (true) {
         cin >> myinput;
-        //LIST
         if (myinput == "ls") {
             LIST(sockpi);
-        } else if (myinput == "get") {//RETR
+        } else if (myinput == "retr") {
             RETR(sockpi);
         } else if(myinput == "quit") {
             QUIT(sockpi);
             return 0;
         } else {
-            cout <<"Please enter a command(ls,quit,get): Once, More..."<< endl;
+            cout <<"Please enter a command(ls,retr,quit): Once, More..."<< endl;
         }
     }
 }
