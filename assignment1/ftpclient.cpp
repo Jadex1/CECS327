@@ -132,7 +132,6 @@ void LIST(int sockpi) {
 }
 void RETR(int sockpi) {
   string filename;
-  cout << "Enter the name of the File you wish to retrieve" << endl;
   cin >> filename;
   int sockdtp = PASV(sockpi);
   request(sockpi, "RETR "+filename+"\r\n");
@@ -170,25 +169,24 @@ int main(int argc , char *argv[])
     cout << strReply  << endl;
 
     strReply = requestReply(sockpi, "PASS asa@asas.com\r\n");
-    cout << strReply  << endl;
-    cout << reply(sockpi);
+    cout << reply(sockpi) << endl;
 
     //TODO parse srtReply to obtain the status. Let the system act according to the status and display
     // friendly user to the user
 
-    cout << "Please enter a command: (ls,retr,quit)" << endl;
+    cout << "Please enter a command: (ls,get <filename>,quit)" << endl;
 
     while (true) {
         cin >> myinput;
         if (myinput == "ls") {
             LIST(sockpi);
-        } else if (myinput == "retr") {
+        } else if (myinput == "get") {
             RETR(sockpi);
         } else if(myinput == "quit") {
             QUIT(sockpi);
             return 0;
         } else {
-            cout <<"Please enter a command(ls,retr,quit): Once, More..."<< endl;
+            cout <<"Please enter a command(ls,get,quit): Once, More..."<< endl;
         }
     }
 }
