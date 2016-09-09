@@ -23,6 +23,31 @@ using namespace std;
     \brief Connects to the dtp server
     \param sockpi socket to the main server
 */
+/*! \fn void LIST(int sockpi)
+    \brief Establishes a passive connection with the server
+    \brief Connects to the dtp server
+    \param sockpi socket to the main server
+*/
+/*! \fn void RETR(int sockpi)
+    \brief Establishes a passive connection with the server
+    \brief Connects to the dtp server
+    \param sockpi socket to the main server
+*/
+/*! \fn void QUIT(int sockpi)
+    \brief Establishes a passive connection with the server
+    \brief Connects to the dtp server
+    \param sockpi socket to the main server
+*/
+/*! \fn string responseToIp(string response)
+    \brief Establishes a passive connection with the server
+    \brief Connects to the dtp server
+    \param sockpi socket to the main server
+*/
+/*! \fn int responseToPort(string response)
+    \brief Establishes a passive connection with the server
+    \brief Connects to the dtp server
+    \param sockpi socket to the main server
+*/
 
 int createConnection(string host, int port) {
     int sock;
