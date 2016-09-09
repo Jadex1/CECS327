@@ -18,6 +18,12 @@ using namespace std;
 
 #define BUFFER_LENGTH 2048
 
+/*! \fn int PASV(int sockpi)
+    \brief Establishes a passive connection with the server
+    \brief Connects to the dtp server
+    \param sockpi socket to the main server
+*/
+
 int createConnection(string host, int port) {
     int sock;
     struct sockaddr_in sockaddr;
@@ -170,7 +176,7 @@ int main(int argc , char *argv[])
     //TODO parse srtReply to obtain the status. Let the system act according to the status and display
     // friendly user to the user
 
-    cout << "Please enter a command: (ls,passive,quit,get)" << endl;
+    cout << "Please enter a command: (ls,quit,get)" << endl;
 
     while (true) {// I'm not sure this is suppose to be like this
         cin >> myinput;
@@ -183,7 +189,7 @@ int main(int argc , char *argv[])
             QUIT(sockpi);
             return 0;
         } else {
-            cout <<"Please enter a command(ls,passive,quit,get): Once, More..."<< endl;
+            cout <<"Please enter a command(ls,quit,get): Once, More..."<< endl;
         }
     }
 }
