@@ -75,8 +75,7 @@ int createConnection(string host, int port) {
     return sock;
 }
 
-string requestReply(int sock, string message)
-{
+string requestReply(int sock, string message) {
     char buffer[BUFFER_LENGTH];
     string reply;
     int count = send(sock, message.c_str(), message.size(), 0);
@@ -92,15 +91,13 @@ string requestReply(int sock, string message)
     return buffer;
 }
 
-int request(int sock, string message)
-{
+int request(int sock, string message) {
     char buffer[BUFFER_LENGTH];
     string reply;
     return send(sock, message.c_str(), message.size(), 0);
 }
 
-string reply(int sock)
-{
+string reply(int sock) {
     string strReply;
     int count;
     char buffer[BUFFER_LENGTH];
@@ -171,8 +168,7 @@ void RETR(int sockpi) {
 void QUIT(int sockpi) {
     cout << requestReply(sockpi, "QUIT\r\n");
 }
-int main(int argc , char *argv[])
-{
+int main(int argc , char *argv[]) {
     int sockpi,sockdtp;
     string strReply;
     string myinput;
