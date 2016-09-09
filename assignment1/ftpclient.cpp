@@ -135,7 +135,13 @@ void RETR(int sockpi) {
   cin >> filename;
   int sockdtp = PASV(sockpi);
   request(sockpi, "RETR "+filename+"\r\n");
-  cout << "Server response: " << reply(sockpi) << endl;
+  string strReply =  reply(sockpi);
+  std::size_t found = strReply.find("550");
+  if(found!=string::npos){
+    cout << "Error: " << strReply << endl;
+    return;
+  }
+  cout << "Server response: " << strReply << endl;
   ofstream file(filename);
   file << reply(sockdtp);
   cout << "File: " << filename << " sucessfully downloaded!" << endl << endl;
@@ -164,15 +170,11 @@ int main(int argc , char *argv[])
     cout << strReply  << endl;
 
     strReply = requestReply(sockpi, "USER anonymous\r\n");
-    //TODO parse srtReply to obtain the status. Let the system act according to the status and display
-    // friendly user to the user
     cout << strReply  << endl;
 
     strReply = requestReply(sockpi, "PASS asa@asas.com\r\n");
-    cout << reply(sockpi) << endl;
-
-    //TODO parse srtReply to obtain the status. Let the system act according to the status and display
-    // friendly user to the user
+    cout << strReply << endl;
+    cout << reply(sockpi) << endl;//230
 
     cout << "Please enter a command: (ls,get <filename>,quit)" << endl;
 
@@ -186,7 +188,7 @@ int main(int argc , char *argv[])
             QUIT(sockpi);
             return 0;
         } else {
-            cout <<"Please enter a command(ls,get,quit): Once, More..."<< endl;
+            cout <<"Please enter a command(ls,get <filename>,quit): Once, More..."<< endl;
         }
     }
 }
