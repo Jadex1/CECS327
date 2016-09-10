@@ -142,7 +142,7 @@ void LIST(int sockpi) {
 }
 /*! \fn void RETR(int sockpi)
     \brief Establishes a passive connection with the server
-    \brief Connects to the dtp server
+    \brief
     \param sockpi socket to the main server
 */
 void RETR(int sockpi) {
@@ -157,8 +157,7 @@ void RETR(int sockpi) {
   cout << "Server response: " << reply(sockpi) << endl;
 }
 /*! \fn void QUIT(int sockpi)
-    \brief Establishes a passive connection with the server
-    \brief Connects to the dtp server
+    \brief Ends a passive connection with the server
     \param sockpi socket to the main server
 */
 void QUIT(int sockpi) {
