@@ -2,13 +2,13 @@
 // CECS 327
 // Brendan McMahon, James Hall, Andrew Camarena
 
-#include <iostream>
+#include <iostream>    //cout
 #include <string>
-#include <stdio.h>
+#include <stdio.h> //printf
 #include <stdlib.h>
-#include <string.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
+#include <string.h>    //strlen
+#include <sys/socket.h>    //socket
+#include <arpa/inet.h> //inet_addr
 #include <netinet/in.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -102,7 +102,7 @@ int responseToPort(string response) {
 /*! \fn string responseToIp(string response)
     \brief Establishes a passive connection with the server
     \brief Connects to the dtp server
-    \param response to the main server
+    \param sockpi socket to the main server
 */
 string responseToIp(string response) {
     int parenIndex = static_cast<int>(response.find("("));
