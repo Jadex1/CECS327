@@ -79,9 +79,8 @@ string reply(int sock) {
     return strReply;
 }
 /*! \fn int responseToPort(string response)
-    \brief Establishes a passive connection with the server
-    \brief Connects to the dtp server
-    \param sockpi socket to the main server
+    \brief Returns server response parsed into Port
+    \param string response from server
 */
 int responseToPort(string response) {
     int parenIndex = static_cast<int>(response.find("("));
@@ -100,9 +99,8 @@ int responseToPort(string response) {
     return port;
 }
 /*! \fn string responseToIp(string response)
-    \brief Establishes a passive connection with the server
-    \brief Connects to the dtp server
-    \param sockpi socket to the main server
+    \brief Returns server response parsed into Buffer
+    \param string response from server
 */
 string responseToIp(string response) {
     int parenIndex = static_cast<int>(response.find("("));
@@ -120,7 +118,6 @@ string responseToIp(string response) {
 }
 /*! \fn int PASV(int sockpi)
     \brief Establishes a passive connection with the server
-    \brief Connects to the dtp server
     \param sockpi socket to the main server
 */
 int PASV(int sockpi) {
@@ -141,8 +138,7 @@ void LIST(int sockpi) {
   cout << "Server response: " << reply(sockpi) << endl;
 }
 /*! \fn void RETR(int sockpi)
-    \brief Establishes a passive connection with the server
-    \brief Connects to the dtp server
+    \brief Returns selected file arguemnt
     \param sockpi socket to the main server
 */
 void RETR(int sockpi) {
@@ -157,8 +153,7 @@ void RETR(int sockpi) {
   cout << "Server response: " << reply(sockpi) << endl;
 }
 /*! \fn void QUIT(int sockpi)
-    \brief Establishes a passive connection with the server
-    \brief Connects to the dtp server
+    \brief Ends the connection with the server
     \param sockpi socket to the main server
 */
 void QUIT(int sockpi) {
