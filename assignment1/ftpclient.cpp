@@ -1,3 +1,4 @@
+
 // Assignment 1 - FTP Client
 // CECS 327
 // Brendan McMahon, James Hall, Andrew Camarena
@@ -18,7 +19,9 @@ using namespace std;
 
 #define BUFFER_LENGTH 2048
 
-int createConnection(string host, int port) {
+int createConnection(std::string host, int port)
+{
+
     int sock;
     struct sockaddr_in sockaddr;
 
@@ -28,14 +31,19 @@ int createConnection(string host, int port) {
     sockaddr.sin_port= htons(port);
 
     int a1,a2,a3,a4;
-    if (sscanf(host.c_str(), "%d.%d.%d.%d", &a1, &a2, &a3, &a4 ) == 4) {
+
+    if (sscanf(host.c_str(), "%d.%d.%d.%d", &a1, &a2, &a3, &a4 ) == 4)
+    {
+        cout << "by ip";
         sockaddr.sin_addr.s_addr =  inet_addr(host.c_str());
-    } else {
+    }
+    else {
         cout << "by name";
         hostent * record = gethostbyname(host.c_str());
         in_addr * addressptr = (in_addr *) record->h_addr;
         sockaddr.sin_addr = *addressptr;
     }
+
     if(connect(sock,(struct sockaddr *)&sockaddr,sizeof(struct sockaddr))==-1) {
         perror("connection fail");
         exit(1);
@@ -71,6 +79,10 @@ string reply(int sock) {
     int count;
     char buffer[BUFFER_LENGTH];
     usleep(10000);
+    std::string strReply;
+    int count;
+    char buffer[BUFFER_LENGTH];
+
     do {
         count = recv(sock, buffer, BUFFER_LENGTH-1, 0);
         buffer[count] = '\0';
@@ -174,9 +186,63 @@ int main(int argc , char *argv[]) {
         sockpi = createConnection(argv[1], atoi(argv[2]));
     }
     if (argc == 2){
+}
+
+int main(int argc , char *argv[])
+{
+    int sockpi;
+    std::string strReply;
+    std::string myinput;
+
+    //TODO  arg[1] can be a dns or an IP address using gethostbyname.
+    if (argc > 2)
+    {
+        sockpi = createConnection(argv[1], atoi(argv[2]));
+    }
+    if (argc == 2)
         sockpi = createConnection(argv[1], 21);
-    } else {
+    else
         sockpi = createConnection("130.179.16.134", 21);
+    strReply = reply(sockpi);
+    cout << strReply  << endl;
+
+
+    strReply = requestReply(sockpi, "USER anonymous\r\n");
+    //TODO parse srtReply to obtain the status. Let the system act according to the status and display
+    // friendly user to the user
+    cout << strReply  << endl;
+
+    strReply = requestReply(sockpi, "PASS asa@asas.com\r\n");
+    cout << strReply  << endl;
+    strReply = requestReply(sockpi, "USER anonymous\r\n");
+    cout << strReply  << endl;
+    //TODO parse srtReply to obtain the status. Let the system act according to the status and display
+    // friendly user to the user
+
+    cout << "Please enter a command: (ls,passive,quit,get)" << endl;
+
+    while(cin >> myinput)
+    {
+        strReply = reply(sockpi);//clear the socket
+
+        //PASV
+        if(myinput == "passive")
+        {
+            strReply = requestReply(sockpi, "PASV\r\n");
+            cout << strReply;
+        }
+        //LIST
+        if(myinput == "ls")
+        {
+            strReply = requestReply(sockpi, "LIST\r\n");
+            cout << "List reply:" << strReply << endl;
+        }
+        //RETR
+        if(myinput == "get")
+        {
+            strReply = requestReply(sockpi, "RTR\r\n");
+            cout << strReply;
+        }
     }
     strReply = reply(sockpi);
     cout << strReply  << endl;
@@ -209,4 +275,6 @@ int main(int argc , char *argv[]) {
             cout <<"Please enter a command(ls,quit,get): Once, More..."<< endl;
         }
     }
+    //TODO implement PASV, LIST, RETR
+    return 0;
 }
