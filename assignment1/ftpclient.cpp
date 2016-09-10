@@ -7,6 +7,7 @@
 #include <string>
 #include <stdio.h> //printf
 #include <stdlib.h>
+#include <fstream>
 #include <string.h>    //strlen
 #include <sys/socket.h>    //socket
 #include <arpa/inet.h> //inet_addr
@@ -106,10 +107,7 @@ int responseToPort(string response) {
     parsedIP = response.substr(0,responseSize);
     sscanf(parsedIP.c_str(), "%hu.%hu.%hu.%hu.%hu.%hu.", &a, &b, &c, &d, &e, &f);
     first = e << 8;
-    second = f;
-    uint16_t port = first | second;
-
-    return port;
+    return first | f;
 }
 /*! \fn string responseToIp(string response)
     \brief Establishes a passive connection with the server
@@ -159,12 +157,19 @@ void LIST(int sockpi) {
 */
 void RETR(int sockpi) {
   string filename;
-  cout << "Enter the name of the File you wish to retrieve" << endl;
   cin >> filename;
   int sockdtp = PASV(sockpi);
   request(sockpi, "RETR "+filename+"\r\n");
-  cout << "Server response: " << reply(sockpi) << endl;
-  cout << "DTP response:" << reply(sockdtp) << endl;
+  string strReply =  reply(sockpi);
+  std::size_t found = strReply.find("550");
+  if(found!=string::npos){
+    cout << "Error: " << strReply << endl;
+    return;
+  }
+  cout << "Server response: " << strReply << endl;
+  ofstream file(filename);
+  file << reply(sockdtp);
+  cout << "File: " << filename << " sucessfully downloaded!" << endl << endl;
   request(sockdtp,"CLOSE \r\n");
   cout << "Server response: " << reply(sockpi) << endl;
 }
@@ -248,31 +253,25 @@ int main(int argc , char *argv[])
     cout << strReply  << endl;
 
     strReply = requestReply(sockpi, "USER anonymous\r\n");
-    //TODO parse srtReply to obtain the status. Let the system act according to the status and display
-    // friendly user to the user
     cout << strReply  << endl;
 
     strReply = requestReply(sockpi, "PASS asa@asas.com\r\n");
-    cout << strReply  << endl;
-    cout << reply(sockpi);
+    cout << strReply << endl;
+    cout << reply(sockpi) << endl;//230
 
-    //TODO parse srtReply to obtain the status. Let the system act according to the status and display
-    // friendly user to the user
+    cout << "Please enter a command: (ls,get <filename>,quit)" << endl;
 
-    cout << "Please enter a command: (ls,quit,get)" << endl;
-
-    while (true) {// I'm not sure this is suppose to be like this
+    while (true) {
         cin >> myinput;
-        //LIST
         if (myinput == "ls") {
             LIST(sockpi);
-        } else if (myinput == "get") {//RETR
+        } else if (myinput == "get") {
             RETR(sockpi);
         } else if(myinput == "quit") {
             QUIT(sockpi);
             return 0;
         } else {
-            cout <<"Please enter a command(ls,quit,get): Once, More..."<< endl;
+            cout <<"Please enter a command(ls,get <filename>,quit): Once, More..."<< endl;
         }
     }
     //TODO implement PASV, LIST, RETR
