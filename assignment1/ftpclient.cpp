@@ -1,5 +1,4 @@
-// Assignment 1 - FTP Client
-// CECS 327
+// Assignment 1 - FTP Client // CECS 327
 // Brendan McMahon, James Hall, Andrew Camarena
 
 #include <iostream>    //cout
@@ -160,7 +159,8 @@ void QUIT(int sockpi) {
     cout << requestReply(sockpi, "QUIT\r\n");
 }
 int main(int argc , char *argv[]) {
-    int sockpi,sockdtp;
+
+    int sockpi, sockdtp;
     string strReply;
     string myinput;
 
@@ -173,6 +173,7 @@ int main(int argc , char *argv[]) {
     } else {
         sockpi = createConnection("130.179.16.134", 21);
     }
+    
     strReply = reply(sockpi);
     cout << strReply  << endl;
 
