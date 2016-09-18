@@ -1,0 +1,8 @@
+Java Resources
+
+http://docs.oracle.com/javase/tutorial/networking/sockets/
+http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/SocketProgramming/SocketProgram.html
+https://docs.oracle.com/javase/tutorial/networking/overview/networking.html
+http://www.javaworld.com/article/2077322/core-java/core-java-sockets-programming-in-java-a-tutorial.html
+http://www.tutorialspoint.com/java/java_networking.htm
+http://cs.lmu.edu/~ray/notes/javanetexamples/
