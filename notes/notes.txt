@@ -23,3 +23,109 @@ Notes:
 * receiving processes remove messages from local queues
 * Communication between the sending and receiving processes may be either synchronous (blocking) or asynchronous(non-blocking)
 * The receive operation can have blocking and non-blocking variants
+
+
+### UDP datagram communication
+
+* Datagram sent by UDP is transmitted from a sending process to a receiving process without acknowledgement or retries
+* If a failure occurs, the message may not arrive
+* To send or receive messages a process must first create a socket bound to an Internet address of the local host and a local port.
+* Server will bind its socket to a known server port
+* A client binds its socket to any free local port.
+* The receive method returns the Internet address and port of the sender, in addition to the message, allowing the recipient to send a reply.
+
+* Message size: The receiving process needs to specify an array of bytes of a particular size in which to receive a message
+* Blocking: Sockets normally provide non-blocking sends and blocking receives for datagram communication
+* The send operation returns when it has handed the message to the underlying UDP and IP protocols
+* On arrival, the message is placed in a queue for the socket that is bound to the destination port.
+* The message can be collected from the queue by an outstanding or future invocation of receive on that socket.
+* Messages are discarded at the destination if no process already has a socket bound to the destination port
+
+### UDP client sends a message to the server and gets a reply
+
+import java.net.*;
+import java.io.*;
+public class UDPClient{
+public static void main(String args[]){
+// args give message contents and server hostname
+DatagramSocket aSocket = null;
+try {
+aSocket = new DatagramSocket();
+byte [] m = args[0].getBytes();
+InetAddress aHost = InetAddress.getByName(args[1]);
+int serverPort = 6789;
+DatagramPacket request = new DatagramPacket(m, m.length(), aHost, serverPort);
+aSocket.send(request);
+byte[] buffer = new byte[1000];
+DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
+aSocket.receive(reply);
+System.out.println("Reply: " + new String(reply.getData()));
+}catch (SocketException e){System.out.println("Socket: " + e.getMessage());
+}catch (IOException e){System.out.println("IO: " + e.getMessage());}
+}finally {if(aSocket != null) aSocket.close();}
+}
+}
+
+### UDP server repeatedly receives a request and sends it back to the client
+
+import java.net.*;
+import java.io.*;
+public class UDPServer{
+public static void main(String args[]){
+DatagramSocket aSocket = null;
+try{
+aSocket = new DatagramSocket(6789);
+byte[] buffer = new byte[1000];
+while(true){
+DatagramPacket request = new DatagramPacket(buffer, buffer.length);
+aSocket.receive(request);
+DatagramPacket reply = new DatagramPacket(request.getData(),
+request.getLength(), request.getAddress(), request.getPort());
+aSocket.send(reply);
+}
+}catch (SocketException e){System.out.println("Socket: " + e.getMessage());
+}catch (IOException e) {System.out.println("IO: " + e.getMessage());}
+}finally {if(aSocket != null) aSocket.close();}
+}
+}
+
+### TCP stream communication
+
+* Message sizes: TCP stream decides how much data to collect before transmitting it as one or more IP packets
+* Lost messages: The TCP protocol uses an acknowledgement scheme.
+* Flow control: The TCP protocol attempts to match the speeds of the processes that read from and write to a stream
+* Message duplication and ordering. Message identifiers are associated with each IP packet,
+* Message destinations. A pair of communicating processes establish a connection before they can communicate over a stream
+* Establishing a connection involves a connect from client followed by an accept from server
+* The listening socket maintains a queue of incoming connection requests.
+* In the socket model, when the server accepts a connection, a new stream socket is created for the server to communicate with a client, meanwhile retaining its socket at the server port for listening for connect requests from other clients.
+* Each socket has an input stream and an output stream
+* When an application closes a socket, this indicates that it will not write any more data to its output stream
+* When a process exits or fails, all of its sockets are eventually closed and any process attempting to communicate with it will discover that its connection has been broken
+* Failure model: TCP streams use checksums to detect and reject corrupt packets and sequence numbers to detect and reject duplicate packets. For the sake of the validity property, TCP streams use timeouts and retransmissions to deal with lost packets. TCP may declare a broken connection if packet loss passes a limit
+* Use of TCP: HTTP, FTP, Telnet, SMTP
+
+9/15/16
+
+### Java Object Serialization
+
+public class MainMessage implements Serializable{
+  int msgid;
+  int port;
+  string id;
+
+
+  void join(int port,string id){
+    this.msgid = JOIN;
+    this.port = port;
+    this.id = id
+  }
+}
+
+### Java object serialization
+
+* In Java, serialization is the activity of flattening an object into a serial form that is suitable for storing on disk or transmitting in a message
+* It is assumed that the process that does the deserialization has no prior knowledge of the types of the objects in the serialized form
+* The information about a class consists of the name of the class and a version number
+* All the objects that object references are serialized together
+* To serialize an object, its class information is written out, followed by the types and names of its instance variables
