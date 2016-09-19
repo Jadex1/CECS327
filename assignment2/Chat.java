@@ -21,8 +21,13 @@ public class Chat   {
        Thread client = new Thread(new Client(Id, port));
        server.start();
        client.start();
-       client.join();
-       server.join();
+       try{
+         client.join();
+         server.join();
+       }
+       catch (InterruptedException e){
+         System.out.println("Thread: " + e.getMessage());
+       }
    }
 
 
@@ -60,18 +65,33 @@ private class Server implements Runnable
 * \brief It allows the system to interact with the participants.
 **********************************/
     public void run() {
-      ServerSocket servSock = new ServerSocket(port);
-      while (true)
-      {
-          Socket clntSock = servSock.accept(); // Get client connections
-          ObjectInputStream  ois = new
-          ObjectInputStream(clntSock.getInputStream());
-          ObjectOutputStream oos = new
-          ObjectOutputStream(clntSock.getOutputStream());
-          Message m = (Message)ois.readObject();
-          // Handle Messages
+      try{
+        ServerSocket servSock = new ServerSocket(port);
+        while (true)
+        {
 
-          clntSock.close();
+            Socket clntSock = servSock.accept(); // Get client connections
+            ObjectInputStream  ois = new
+            ObjectInputStream(clntSock.getInputStream());
+            ObjectOutputStream oos = new
+            ObjectOutputStream(clntSock.getOutputStream());
+            try{
+              Message m = (Message)ois.readObject();
+            }
+            catch (ClassNotFoundException e){
+              System.out.println("IO Class: " + e.getMessage());
+            }
+            // Handle Messages
+
+            clntSock.close();
+            }
+
+      }
+      catch (SocketException e){
+        System.out.println("Socket: " + e.getMessage());
+      }
+      catch (IOException e){
+        System.out.println("IO: " + e.getMessage());
       }
     }
   }
@@ -99,6 +119,7 @@ private class Server implements Runnable
       {
           // Read commands form the keyboard
           //Prepare message m
+          try{
           Socket socket = new Socket(id, port);
           ObjectOutputStream oos = new
           ObjectOutputStream(socket.getOutputStream());
@@ -107,6 +128,14 @@ private class Server implements Runnable
           oos.writeObject(m);
           ois.read();
           socket.close();
+
+        }
+        catch (SocketException e){
+          System.out.println("Socket: " + e.getMessage());
+        }
+        catch (IOException e){
+          System.out.println("IO: " + e.getMessage());
+        }
       }
     }
   }
