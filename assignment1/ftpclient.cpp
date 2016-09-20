@@ -1,10 +1,12 @@
-// Assignment 1 - FTP Client // CECS 327
+// Assignment 1 - FTP Client
+// CECS 327
 // Brendan McMahon, James Hall, Andrew Camarena
 
 #include <iostream>    //cout
 #include <string>
 #include <stdio.h> //printf
 #include <stdlib.h>
+#include <fstream>
 #include <string.h>    //strlen
 #include <sys/socket.h>    //socket
 #include <arpa/inet.h> //inet_addr
@@ -16,6 +18,12 @@
 using namespace std;
 
 #define BUFFER_LENGTH 2048
+
+/*! \fn int PASV(int sockpi)
+    \brief Establishes a passive connection with the server
+    \brief Connects to the dtp server
+    \param sockpi socket to the main server
+*/
 
 int createConnection(string host, int port) {
     int sock;
@@ -43,7 +51,8 @@ int createConnection(string host, int port) {
     return sock;
 }
 
-string requestReply(int sock, string message) {
+string requestReply(int sock, string message)
+{
     char buffer[BUFFER_LENGTH];
     string reply;
     int count = send(sock, message.c_str(), message.size(), 0);
@@ -59,13 +68,15 @@ string requestReply(int sock, string message) {
     return buffer;
 }
 
-int request(int sock, string message) {
+int request(int sock, string message)
+{
     char buffer[BUFFER_LENGTH];
     string reply;
     return send(sock, message.c_str(), message.size(), 0);
 }
 
-string reply(int sock) {
+string reply(int sock)
+{
     string strReply;
     int count;
     char buffer[BUFFER_LENGTH];
@@ -77,10 +88,7 @@ string reply(int sock) {
     }while (count ==  BUFFER_LENGTH-1);
     return strReply;
 }
-/*! \fn int responseToPort(string response)
-    \brief Returns server response parsed into Port
-    \param string response from server
-*/
+
 int responseToPort(string response) {
     int parenIndex = static_cast<int>(response.find("("));
     string parsedIP, strReply;
@@ -92,15 +100,9 @@ int responseToPort(string response) {
     parsedIP = response.substr(0,responseSize);
     sscanf(parsedIP.c_str(), "%hu.%hu.%hu.%hu.%hu.%hu.", &a, &b, &c, &d, &e, &f);
     first = e << 8;
-    second = f;
-    uint16_t port = first | second;
-
-    return port;
+    return first | f;
 }
-/*! \fn string responseToIp(string response)
-    \brief Returns server response parsed into Buffer
-    \param string response from server
-*/
+
 string responseToIp(string response) {
     int parenIndex = static_cast<int>(response.find("("));
     string parsedIP, strReply;
@@ -115,19 +117,11 @@ string responseToIp(string response) {
     sprintf(buffer, "%d.%d.%d.%d",a1,a2,a3,a4);
     return buffer;
 }
-/*! \fn int PASV(int sockpi)
-    \brief Establishes a passive connection with the server
-    \param sockpi socket to the main server
-*/
+
 int PASV(int sockpi) {
     string strReply = requestReply(sockpi, "PASV\r\n");
     return createConnection(responseToIp(strReply),responseToPort(strReply));
 }
-/*! \fn void LIST(int sockpi)
-    \brief Establishes a passive connection with the server
-    \brief Connects to the dtp server
-    \param sockpi socket to the main server
-*/
 void LIST(int sockpi) {
   int sockdtp = PASV(sockpi);
   request(sockpi, "LIST /\r\n");
@@ -136,31 +130,30 @@ void LIST(int sockpi) {
   request(sockdtp,"CLOSE \r\n");
   cout << "Server response: " << reply(sockpi) << endl;
 }
-/*! \fn void RETR(int sockpi)
-    \brief Returns selected file arguemnt
-    \param sockpi socket to the main server
-*/
 void RETR(int sockpi) {
   string filename;
-  cout << "Enter the name of the File you wish to retrieve" << endl;
   cin >> filename;
   int sockdtp = PASV(sockpi);
   request(sockpi, "RETR "+filename+"\r\n");
-  cout << "Server response: " << reply(sockpi) << endl;
-  cout << "DTP response:" << reply(sockdtp) << endl;
+  string strReply =  reply(sockpi);
+  std::size_t found = strReply.find("550");
+  if(found!=string::npos){
+    cout << "Error: " << strReply << endl;
+    return;
+  }
+  cout << "Server response: " << strReply << endl;
+  ofstream file(filename);
+  file << reply(sockdtp);
+  cout << "File: " << filename << " sucessfully downloaded!" << endl << endl;
   request(sockdtp,"CLOSE \r\n");
   cout << "Server response: " << reply(sockpi) << endl;
 }
-/*! \fn void QUIT(int sockpi)
-    \brief Ends the connection with the server
-    \param sockpi socket to the main server
-*/
 void QUIT(int sockpi) {
     cout << requestReply(sockpi, "QUIT\r\n");
 }
-int main(int argc , char *argv[]) {
-
-    int sockpi, sockdtp;
+int main(int argc , char *argv[])
+{
+    int sockpi,sockdtp;
     string strReply;
     string myinput;
 
@@ -173,36 +166,29 @@ int main(int argc , char *argv[]) {
     } else {
         sockpi = createConnection("130.179.16.134", 21);
     }
-    
     strReply = reply(sockpi);
     cout << strReply  << endl;
 
     strReply = requestReply(sockpi, "USER anonymous\r\n");
-    //TODO parse srtReply to obtain the status. Let the system act according to the status and display
-    // friendly user to the user
     cout << strReply  << endl;
 
     strReply = requestReply(sockpi, "PASS asa@asas.com\r\n");
-    cout << strReply  << endl;
-    cout << reply(sockpi);
+    cout << strReply << endl;
+    cout << reply(sockpi) << endl;//230
 
-    //TODO parse srtReply to obtain the status. Let the system act according to the status and display
-    // friendly user to the user
+    cout << "Please enter a command: (ls,get <filename>,quit)" << endl;
 
-    cout << "Please enter a command: (ls,quit,get)" << endl;
-
-    while (true) {// I'm not sure this is suppose to be like this
+    while (true) {
         cin >> myinput;
-        //LIST
         if (myinput == "ls") {
             LIST(sockpi);
-        } else if (myinput == "get") {//RETR
+        } else if (myinput == "get") {
             RETR(sockpi);
         } else if(myinput == "quit") {
             QUIT(sockpi);
             return 0;
         } else {
-            cout <<"Please enter a command(ls,quit,get): Once, More..."<< endl;
+            cout <<"Please enter a command(ls,get <filename>,quit): Once, More..."<< endl;
         }
     }
 }

@@ -111,18 +111,21 @@ private class Server implements Runnable
           // Read commands form the keyboard
           //Prepare message m
           try{
+            String input = System.console().readLine();
+            if(!input.toLowerCase().contains("put")){
+            port = Integer.parseInt(input);
+          }
             Socket socket = new Socket(id, port);
           System.out.println("[Client] Just connected to " + socket.getRemoteSocketAddress());
           ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
           ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 
+
           Message m = new Message();
-          String input = System.console().readLine();
-          port = Integer.parseInt(input);
-          m.text = Integer.toString(port);
+          m.text = input + " from:" + socket.getLocalPort();
           oos.writeObject(m);
           ois.read();
-          socket.close();
+          //socket.close();
 
         }
         catch (SocketException e){
