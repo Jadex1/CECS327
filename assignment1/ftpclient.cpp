@@ -58,7 +58,7 @@ string requestReply(int sock, string message)
     int count = send(sock, message.c_str(), message.size(), 0);
     if (count > 0)
     {
-        usleep(10000);
+        usleep(15000);
         do {
             count = recv(sock, buffer, BUFFER_LENGTH-1, 0);
             buffer[count] = '\0';
@@ -80,7 +80,7 @@ string reply(int sock)
     string strReply;
     int count;
     char buffer[BUFFER_LENGTH];
-    usleep(10000);
+    usleep(15000);
     do {
         count = recv(sock, buffer, BUFFER_LENGTH-1, 0);
         buffer[count] = '\0';

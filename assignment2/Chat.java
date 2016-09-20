@@ -125,7 +125,7 @@ private class Server implements Runnable
           m.text = input + " from:" + socket.getLocalPort();
           oos.writeObject(m);
           ois.read();
-          //socket.close();
+          socket.close();
 
         }
         catch (SocketException e){
