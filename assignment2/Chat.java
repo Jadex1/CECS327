@@ -6,17 +6,18 @@ import java.util.*;
 * It creates a ring and delivers messages
 * using flooding
 **********************************/
-public class Chat   {
+public class Chat {
   public enum enum_MSG {
-    JOIN, //0
-    ACCEPT,   //1
-    LEAVE,   //2
-    PUT      //3
+    JOIN,     // 0
+    ACCEPT,   // 1
+    LEAVE,    // 2
+    PUT       // 3
   };
   // General Message class
   public class Message implements Serializable  {
     enum_MSG messageID;     // Id of the message
     public MainMessage() {
+      //TODO: figure out what they should return? do I create methods?
     /*
     JOIN    : Id, Port
     ACCEPT  : Id_pred, Port_pred, IP_pred
@@ -99,10 +100,12 @@ public class Chat   {
     client.join();
     server.join();
   }
+
   public static void main(String[] args) {
     if (args.length < 2 ) {
       throw new IllegalArgumentException("Parameter: <id> <port>");
     }
     Chat chat = new Chat(args[0], Integer.parseInt(args[1]));
   }
+
 }
