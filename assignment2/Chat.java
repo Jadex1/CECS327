@@ -1,12 +1,13 @@
 import java.net.*;
 import java.io.*;
 import java.util.*;
+
 /*****************************//**
 * \brief It implements a distributed chat.
 * It creates a ring and delivers messages
 * using flooding
 **********************************/
-public class Chat   {
+public class Chat  implements Serializable {
   public enum enum_MSG {
       JOIN, //0
       ACCEPT,   //1
@@ -14,41 +15,29 @@ public class Chat   {
       PUT      //3
    };
 
-   public Chat(String Id, int port) {
 
-       // Initialization of the peer
-       Thread server = new Thread(new Server(port));
-       Thread client = new Thread(new Client(Id, port));
-       server.start();
-       client.start();
-       try{
-         client.join();
-         server.join();
-       }
-       catch (InterruptedException e){
-         System.out.println("Thread: " + e.getMessage());
-       }
-   }
 
 
 public class Message implements Serializable  {
-  enum_MSG msgid;
-  int port;
-  String id;
-
-
+  public enum_MSG msgid;
+  public int port;
+  public String text;
+  /*
+  public Message(String text){
+      this.text = text;
+  }*/
 //    JOIN    : Id, Port
      void join(int port,String id){
        this.msgid = enum_MSG.JOIN;
        this.port = port;
-       this.id = id;
      }
+
      /*
      ACCEPT  : Id_pred, Port_pred, IP_pred
      LEAVE   : Id_pred, Port_pred, IP_pred
      PUT     : idSender, idDest, payload
      */
-   }
+}
 
 /*****************************//**
 * \class Server class "chat.java"
@@ -67,31 +56,31 @@ private class Server implements Runnable
     public void run() {
       try{
         ServerSocket servSock = new ServerSocket(port);
+        System.out.println("Waiting for client on port " + servSock.getLocalPort() + "...");
+
         while (true)
         {
-
             Socket clntSock = servSock.accept(); // Get client connections
-            ObjectInputStream  ois = new
-            ObjectInputStream(clntSock.getInputStream());
-            ObjectOutputStream oos = new
-            ObjectOutputStream(clntSock.getOutputStream());
+            System.out.println("[Server] Just connected to " + clntSock.getRemoteSocketAddress());
+            ObjectInputStream  ois = new ObjectInputStream(clntSock.getInputStream());
+            ObjectOutputStream oos = new ObjectOutputStream(clntSock.getOutputStream());
             try{
               Message m = (Message)ois.readObject();
+              System.out.println("[Server]: " + m.text);
             }
             catch (ClassNotFoundException e){
-              System.out.println("IO Class: " + e.getMessage());
+              System.out.println("[Server] IO Class: " + e.getMessage());
             }
             // Handle Messages
-
-            clntSock.close();
+            //clntSock.close();
             }
 
       }
       catch (SocketException e){
-        System.out.println("Socket: " + e.getMessage());
+        System.out.println("[Server] Socket: " + e.getMessage());
       }
       catch (IOException e){
-        System.out.println("IO: " + e.getMessage());
+        System.out.println("[Server] IO: " + e.getMessage());
       }
     }
   }
@@ -103,7 +92,7 @@ private class Server implements Runnable
   {
     String id;
     int port;
-    Message m;
+
     public Client(String id, int p)
     {
        this.port = p;
@@ -115,29 +104,53 @@ private class Server implements Runnable
 **********************************/
     public void run()
     {
+
+
       while (true)
       {
           // Read commands form the keyboard
           //Prepare message m
           try{
-          Socket socket = new Socket(id, port);
-          ObjectOutputStream oos = new
-          ObjectOutputStream(socket.getOutputStream());
-          ObjectInputStream ois = new
-          ObjectInputStream(socket.getInputStream());
+            Socket socket = new Socket(id, port);
+          System.out.println("[Client] Just connected to " + socket.getRemoteSocketAddress());
+          ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+          ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+
+          Message m = new Message();
+          String input = System.console().readLine();
+          port = Integer.parseInt(input);
+          m.text = Integer.toString(port);
           oos.writeObject(m);
           ois.read();
           socket.close();
 
         }
         catch (SocketException e){
-          System.out.println("Socket: " + e.getMessage());
+          System.out.println("[Client] Socket: " + e.getMessage());
         }
         catch (IOException e){
-          System.out.println("IO: " + e.getMessage());
+          System.out.println("[Client] IO: " + e.getMessage());
+          e.printStackTrace();
         }
       }
     }
+  }
+
+
+  public Chat(String Id, int port) {
+
+      // Initialization of the peer
+      Thread server = new Thread(new Server(port));
+      Thread client = new Thread(new Client(Id, port));
+      server.start();
+      client.start();
+      try{
+        client.join();
+        server.join();
+      }
+      catch (InterruptedException e){
+        System.out.println("Thread: " + e.getMessage());
+      }
   }
 
 /*****************************//**

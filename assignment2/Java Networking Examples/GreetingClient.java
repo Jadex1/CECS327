@@ -1,6 +1,7 @@
 // File Name GreetingClient.java
 import java.net.*;
 import java.io.*;
+import java.io.Console;
 
 public class GreetingClient {
 
@@ -14,8 +15,10 @@ public class GreetingClient {
          System.out.println("Just connected to " + client.getRemoteSocketAddress());
          OutputStream outToServer = client.getOutputStream();
          DataOutputStream out = new DataOutputStream(outToServer);
+         Console console = System.console();
+         String s = console.readLine();
 
-         out.writeUTF("Hello from " + client.getLocalSocketAddress());
+         out.writeUTF(s + client.getLocalSocketAddress());
          InputStream inFromServer = client.getInputStream();
          DataInputStream in = new DataInputStream(inFromServer);
 
