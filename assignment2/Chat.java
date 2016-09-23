@@ -22,17 +22,38 @@ public class Message implements Serializable  {
   public Message(String text){
       this.text = text;
   }*/
-//    JOIN    : Id, Port
-     void join(int port,String id){
+     /*****************************//**
+     * \class Message class "chat.java"
+     * \brief JOIN: Id, Port
+     **********************************/
+     void join(int port, String id){
        this.msgid = enum_MSG.JOIN;
        this.port = port;
      }
-
-     /*
-     ACCEPT  : Id_pred, Port_pred, IP_pred
-     LEAVE   : Id_pred, Port_pred, IP_pred
-     PUT     : idSender, idDest, payload
-     */
+     /*****************************//**
+     * \class Message class "chat.java"
+     * \brief ACCEPT: Id_pred, Port_pred, IP_pred
+     **********************************/
+    //  void accept(int port, String id){
+    //    this.msgid = enum_MSG.JOIN;
+    //    this.port = port;
+    //  }
+     /*****************************//**
+     * \class Message class "chat.java"
+     * \brief LEAVE: Id_pred, Port_pred, IP_pred
+     **********************************/
+    //  void leave(int port,String id){
+    //    this.msgid = enum_MSG.JOIN;
+    //    this.port = port;
+    //  }
+     /*****************************//**
+     * \class Message class "chat.java"
+     * \brief PUT: idSender, idDest, payload
+     **********************************/
+    //  void put(int port,String id){
+    //    this.msgid = enum_MSG.JOIN;
+    //    this.port = port;
+    //  }
 }
 
 /*****************************//**
@@ -99,8 +120,6 @@ private class Server implements Runnable
 **********************************/
     public void run()
     {
-
-
       while (true)
       {
           // Read commands form the keyboard
@@ -108,35 +127,27 @@ private class Server implements Runnable
           try{
             String input = System.console().readLine();
             if(!input.toLowerCase().contains("put")){
-            port = Integer.parseInt(input);
-          }
+              port = Integer.parseInt(input);
+            }
             Socket socket = new Socket(id, port);
-          System.out.println("[Client] Just connected to " + socket.getRemoteSocketAddress());
-          ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-          ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-
-
-          Message m = new Message();
-          m.text = input + " from:" + socket.getLocalPort();
-          oos.writeObject(m);
-          ois.read();
-          socket.close();
-
-        }
-        catch (SocketException e){
-          System.out.println("[Client] Socket: " + e.getMessage());
-        }
-        catch (IOException e){
-          System.out.println("[Client] IO: " + e.getMessage());
-          e.printStackTrace();
+            System.out.println("[Client] Just connected to " + socket.getRemoteSocketAddress());
+            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+            Message m = new Message();
+            m.text = input + " from:" + socket.getLocalPort();
+            oos.writeObject(m);
+            ois.read();
+            socket.close();
+          } catch (SocketException e) {
+            System.out.println("[Client] Socket: " + e.getMessage());
+          } catch (IOException e) {
+            System.out.println("[Client] IO: " + e.getMessage());
+            e.printStackTrace();
+          }
         }
       }
     }
-  }
-
-
-  public Chat(String Id, int port) {
-
+    public Chat(String Id, int port) {
       // Initialization of the peer
       Thread server = new Thread(new Server(port));
       Thread client = new Thread(new Client(Id, port));
