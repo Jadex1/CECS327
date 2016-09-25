@@ -17,11 +17,13 @@ public class Chat implements Serializable {
     public enum_MSG msgid;
     public int port;
     public String text;
-
-    /*
+    /* NOTE:
+     * Somehow the message needs to contain a list of all the variables and stuff.
+     *
+     */
     public Message(String text){
         this.text = text;
-    }*/
+    }
     /*****************************//**
     * \class Message class "chat.java"
      * \brief JOIN: Id, Port
@@ -49,7 +51,7 @@ public class Chat implements Serializable {
     * \class Message class "chat.java"
     * \brief PUT: idSender, idDest, payload
     **********************************/
-    void put(int idSender, int idDest, String payload) {
+    void put(int senderId, int destId, String someText) {
       //TODO: Fill in here.
     }
   }
@@ -59,10 +61,12 @@ public class Chat implements Serializable {
   **********************************/
   private class Server implements Runnable {
     // this why you have the void "run" method.
+    String id;
     int port;
-    public Server(int p) {//Server takes a port only
-      System.out.println("The Server method was called.");
-      this.port = p;
+    public Server(String id, int p) {//Server takes a port only
+      System.out.println("The Server method was called and was assigned to port: "+p);
+      this.port = p;// this instances local variable.
+      this.id = id;
     }
     public void run(){
       System.out.println("The Server Run method was called.");
@@ -70,28 +74,33 @@ public class Chat implements Serializable {
       * \brief It allows the system to interact with the participants.
       **********************************/
       // This is from the abstract class.
+      ServerSocket servSock = new ServerSocket(port);// create the server off port
+      System.out.println("Waiting for client on port " + servSock.getLocalPort() + "...");
       try {
-        ServerSocket servSock = new ServerSocket(port);
-        System.out.println("Waiting for client on port " + servSock.getLocalPort() + "...");
         while(true) {
-          Socket clntSock = servSock.accept(); // Get client connections
+          Socket clntSock = servSock.accept(); // .accept() returns a socket object
           System.out.println("The Server Run method was called In while loop.");
           System.out.println("[Server] Just connected to " + clntSock.getRemoteSocketAddress());
           ObjectInputStream  ois = new ObjectInputStream(clntSock.getInputStream());
           ObjectOutputStream oos = new ObjectOutputStream(clntSock.getOutputStream());
+
           try{
             Message m = (Message)ois.readObject();// not sure what's going on here.
-            System.out.println("[Server]: " + m.text);
+            System.out.println("[Server]: " + m.text);//
+          //  clntSock.close();
           } catch(ClassNotFoundException e) {
             System.out.println("[Server] IO Class: " + e.getMessage());
+            clntSock.close();
           }
         }
       } catch(SocketException e) {
         // Handle Messages
         //clntSock.close();
         System.out.println("[Server] Socket: " + e.getMessage());
+        clntSock.close();
       } catch(IOException e) {
         System.out.println("[Server] IO: " + e.getMessage());
+        clntSock.close();
       }
     }
   }
@@ -143,7 +152,6 @@ public class Chat implements Serializable {
    * The "localhost" and the "8000" or any string : number combination will give the
    * number of the port.
    */
-
   public Chat(String Id, int port) {// for example: localhost 8000
     /* NOTE:
      * The chat method is like a "main" method sort of.
