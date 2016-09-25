@@ -21,9 +21,9 @@ public class Chat implements Serializable {
      * Somehow the message needs to contain a list of all the variables and stuff.
      *
      */
-    public Message(String text){
-        this.text = text;
-    }
+    // public Message(String text){
+    //     this.text = text;
+    // }
     /*****************************//**
     * \class Message class "chat.java"
      * \brief JOIN: Id, Port
@@ -61,12 +61,12 @@ public class Chat implements Serializable {
   **********************************/
   private class Server implements Runnable {
     // this why you have the void "run" method.
-    String id;
+  //  String id;
     int port;
-    public Server(String id, int p) {//Server takes a port only
+    public Server(int p) {//Server takes a port only
       System.out.println("The Server method was called and was assigned to port: "+p);
       this.port = p;// this instances local variable.
-      this.id = id;
+      //this.id = id;
     }
     public void run(){
       System.out.println("The Server Run method was called.");
@@ -83,7 +83,6 @@ public class Chat implements Serializable {
           System.out.println("[Server] Just connected to " + clntSock.getRemoteSocketAddress());
           ObjectInputStream  ois = new ObjectInputStream(clntSock.getInputStream());
           ObjectOutputStream oos = new ObjectOutputStream(clntSock.getOutputStream());
-
           try{
             Message m = (Message)ois.readObject();// not sure what's going on here.
             System.out.println("[Server]: " + m.text);//
