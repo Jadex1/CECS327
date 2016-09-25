@@ -21,15 +21,15 @@ public class Chat  implements Serializable {
     public Message(String text){
         this.text = text;
     }*/
-     /*****************************//**
-     * \class Message class "chat.java"
+    /*****************************//**
+    * \class Message class "chat.java"
      * \brief JOIN: Id, Port
      **********************************/
-     void join(int port, String id){
-       System.out.println("The messagee join method was called.");
-       this.msgid = enum_MSG.JOIN;
-       this.port = port;
-     }
+    void join(int port, String id) {
+      System.out.println("The messagee join method was called.");
+      this.msgid = enum_MSG.JOIN;
+      this.port = port;
+    }
      /*****************************//**
      * \class Message class "chat.java"
      * \brief ACCEPT: Id_pred, Port_pred, IP_pred
@@ -54,47 +54,49 @@ public class Chat  implements Serializable {
     //    this.msgid = enum_MSG.JOIN;
     //    this.port = port;
     //  }
-   }
+  }
   /*****************************//**
   * \class Server class "chat.java"
   * \brief It implements the server
   **********************************/
   private class Server implements Runnable {
+    // this why you have the void "run" method.
     int port;
-    public Server(int p) { //Server takes a port only
-    System.out.println("The Server method was called.");
-    this.port = p;
-  }
-    /*****************************//**
-    * \brief It allows the system to interact with the participants.
-    **********************************/
-    public void run() {
-    System.out.println("The Server Run method was called.");
-    try {
-      ServerSocket servSock = new ServerSocket(port);
-      System.out.println("Waiting for client on port " + servSock.getLocalPort() + "...");
-      while(true) {
-        Socket clntSock = servSock.accept(); // Get client connections
-        System.out.println("The Server Run method was called In while loop.");
-        System.out.println("[Server] Just connected to " + clntSock.getRemoteSocketAddress());
-        ObjectInputStream  ois = new ObjectInputStream(clntSock.getInputStream());
-        ObjectOutputStream oos = new ObjectOutputStream(clntSock.getOutputStream());
-        try{
-          Message m = (Message)ois.readObject();
-          System.out.println("[Server]: " + m.text);
-        } catch(ClassNotFoundException e) {
-          System.out.println("[Server] IO Class: " + e.getMessage());
+    public Server(int p) {//Server takes a port only
+      System.out.println("The Server method was called.");
+      this.port = p;
+    }
+    public void run(){
+      System.out.println("The Server Run method was called.");
+      /*****************************//**
+      * \brief It allows the system to interact with the participants.
+      **********************************/
+      // This is from the abstract class.
+      try {
+        ServerSocket servSock = new ServerSocket(port);
+        System.out.println("Waiting for client on port " + servSock.getLocalPort() + "...");
+        while(true) {
+          Socket clntSock = servSock.accept(); // Get client connections
+          System.out.println("The Server Run method was called In while loop.");
+          System.out.println("[Server] Just connected to " + clntSock.getRemoteSocketAddress());
+          ObjectInputStream  ois = new ObjectInputStream(clntSock.getInputStream());
+          ObjectOutputStream oos = new ObjectOutputStream(clntSock.getOutputStream());
+          try{
+            Message m = (Message)ois.readObject();
+            System.out.println("[Server]: " + m.text);
+          } catch(ClassNotFoundException e) {
+            System.out.println("[Server] IO Class: " + e.getMessage());
+          }
         }
+      } catch(SocketException e) {
         // Handle Messages
         //clntSock.close();
+        System.out.println("[Server] Socket: " + e.getMessage());
+      } catch(IOException e) {
+        System.out.println("[Server] IO: " + e.getMessage());
       }
-    } catch(SocketException e){
-      System.out.println("[Server] Socket: " + e.getMessage());
-    } catch(IOException e){
-      System.out.println("[Server] IO: " + e.getMessage());
     }
   }
-}
   /*****************************//*
   * \brief It implements the client
   **********************************/
