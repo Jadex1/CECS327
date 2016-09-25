@@ -9,10 +9,10 @@ import java.util.*;
 **********************************/
 public class Chat  implements Serializable {
   public enum enum_MSG {
-      JOIN, //0
-      ACCEPT,   //1
-      LEAVE,   //2
-      PUT      //3
+      JOIN,     // 0
+      ACCEPT,   // 1
+      LEAVE,    // 2
+      PUT       // 3
    };
 public class Message implements Serializable  {
   public enum_MSG msgid;
