@@ -1,8 +1,8 @@
 import java.net.*;
 import java.io.*;
 import java.util.*;
-/*****************************//**
-* \brief It implements a distributed chat.
+ /*****************************//**
+ * \brief It implements a distributed chat.
   * It creates a ring and delivers messages
   * using flooding
   **********************************/
@@ -140,6 +140,7 @@ public class Chat  implements Serializable {
       }
     }
   }
+
   // This is the first method that gets called when the main method is called.
   // The "localhost" and the "8000" or any string : number combination will give the
   // number of the port.
@@ -154,7 +155,7 @@ public class Chat  implements Serializable {
     Thread client = new Thread(new Client(Id, port)); // Localhost, 8000
     server.start();
     client.start();
-    try{
+    try {
       client.join();
       server.join();
     } catch (InterruptedException e){
