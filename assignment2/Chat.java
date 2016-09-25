@@ -25,35 +25,32 @@ public class Chat  implements Serializable {
     * \class Message class "chat.java"
      * \brief JOIN: Id, Port
      **********************************/
-    void join(int port, String id) {
+    void join(String id, int port) {
       System.out.println("The messagee join method was called.");
       this.msgid = enum_MSG.JOIN;
       this.port = port;
     }
-     /*****************************//**
-     * \class Message class "chat.java"
-     * \brief ACCEPT: Id_pred, Port_pred, IP_pred
-     **********************************/
-    //  void accept(int port, String id){
-    //    this.msgid = enum_MSG.JOIN;
-    //    this.port = port;
-    //  }
-     /*****************************//**
-     * \class Message class "chat.java"
-     * \brief LEAVE: Id_pred, Port_pred, IP_pred
-     **********************************/
-    //  void leave(int port,String id){
-    //    this.msgid = enum_MSG.JOIN;
-    //    this.port = port;
-    //  }
-     /*****************************//**
-     * \class Message class "chat.java"
-     * \brief PUT: idSender, idDest, payload
-     **********************************/
-    //  void put(int port,String id){
-    //    this.msgid = enum_MSG.JOIN;
-    //    this.port = port;
-    //  }
+    /*****************************//**
+    * \class Message class "chat.java"
+    * \brief ACCEPT: Id_pred, Port_pred, IP_pred
+    **********************************/
+    void accept(String idPred, String portPred, int ipPred) {
+      //TODO: Fill in here.
+    }
+    /*****************************//**
+    * \class Message class "chat.java"
+    * \brief LEAVE: Id_pred, Port_pred, IP_pred
+    **********************************/
+    void leave(String idPred, String portPred, int ipPred) {
+      //TODO: Fill in here.
+    }
+    /*****************************//**
+    * \class Message class "chat.java"
+    * \brief PUT: idSender, idDest, payload
+    **********************************/
+    void put(String idSender, int idDest, String payload) {
+      //TODO: Fill in here.
+    }
   }
   /*****************************//**
   * \class Server class "chat.java"
@@ -82,7 +79,7 @@ public class Chat  implements Serializable {
           ObjectInputStream  ois = new ObjectInputStream(clntSock.getInputStream());
           ObjectOutputStream oos = new ObjectOutputStream(clntSock.getOutputStream());
           try{
-            Message m = (Message)ois.readObject();
+            Message m = (Message)ois.readObject();// not sure what's going on here.
             System.out.println("[Server]: " + m.text);
           } catch(ClassNotFoundException e) {
             System.out.println("[Server] IO Class: " + e.getMessage());
@@ -140,7 +137,6 @@ public class Chat  implements Serializable {
       }
     }
   }
-
   // This is the first method that gets called when the main method is called.
   // The "localhost" and the "8000" or any string : number combination will give the
   // number of the port.
