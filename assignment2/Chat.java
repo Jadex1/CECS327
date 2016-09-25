@@ -90,17 +90,14 @@ public class Chat implements Serializable {
           //  clntSock.close();
           } catch(ClassNotFoundException e) {
             System.out.println("[Server] IO Class: " + e.getMessage());
-            clntSock.close();
           }
         }
       } catch(SocketException e) {
         // Handle Messages
         //clntSock.close();
         System.out.println("[Server] Socket: " + e.getMessage());
-        clntSock.close();
       } catch(IOException e) {
         System.out.println("[Server] IO: " + e.getMessage());
-        clntSock.close();
       }
     }
   }
