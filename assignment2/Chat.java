@@ -131,7 +131,7 @@ public class Chat implements Serializable {
           ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
           ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
           Message m = new Message();
-          m.text = input + " from:" + socket.getLocalPort();
+          m.text = input + " from: " + socket.getLocalPort();
           oos.writeObject(m);
           ois.read();
           socket.close();
