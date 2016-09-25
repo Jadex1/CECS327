@@ -57,63 +57,55 @@ public class Message implements Serializable  {
     //  }
 }
 
-/*****************************//**
-* \class Server class "chat.java"
-* \brief It implements the server
-**********************************/
-private class Server implements Runnable
-{
-    int port;
-    public Server(int p)//Server takes a port only
-    {
-      System.out.println("The Server method was called.");
-       this.port = p;
-    }
-/*****************************//**
-* \brief It allows the system to interact with the participants.
-**********************************/
-    public void run() {
-      System.out.println("The Server Run method was called.");
-      try{
-        ServerSocket servSock = new ServerSocket(port);
-        System.out.println("Waiting for client on port " + servSock.getLocalPort() + "...");
-
-        while (true)
-        {
-            Socket clntSock = servSock.accept(); // Get client connections
-            System.out.println("[Server] Just connected to " + clntSock.getRemoteSocketAddress());
-            ObjectInputStream  ois = new ObjectInputStream(clntSock.getInputStream());
-            ObjectOutputStream oos = new ObjectOutputStream(clntSock.getOutputStream());
-            try{
-              Message m = (Message)ois.readObject();
-              System.out.println("[Server]: " + m.text);
-            }
-            catch (ClassNotFoundException e){
-              System.out.println("[Server] IO Class: " + e.getMessage());
-            }
-            // Handle Messages
-            //clntSock.close();
-            }
+  /*****************************//**
+  * \class Server class "chat.java"
+  * \brief It implements the server
+  **********************************/
+private class Server implements Runnable {
+  int port;
+  public Server(int p) { //Server takes a port only
+    System.out.println("The Server method was called.");
+    this.port = p;
+  }
+  /*****************************//**
+  * \brief It allows the system to interact with the participants.
+  **********************************/
+  public void run() {
+    System.out.println("The Server Run method was called.");
+    try {
+      ServerSocket servSock = new ServerSocket(port);
+      System.out.println("Waiting for client on port " + servSock.getLocalPort() + "...");
+      while(true) {
+        Socket clntSock = servSock.accept(); // Get client connections
+        System.out.println("[Server] Just connected to " + clntSock.getRemoteSocketAddress());
+        ObjectInputStream  ois = new ObjectInputStream(clntSock.getInputStream());
+        ObjectOutputStream oos = new ObjectOutputStream(clntSock.getOutputStream());
+        try{
+          Message m = (Message)ois.readObject();
+          System.out.println("[Server]: " + m.text);
+        } catch(ClassNotFoundException e) {
+          System.out.println("[Server] IO Class: " + e.getMessage());
+        }
+        // Handle Messages
+        //clntSock.close();
       }
-      catch (SocketException e){
-        System.out.println("[Server] Socket: " + e.getMessage());
-      }
-      catch (IOException e){
-        System.out.println("[Server] IO: " + e.getMessage());
-      }
+    } catch(SocketException e){
+      System.out.println("[Server] Socket: " + e.getMessage());
+    } catch(IOException e){
+      System.out.println("[Server] IO: " + e.getMessage());
     }
   }
+}
+
 
 /*****************************//*
 * \brief It implements the client
 **********************************/
-  private class Client implements Runnable
-  {
+  private class Client implements Runnable{
     String id;
     int port;
 
-    public Client(String id, int p)
-    {
+    public Client(String id, int p) {
       System.out.println("The Client method was called.");
        this.port = p;
        this.id = id;
@@ -122,58 +114,62 @@ private class Server implements Runnable
   /*****************************//**
 * \brief It allows the user to interact with the system.
 **********************************/
-    public void run()
-    {
+    public void run() {
       System.out.println("The Client Run method was called.");
-      while (true)
-      {
-          // Read commands form the keyboard
-          //Prepare message m
-          try{
-            String input = System.console().readLine();
-            if(!input.toLowerCase().contains("put")){
-              port = Integer.parseInt(input);
-            }
-            Socket socket = new Socket(id, port);
-            System.out.println("[Client] Just connected to " + socket.getRemoteSocketAddress());
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-            Message m = new Message();
-            m.text = input + " from:" + socket.getLocalPort();
-            oos.writeObject(m);
-            ois.read();
-            socket.close();
-          } catch (SocketException e) {
-            System.out.println("[Client] Socket: " + e.getMessage());
-          } catch (IOException e) {
-            System.out.println("[Client] IO: " + e.getMessage());
-            e.printStackTrace();
+      while (true) {
+
+        // Read commands form the keyboard
+        //Prepare message m
+        try{
+          String input = System.console().readLine();
+          if(!input.toLowerCase().contains("put")){
+            port = Integer.parseInt(input);
           }
+          Socket socket = new Socket(id, port);
+          System.out.println("[Client] Just connected to " + socket.getRemoteSocketAddress());
+          ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+          ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+          Message m = new Message();
+          m.text = input + " from:" + socket.getLocalPort();
+          oos.writeObject(m);
+          ois.read();
+          socket.close();
+        } catch (SocketException e) {
+          System.out.println("[Client] Socket: " + e.getMessage());
+        } catch (IOException e) {
+          System.out.println("[Client] IO: " + e.getMessage());
+          e.printStackTrace();
         }
       }
     }
-    public Chat(String Id, int port) {
-      System.out.println("The Chat Method was called");
-      // Initialization of the peer
-      Thread server = new Thread(new Server(port));
-      Thread client = new Thread(new Client(Id, port));
-      server.start();
-      client.start();
-      try{
-        client.join();
-        server.join();
-      }
-      catch (InterruptedException e){
-        System.out.println("Thread: " + e.getMessage());
-      }
   }
+
+  // This is the first method that gets called when the main method is called.
+  // The "localhost" and the "8000" or any string : number combination will give the
+  // number of the port.
+  public Chat(String Id, int port) {// for example: localhost 8000
+    System.out.println("The Chat Method was called");
+    // Initialization of the peer
+    // on seperate threads.
+    Thread server = new Thread(new Server(port));// 8000
+    Thread client = new Thread(new Client(Id, port)); // Localhost, 8000
+    server.start();
+    client.start();
+    try{
+      client.join();
+      server.join();
+    } catch (InterruptedException e){
+      System.out.println("Thread: " + e.getMessage());
+    }
+  }
+
 /*****************************//**
 * Starts the threads with the client and server:
 * \param Id unique identifier of the process
 * \param port where the server will listen
 **********************************/
 public static void main(String[] args) {
-  System.out.prinln("The main thread was hit.");
+  System.out.println("The main thread was hit.");
       if (args.length < 2 ) {
           throw new IllegalArgumentException("Parameter: <id> <port>");
       }
