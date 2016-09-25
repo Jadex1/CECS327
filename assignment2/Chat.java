@@ -111,7 +111,7 @@ public class Chat implements Serializable {
     String id;
     int port;
     public Client(String id, int p) {
-      System.out.println("The Client method was called.");
+      System.out.println("The Client was create on port:"+p+"with Id: "+id);
       this.port = p;
       this.id = id;
     }
@@ -119,12 +119,13 @@ public class Chat implements Serializable {
     * \brief It allows the user to interact with the system.
     **********************************/
     public void run() {
-      System.out.println("The Client Run method was called.");
+      System.out.println("The Client-run-Method was called.");
       while (true) {
         System.out.println("The Client Run method was called In while loop.");
         // Read commands form the keyboard
         //Prepare message m
         try {
+          System.out.println("Enter a Port to connect to: ");
           String input = System.console().readLine();
           if(!input.toLowerCase().contains("put")){
             port = Integer.parseInt(input);
