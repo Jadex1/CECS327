@@ -27,6 +27,7 @@ public class Message implements Serializable  {
      * \brief JOIN: Id, Port
      **********************************/
      void join(int port, String id){
+       System.out.println("The messagee join method was called.");
        this.msgid = enum_MSG.JOIN;
        this.port = port;
      }
@@ -65,12 +66,14 @@ private class Server implements Runnable
     int port;
     public Server(int p)//Server takes a port only
     {
+      System.out.println("The Server method was called.");
        this.port = p;
     }
 /*****************************//**
 * \brief It allows the system to interact with the participants.
 **********************************/
     public void run() {
+      System.out.println("The Server Run method was called.");
       try{
         ServerSocket servSock = new ServerSocket(port);
         System.out.println("Waiting for client on port " + servSock.getLocalPort() + "...");
@@ -111,6 +114,7 @@ private class Server implements Runnable
 
     public Client(String id, int p)
     {
+      System.out.println("The Client method was called.");
        this.port = p;
        this.id = id;
     }
@@ -120,6 +124,7 @@ private class Server implements Runnable
 **********************************/
     public void run()
     {
+      System.out.println("The Client Run method was called.");
       while (true)
       {
           // Read commands form the keyboard
@@ -148,6 +153,7 @@ private class Server implements Runnable
       }
     }
     public Chat(String Id, int port) {
+      System.out.println("The Chat Method was called");
       // Initialization of the peer
       Thread server = new Thread(new Server(port));
       Thread client = new Thread(new Client(Id, port));
@@ -167,6 +173,7 @@ private class Server implements Runnable
 * \param port where the server will listen
 **********************************/
 public static void main(String[] args) {
+  System.out.prinln("The main thread was hit.");
       if (args.length < 2 ) {
           throw new IllegalArgumentException("Parameter: <id> <port>");
       }
