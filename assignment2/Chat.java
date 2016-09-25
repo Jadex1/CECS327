@@ -60,15 +60,15 @@ public class Chat  implements Serializable {
   * \brief It implements the server
   **********************************/
   private class Server implements Runnable {
-  int port;
-  public Server(int p) { //Server takes a port only
+    int port;
+    public Server(int p) { //Server takes a port only
     System.out.println("The Server method was called.");
     this.port = p;
   }
-  /*****************************//**
-  * \brief It allows the system to interact with the participants.
-  **********************************/
-  public void run() {
+    /*****************************//**
+    * \brief It allows the system to interact with the participants.
+    **********************************/
+    public void run() {
     System.out.println("The Server Run method was called.");
     try {
       ServerSocket servSock = new ServerSocket(port);
