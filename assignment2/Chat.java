@@ -111,25 +111,7 @@ public class Chat implements Serializable {
       this.port = p;
       this.id = id;
     }
-<<<<<<< HEAD
 
-  /*****************************//**
-* \brief It allows the user to interact with the system.
-**********************************/
-    public void run()
-    {
-
-
-      while (true)
-      {
-          // Read commands form the keyboard
-          //Prepare message m
-          try{
-            String input = System.console().readLine();
-            if(input.toLowerCase().contains("join")){
-              input = System.console().readLine();
-              port = Integer.parseInt(input);
-=======
     /*****************************//**
     * \brief It allows the user to interact with the system.
     **********************************/
@@ -144,7 +126,6 @@ public class Chat implements Serializable {
           String input = System.console().readLine();
           if(!input.toLowerCase().contains("put")){
             port = Integer.parseInt(input);
->>>>>>> jamesBranch
           }
           Socket socket = new Socket(id, port);
           System.out.println("[Client] Just connected to " + socket.getRemoteSocketAddress());
@@ -154,15 +135,7 @@ public class Chat implements Serializable {
           m.text = input + " from: " + socket.getLocalPort();
           oos.writeObject(m);
           ois.read();
-<<<<<<< HEAD
-          //socket.close();
 
-        }
-        catch (SocketException e){
-=======
-          socket.close();
-        } catch(SocketException e) {
->>>>>>> jamesBranch
           System.out.println("[Client] Socket: " + e.getMessage());
         } catch(IOException e) {
           System.out.println("[Client] IO: " + e.getMessage());
