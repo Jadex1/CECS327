@@ -74,9 +74,9 @@ public class Chat implements Serializable {
       * \brief It allows the system to interact with the participants.
       **********************************/
       // This is from the abstract class.
-      ServerSocket servSock = new ServerSocket(port);// create the server off port
-      System.out.println("Waiting for client on port " + servSock.getLocalPort() + "...");
       try {
+        ServerSocket servSock = new ServerSocket(port);// create the server off port
+        System.out.println("Waiting for client on port " + servSock.getLocalPort() + "...");
         while(true) {
           Socket clntSock = servSock.accept(); // .accept() returns a socket object
           System.out.println("The Server Run method was called In while loop.");
