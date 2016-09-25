@@ -6,7 +6,7 @@ import java.util.*;
   * It creates a ring and delivers messages
   * using flooding
   **********************************/
-public class Chat  implements Serializable {
+public class Chat implements Serializable {
   public enum enum_MSG {
     JOIN,     // 0
     ACCEPT,   // 1
@@ -17,6 +17,7 @@ public class Chat  implements Serializable {
     public enum_MSG msgid;
     public int port;
     public String text;
+
     /*
     public Message(String text){
         this.text = text;
@@ -48,7 +49,7 @@ public class Chat  implements Serializable {
     * \class Message class "chat.java"
     * \brief PUT: idSender, idDest, payload
     **********************************/
-    void put(String idSender, int idDest, String payload) {
+    void put(int idSender, int idDest, String payload) {
       //TODO: Fill in here.
     }
   }
@@ -137,13 +138,19 @@ public class Chat  implements Serializable {
       }
     }
   }
-  // This is the first method that gets called when the main method is called.
-  // The "localhost" and the "8000" or any string : number combination will give the
-  // number of the port.
+  /* NOTE:
+   * This is the first method that gets called when the main method is called.
+   * The "localhost" and the "8000" or any string : number combination will give the
+   * number of the port.
+   */
+
   public Chat(String Id, int port) {// for example: localhost 8000
-    // The chat method is like a "main" method sort of. It get's passed the localhost and
-    // 8000, but it passes those to the other client and server classe which are seperate threads.
-    // If you remmber from CECS 326 threads are all that make up a server. A single thread can listen one port.
+    /* NOTE:
+     * The chat method is like a "main" method sort of.
+     * It get's passed the localhost and 8000, but it passes those to the other client and
+     * server classe which are seperate threads. If you remmber from CECS 326 threads are all
+     * that make up a server. A single thread can listen one port.
+     */
     System.out.println("The Chat Method was called");
     // Initialization of the peer
     // on seperate threads.
