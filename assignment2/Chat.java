@@ -133,7 +133,7 @@ public class Chat implements Serializable {
           Message m = new Message();
           m.text = input + " from: " + socket.getLocalPort();
           oos.writeObject(m);
-          ois.read();
+          // ois.read();
           socket.close();
         } catch(SocketException e) {
           System.out.println("[Client] Socket: " + e.getMessage());
