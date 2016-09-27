@@ -85,7 +85,7 @@ public class Chat implements Serializable {
           ObjectOutputStream oos = new ObjectOutputStream(clntSock.getOutputStream());
           try{
             Message m = (Message)ois.readObject();// not sure what's going on here.
-            System.out.println("[Server]: " + m.text);//
+            System.out.println("[Server]: " + m.text + "from : " + m.port);//
           //  clntSock.close();
           } catch(ClassNotFoundException e) {
             System.out.println("[Server] IO Class: " + e.getMessage());
@@ -122,7 +122,7 @@ public class Chat implements Serializable {
         // Read commands form the keyboard
         //Prepare message m
         try {
-          System.out.println("Enter a Port to connect to: ");
+          System.out.println("Enter a Port to connect to: (or put <message> to chat to server)");
           String input = System.console().readLine();
           if(!input.toLowerCase().contains("put")){
             port = Integer.parseInt(input);
@@ -132,14 +132,17 @@ public class Chat implements Serializable {
           ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
           ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
           Message m = new Message();
-          m.text = input + " from: " + socket.getLocalPort();
+          m.text = input;
+          m.port = socket.getLocalPort();
           oos.writeObject(m);
-          ois.read();
-
-          System.out.println("[Client] Socket: " + e.getMessage());
-        } catch(IOException e) {
-          System.out.println("[Client] IO: " + e.getMessage());
-          e.printStackTrace();
+          //ois.read();
+          }
+          catch(SocketException e) {
+            System.out.println("[Client] Socket: " + e.getMessage());
+          }
+          catch(IOException e) {
+            System.out.println("[Client] IO: " + e.getMessage());
+            e.printStackTrace();
         }
       }
     }
