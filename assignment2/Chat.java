@@ -7,53 +7,48 @@ import java.util.*;
   * using flooding
   **********************************/
 public class Chat implements Serializable {
+  int pred;
+  int succ;
+
   public enum enum_MSG {
     JOIN,     // 0
     ACCEPT,   // 1
     LEAVE,    // 2
-    PUT       // 3
+    PUT,      // 3
   };
+
+  void join(String id, int port) {
+    System.out.println("The messagee join method was called.");
+  }
+  /*****************************//**
+  * \class Message class "chat.java"
+  * \brief ACCEPT: Id_pred, Port_pred, IP_pred
+  **********************************/
+  void accept(String idPred, String portPred, int ipPred) {
+    //TODO: Fill in here.
+  }
+  /*****************************//**
+  * \class Message class "chat.java"
+  * \brief LEAVE: Id_pred, Port_pred, IP_pred
+  **********************************/
+  void leave(String idPred, String portPred, int ipPred) {
+    //TODO: Fill in here.
+  }
+  /*****************************//**
+  * \class Message class "chat.java"
+  * \brief PUT: idSender, idDest, payload
+  **********************************/
+  void put(int senderId, int destId, String someText) {
+    //TODO: Fill in here.
+  }
+
+
   public class Message implements Serializable {
     public enum_MSG msgid;
-    public int port;
+    public int portSrc;
+    public int portDest;
     public String text;
-    /* NOTE:
-     * Somehow the message needs to contain a list of all the variables and stuff.
-     *
-     */
-    // public Message(String text){
-    //     this.text = text;
-    // }
-    /*****************************//**
-    * \class Message class "chat.java"
-     * \brief JOIN: Id, Port
-     **********************************/
-    void join(String id, int port) {
-      System.out.println("The messagee join method was called.");
-      this.msgid = enum_MSG.JOIN;
-      this.port = port;
-    }
-    /*****************************//**
-    * \class Message class "chat.java"
-    * \brief ACCEPT: Id_pred, Port_pred, IP_pred
-    **********************************/
-    void accept(String idPred, String portPred, int ipPred) {
-      //TODO: Fill in here.
-    }
-    /*****************************//**
-    * \class Message class "chat.java"
-    * \brief LEAVE: Id_pred, Port_pred, IP_pred
-    **********************************/
-    void leave(String idPred, String portPred, int ipPred) {
-      //TODO: Fill in here.
-    }
-    /*****************************//**
-    * \class Message class "chat.java"
-    * \brief PUT: idSender, idDest, payload
-    **********************************/
-    void put(int senderId, int destId, String someText) {
-      //TODO: Fill in here.
-    }
+    public Boolean fromInput;
   }
   /*****************************//**
   * \class Server class "chat.java"
@@ -64,12 +59,33 @@ public class Chat implements Serializable {
   //  String id;
     int port;
     public Server(int p) {//Server takes a port only
+      //set the r
       System.out.println("The Server method was called and was assigned to port: "+p);
-      this.port = p;// this instances local variable.
+      pred = p;// this instances local variable.
+      port = p;
       //this.id = id;
     }
+
+    public void sendMsgToNode(Message m, int toPort){
+      try{
+          System.out.println("[Send MSG] Sending message to port:" +toPort);
+          Socket socket = new Socket("localhost", toPort);
+          System.out.println("[Client] Just connected to " + socket.getRemoteSocketAddress());
+          ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+          oos.writeObject(m);
+        }
+        catch(SocketException e) {
+          System.out.println("[Send MSG] Socket: " + e.getMessage());
+        }
+        catch(IOException e) {
+          System.out.println("[Send MSG] IO: " + e.getMessage());
+          e.printStackTrace();
+        }
+    }
+
+
     public void run(){
-      System.out.println("The Server Run method was called.");
+      //System.out.println("The Server Run method was called.");
       /*****************************//**
       * \brief It allows the system to interact with the participants.
       **********************************/
@@ -79,13 +95,33 @@ public class Chat implements Serializable {
         System.out.println("Waiting for client on port " + servSock.getLocalPort() + "...");
         while(true) {
           Socket clntSock = servSock.accept(); // .accept() returns a socket object
-          System.out.println("The Server Run method was called In while loop.");
+          //System.out.println("The Server Run method was called In while loop.");
           System.out.println("[Server] Just connected to " + clntSock.getRemoteSocketAddress());
           ObjectInputStream  ois = new ObjectInputStream(clntSock.getInputStream());
           ObjectOutputStream oos = new ObjectOutputStream(clntSock.getOutputStream());
           try{
-            Message m = (Message)ois.readObject();// not sure what's going on here.
-            System.out.println("[Server]: " + m.text + "from : " + m.port);//
+            Message m = (Message)ois.readObject();// not sure what's going on here (magic).
+            ///PUT
+            if(m.msgid == enum_MSG.PUT){//if message is PUT
+              if(m.portDest == port){//AND its meant for me
+                System.out.println(m.text + " portSrc:" + m.portSrc);
+              }
+              else{
+                sendMsgToNode(m,succ);
+              }
+            }
+            ///JOIN
+            if(m.msgid == enum_MSG.JOIN){//if message is JOIN
+              if(m.fromInput == true){
+                m.fromInput = false;
+                sendMsgToNode(m,m.portDest);
+              }
+              else{//from someone else
+                succ = m.portSrc;
+                pred = m.portDest;
+              }
+            }
+            //if the message is a PUT it needs to send this message to our client
           //  clntSock.close();
           } catch(ClassNotFoundException e) {
             System.out.println("[Server] IO Class: " + e.getMessage());
@@ -106,8 +142,9 @@ public class Chat implements Serializable {
   private class Client implements Runnable {
     String id;
     int port;
+
     public Client(String id, int p) {
-      System.out.println("The Client was create on port:"+p+"with Id: "+id);
+      System.out.println("The Client was created on port:"+p+"with Id: "+id);
       this.port = p;
       this.id = id;
     }
@@ -116,26 +153,48 @@ public class Chat implements Serializable {
     * \brief It allows the user to interact with the system.
     **********************************/
     public void run() {
-      System.out.println("The Client-run-Method was called.");
-      while (true) {
-        System.out.println("The Client Run method was called In while loop.");
-        // Read commands form the keyboard
-        //Prepare message m
-        try {
-          System.out.println("Enter a Port to connect to: (or put <message> to chat to server)");
-          String input = System.console().readLine();
-          if(!input.toLowerCase().contains("put")){
-            port = Integer.parseInt(input);
-          }
+      //System.out.println("The Client-run-Method was called.");
+      while(true){
+        try{
           Socket socket = new Socket(id, port);
           System.out.println("[Client] Just connected to " + socket.getRemoteSocketAddress());
           ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
           ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-          Message m = new Message();
-          m.text = input;
-          m.port = socket.getLocalPort();
-          oos.writeObject(m);
-          //ois.read();
+          System.out.println("Pred of me: " + pred);
+          System.out.println("Succ of me: " + succ);
+
+          System.out.println("Enter put <message> to chat to node("+port +")");
+          String input = System.console().readLine();
+
+          //split input by spaces
+          List<String> list = new ArrayList<String>();
+          for (String s : input.split("\\s"))
+          {
+            list.add(s);
+          }
+          list.toArray();
+
+          list.forEach((temp) -> {
+			         System.out.println(temp);
+             });
+
+            if(list.contains("put")){//send msg from clint(input) to Node server
+              Message m = new Message();
+              m.text = list.get(2);
+              m.msgid = enum_MSG.PUT;
+              m.portDest = Integer.parseInt(list.get(1));
+              m.portSrc = port;
+              oos.writeObject(m);
+            }
+            else if(list.contains("join")){
+              System.out.println("joining!");
+              Message m = new Message();
+              m.fromInput = true;
+              m.msgid = enum_MSG.JOIN;
+              m.portDest = Integer.parseInt(list.get(1));
+              m.portSrc = port;
+              oos.writeObject(m);
+            }
           }
           catch(SocketException e) {
             System.out.println("[Client] Socket: " + e.getMessage());
@@ -143,8 +202,8 @@ public class Chat implements Serializable {
           catch(IOException e) {
             System.out.println("[Client] IO: " + e.getMessage());
             e.printStackTrace();
+          }
         }
-      }
     }
   }
   /* NOTE:
@@ -162,6 +221,9 @@ public class Chat implements Serializable {
     System.out.println("The Chat Method was called");
     // Initialization of the peer
     // on seperate threads.
+    this.pred = port;
+    this.succ = port;
+
     Thread server = new Thread(new Server(port));// 8000
     Thread client = new Thread(new Client(Id, port)); // Localhost, 8000
     server.start();
