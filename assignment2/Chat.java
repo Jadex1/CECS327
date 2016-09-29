@@ -8,8 +8,7 @@ import java.util.*;
   **********************************/
 public class Chat implements Serializable {
   /*
-   * Routing table 
-   */
+   * Routing table
    */
   int pred;
   int succ;
@@ -44,7 +43,6 @@ public class Chat implements Serializable {
   void put(int senderId, int destId, String someText) {
     //TODO: Fill in here.
   }
-
 
   public class Message implements Serializable {
     public enum_MSG msgid;
@@ -85,7 +83,6 @@ public class Chat implements Serializable {
         }
     }
 
-
     public void run(){
       //System.out.println("The Server Run method was called.");
       /*****************************//**
@@ -107,10 +104,9 @@ public class Chat implements Serializable {
             if(m.msgid == enum_MSG.PUT){//if message is PUT
               if(m.portDest == port){//AND its meant for me
                 System.out.println(m.text + " portSrc:" + m.portSrc);
-              }else if(m.portSrc == port){
-                System.out.println("User not availible");
-              }
-              else{
+              } else if(m.portSrc == port){
+                System.out.println("User not available");
+              } else{
                 sendMsgToNode(m,succ);
               }
             }
@@ -118,12 +114,11 @@ public class Chat implements Serializable {
             //NOTE: James works on Join
             //NOTE: James works on Leave too.
             if(m.msgid == enum_MSG.JOIN){//if message is JOIN
-              if(m.fromInput == true){
+              if(m.fromInput == true) {
                 m.fromInput = false;
                 succ = m.portDest;
                 sendMsgToNode(m,m.portDest);
-              }
-              else{//from someone else
+              } else{//from someone else
                 pred = m.portSrc;
                 //printRoutingTable();
               }
@@ -156,7 +151,6 @@ public class Chat implements Serializable {
       this.port = p;
       this.id = id;
     }
-
     /*****************************//**
     * \brief It allows the user to interact with the system.
     **********************************/
@@ -168,7 +162,6 @@ public class Chat implements Serializable {
           System.out.println("[Client] Just connected to " + socket.getRemoteSocketAddress());
           ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
           ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-
 
           System.out.println("Enter put <message> to chat to node("+port +")");
           String input = System.console().readLine();
@@ -182,41 +175,37 @@ public class Chat implements Serializable {
           list.toArray();
 
           list.forEach((temp) -> {
-			         System.out.println(temp);
-             });
-
-            if(list.contains("put")){//send msg from clint(input) to Node server
-              Message m = new Message();
-              m.text = list.get(2);
-              m.msgid = enum_MSG.PUT;
-              m.portDest = Integer.parseInt(list.get(1));
-              m.portSrc = port;
-              oos.writeObject(m);//send msg to my node
-            }
-            if(list.contains("join")){
-              System.out.println("joining!");
-              Message m = new Message();
-              m.fromInput = true;
-              m.msgid = enum_MSG.JOIN;
-              m.portDest = Integer.parseInt(list.get(1));
-              m.portSrc = port;
-              oos.writeObject(m);//send msg to my node
-            }
-          else{
+            System.out.println(temp);
+          });
+          if(list.contains("put")){//send msg from clint(input) to Node server
+            Message m = new Message();
+            m.text = list.get(2);
+            m.msgid = enum_MSG.PUT;
+            m.portDest = Integer.parseInt(list.get(1));
+            m.portSrc = port;
+            oos.writeObject(m);//send msg to my node
+          }
+          if(list.contains("join")){
+            System.out.println("joining!");
+            Message m = new Message();
+            m.fromInput = true;
+            m.msgid = enum_MSG.JOIN;
+            m.portDest = Integer.parseInt(list.get(1));
+            m.portSrc = port;
+            oos.writeObject(m);//send msg to my node
+          } else {
             Message m = new Message();
             m.fromInput = true;
             m.msgid = enum_MSG.ACCEPT;
             oos.writeObject(m);
           }
+        } catch(SocketException e) {
+          System.out.println("[Client] Socket: " + e.getMessage());
+        } catch(IOException e) {
+          System.out.println("[Client] IO: " + e.getMessage());
+          e.printStackTrace();
         }
-          catch(SocketException e) {
-            System.out.println("[Client] Socket: " + e.getMessage());
-          }
-          catch(IOException e) {
-            System.out.println("[Client] IO: " + e.getMessage());
-            e.printStackTrace();
-          }
-        }
+      }
     }
   }
   /* NOTE:
