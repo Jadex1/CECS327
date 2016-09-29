@@ -66,6 +66,12 @@ public class Chat implements Serializable {
       //this.id = id;
     }
 
+    public void printRoutingTable(){
+      System.out.println("Pred of me: " + pred);
+      System.out.println("This Node: " + port);
+      System.out.println("Succ of me: " + succ);
+    }
+
     public void sendMsgToNode(Message m, int toPort){
       try{
           System.out.println("[Send MSG] Sending message to port:" +toPort);
@@ -120,15 +126,16 @@ public class Chat implements Serializable {
               else{//from someone else
                 succ = m.portDest;
                 pred = m.portSrc;
+                printRoutingTable();
               }
             }
+            printRoutingTable();
             //if the message is a PUT it needs to send this message to our client
           //  clntSock.close();
           } catch(ClassNotFoundException e) {
             System.out.println("[Server] IO Class: " + e.getMessage());
           }
-          System.out.println("Pred of me: " + pred);
-          System.out.println("Succ of me: " + succ);
+          //printRoutingTable();
         }
       } catch(SocketException e) {
         // Handle Messages
@@ -188,7 +195,7 @@ public class Chat implements Serializable {
               m.portSrc = port;
               oos.writeObject(m);
             }
-            else if(list.contains("join")){
+            if(list.contains("join")){
               System.out.println("joining!");
               Message m = new Message();
               m.fromInput = true;
@@ -197,7 +204,13 @@ public class Chat implements Serializable {
               m.portSrc = port;
               oos.writeObject(m);
             }
+          else{
+            Message m = new Message();
+            m.fromInput = true;
+            m.msgid = enum_MSG.ACCEPT;
+            oos.writeObject(m);
           }
+        }
           catch(SocketException e) {
             System.out.println("[Client] Socket: " + e.getMessage());
           }
