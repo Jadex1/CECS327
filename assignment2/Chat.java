@@ -79,17 +79,13 @@ public class Chat implements Serializable {
           System.out.println("[Client] Just connected to " + socket.getRemoteSocketAddress());
           ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
           oos.writeObject(m);
-        }
-        catch(SocketException e) {
+        } catch(SocketException e) {
           System.out.println("[Send MSG] Socket: " + e.getMessage());
-        }
-        catch(IOException e) {
+        } catch(IOException e) {
           System.out.println("[Send MSG] IO: " + e.getMessage());
           e.printStackTrace();
         }
     }
-
-
     public void run(){
       //System.out.println("The Server Run method was called.");
       /*****************************//**
@@ -111,8 +107,7 @@ public class Chat implements Serializable {
             if(m.msgid == enum_MSG.PUT){//if message is PUT
               if(m.portDest == port){//AND its meant for me
                 System.out.println(m.text + " portSrc:" + m.portSrc);
-              }
-              else{
+              } else{
                 sendMsgToNode(m,succ);
               }
             }
@@ -122,8 +117,7 @@ public class Chat implements Serializable {
                 m.fromInput = false;
                 succ = m.portDest;
                 sendMsgToNode(m,m.portDest);
-              }
-              else{//from someone else
+              } else{//from someone else
                 pred = m.portSrc;
                 printRoutingTable();
               }
@@ -183,43 +177,39 @@ public class Chat implements Serializable {
           list.toArray();
 
           list.forEach((temp) -> {
-			         System.out.println(temp);
-             });
-
-            if(list.contains("put")){//send msg from clint(input) to Node server
-              Message m = new Message();
-              m.text = list.get(2);
-              m.msgid = enum_MSG.PUT;
-              m.portDest = Integer.parseInt(list.get(1));
-              m.portSrc = port;
-              oos.writeObject(m);
-            }
-            if(list.contains("join")){
-              System.out.println("joining!");
-              Message m = new Message();
-              m.fromInput = true;
-              m.msgid = enum_MSG.JOIN;
-              m.portDest = Integer.parseInt(list.get(1));
-              m.portSrc = port;
-              oos.writeObject(m);
-            }
-          else{
+            System.out.println(temp);
+          });
+          if(list.contains("put")){//send msg from clint(input) to Node server
+            Message m = new Message();
+            m.text = list.get(2);
+            m.msgid = enum_MSG.PUT;
+            m.portDest = Integer.parseInt(list.get(1));
+            m.portSrc = port;
+            oos.writeObject(m);
+          }
+          if(list.contains("join")){
+            System.out.println("joining!");
+            Message m = new Message();
+            m.fromInput = true;
+            m.msgid = enum_MSG.JOIN;
+            m.portDest = Integer.parseInt(list.get(1));
+            m.portSrc = port;
+            oos.writeObject(m);
+          } else {
             Message m = new Message();
             m.fromInput = true;
             m.msgid = enum_MSG.ACCEPT;
             oos.writeObject(m);
           }
-        }
-          catch(SocketException e) {
+        } catch(SocketException e) {
             System.out.println("[Client] Socket: " + e.getMessage());
-          }
-          catch(IOException e) {
+          } catch(IOException e) {
             System.out.println("[Client] IO: " + e.getMessage());
             e.printStackTrace();
           }
         }
+      }
     }
-  }
   /* NOTE:
    * This is the first method that gets called when the main method is called.
    * The "localhost" and the "8000" or any string : number combination will give the
