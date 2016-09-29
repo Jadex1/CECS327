@@ -124,7 +124,6 @@ public class Chat implements Serializable {
                 sendMsgToNode(m,m.portDest);
               }
               else{//from someone else
-                succ = m.portDest;
                 pred = m.portSrc;
                 printRoutingTable();
               }
