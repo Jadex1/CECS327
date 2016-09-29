@@ -114,11 +114,12 @@ public class Chat implements Serializable {
             if(m.msgid == enum_MSG.JOIN){//if message is JOIN
               if(m.fromInput == true){
                 m.fromInput = false;
+                succ = m.portDest;
                 sendMsgToNode(m,m.portDest);
               }
               else{//from someone else
-                succ = m.portSrc;
-                pred = m.portDest;
+                succ = m.portDest;
+                pred = m.portSrc;
               }
             }
             //if the message is a PUT it needs to send this message to our client
@@ -126,6 +127,8 @@ public class Chat implements Serializable {
           } catch(ClassNotFoundException e) {
             System.out.println("[Server] IO Class: " + e.getMessage());
           }
+          System.out.println("Pred of me: " + pred);
+          System.out.println("Succ of me: " + succ);
         }
       } catch(SocketException e) {
         // Handle Messages
@@ -160,8 +163,7 @@ public class Chat implements Serializable {
           System.out.println("[Client] Just connected to " + socket.getRemoteSocketAddress());
           ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
           ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-          System.out.println("Pred of me: " + pred);
-          System.out.println("Succ of me: " + succ);
+
 
           System.out.println("Enter put <message> to chat to node("+port +")");
           String input = System.console().readLine();
