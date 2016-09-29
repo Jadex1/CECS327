@@ -7,9 +7,12 @@ import java.util.*;
   * using flooding
   **********************************/
 public class Chat implements Serializable {
+  /*
+   * Routing table 
+   */
+   */
   int pred;
   int succ;
-
   public enum enum_MSG {
     JOIN,     // 0
     ACCEPT,   // 1
@@ -56,7 +59,7 @@ public class Chat implements Serializable {
   **********************************/
   private class Server implements Runnable {
     // this why you have the void "run" method.
-  //  String id;
+    // String id;
     int port;
     public Server(int p) {//Server takes a port only
       //set the r
@@ -65,13 +68,11 @@ public class Chat implements Serializable {
       port = p;
       //this.id = id;
     }
-
     public void printRoutingTable(){
       System.out.println("Pred of me: " + pred);
       System.out.println("This Node: " + port);
       System.out.println("Succ of me: " + succ);
     }
-
     public void sendMsgToNode(Message m, int toPort){
       try{
           System.out.println("[Send MSG] Sending message to port:" +toPort);
@@ -112,6 +113,8 @@ public class Chat implements Serializable {
               }
             }
             ///JOIN
+            //NOTE: James works on Join
+            //NOTE: James works on Leave too.
             if(m.msgid == enum_MSG.JOIN){//if message is JOIN
               if(m.fromInput == true){
                 m.fromInput = false;
