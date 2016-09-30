@@ -66,18 +66,16 @@ public class Chat implements Serializable {
       port = p;
       //this.id = id;
     }
-    public void sendMsgToNode(Message m, int toPort){
+    public void sendMsgToNode(Message m, int toPort) {
       try{
           System.out.println("[Send MSG] Sending message to port:" +toPort);
           Socket socket = new Socket("localhost", toPort);
           System.out.println("[Client] Just connected to " + socket.getRemoteSocketAddress());
           ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
           oos.writeObject(m);
-        }
-        catch(SocketException e) {
+        } catch(SocketException e) {
           System.out.println("[Send MSG] Socket: " + e.getMessage());
-        }
-        catch(IOException e) {
+        } catch(IOException e) {
           System.out.println("[Send MSG] IO: " + e.getMessage());
           e.printStackTrace();
         }
@@ -147,7 +145,7 @@ public class Chat implements Serializable {
     int port;
 
     public Client(String id, int p) {
-      System.out.println("The Client was created on port:"+p+"with Id: "+id);
+      System.out.println("The Client was created on port: "+p+" with Id: "+id);
       this.port = p;
       this.id = id;
     }
