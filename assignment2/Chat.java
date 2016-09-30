@@ -7,9 +7,8 @@ import java.util.*;
   * using flooding
   **********************************/
 public class Chat implements Serializable {
-  int pred;
-  int succ;
-
+  private int pred;// might need to be node
+  private int succ;// might need to be node
   public enum enum_MSG {
     JOIN,     // 0
     ACCEPT,   // 1
@@ -45,22 +44,27 @@ public class Chat implements Serializable {
   private class Server implements Runnable {
     // this why you have the void "run" method.
     //  String id;
-    int port;
+    int intialPort;
     public Server(int p) {//Server takes a port only
       //set the r
       System.out.println("The Server method was called and was assigned to port: "+p);
-      pred = p;// this instances local variable.
-      port = p;
+      this.pred = p;// this instances local variable.
+      intialPort = p;
       //this.id = id;
     }
-    public void join(String id, int port) {
+    /*****************************//**
+    * \class Message class "chat.java"
+    * \brief JOIN: id, port
+    **********************************/
+    public void joinAnotherServer(int port) {
+      this.succ = port;
       System.out.println("The messagee join method was called.");
     }
     /*****************************//**
     * \class Message class "chat.java"
     * \brief ACCEPT: Id_pred, Port_pred, IP_pred
     **********************************/
-    public void accept(String idPred, String portPred, int ipPred) {
+    public void acceptAnotherServer(String idPred, String portPred, int ipPred) {
       //TODO: Fill in here.
     }
     public void sendMsgToNode(Message m, int toPort){
