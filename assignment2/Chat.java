@@ -27,21 +27,31 @@ public class Chat implements Serializable {
   * \brief It implements the server
   **********************************/
   private class Server implements Runnable {
+    int intialPort;
+    //NOTE: control the connections to the ports in the server class.
     // this why you have the void "run" method.
     //  String id;
     public Server(int p) {//Server takes a port only
       System.out.println("The Server was created and was assigned to port: "+p);
-      intialPort = p;
+      this.intialPort = p;
     }
     /*****************************//**
     * \class Message class "chat.java"
     * \brief JOIN: id, port
     **********************************/
     public void joinAnotherServer(int port) {
+      // take any number not currently assigned to me, and assign it to my successor.
       System.out.println("Join Another Sever Method called");
-      this.succPort = port;
+      // I want to wrap this in a try/catch block.
+      if(this.succPort == port) {
+        System.out.println("Already, connected, can not connect to self again.");
+      } else{
+        this.succPort = port;
+      }
       // what if this port doesn't exist?
+      // answer: throw an error. and don't change.
       // what if I'm already assigned to one?
+      // answer: reassign me.
       // in theory all my connection is a record of what port i'm suppose to
       // be connected too. s
     }
@@ -49,8 +59,15 @@ public class Chat implements Serializable {
     * \class Message class "chat.java"
     * \brief ACCEPT: Id_pred, Port_pred, IP_pred
     **********************************/
-    public void acceptAnotherServer(String idPred, String portPred, int ipPred) {
-      //TODO: Fill in here.
+    public void acceptAnotherServer(int port) {
+      // take any number not currently assigned to me, and assign it to my successor.
+      System.out.println("Accept Another Sever Method called");
+      // I want to wrap this in a try/catch block.
+      if(this.predPort == port) {
+        System.out.println("Already, connected, can not connect to self again.");
+      } else{
+        this.predPort = port;
+      }
     }
     public void sendMsgToNode(Message m, int toPort){
       try{
