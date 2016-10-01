@@ -10,7 +10,6 @@ public class Chat implements Serializable {
   public int pred;// predecessor, the node after.
   public int succ;// succecessor, the node before.
   public String text;
-
   public enum enum_MSG {
     JOIN,     // 0
     ACCEPT,   // 1
@@ -36,7 +35,6 @@ public class Chat implements Serializable {
       System.out.println("The Server method was called and was assigned to port: "+p);
       this.pred = p;// this instances local variable.
       intialPort = p;
-      //this.id = id;
     }
     /*****************************//**
     * \class Message class "chat.java"
@@ -44,13 +42,14 @@ public class Chat implements Serializable {
     **********************************/
     public void joinAnotherServer(int port) {
       this.succ = port;
-      System.out.println("The messagee join method was called.");
+      System.out.println("");
     }
     /*****************************//**
     * \class Message class "chat.java"
     * \brief ACCEPT: Id_pred, Port_pred, IP_pred
     **********************************/
     public void acceptAnotherServer(String idPred, String portPred, int ipPred) {
+      // change the pred and succ methods here.
       //TODO: Fill in here.
     }
     public void sendMsgToNode(Message m, int toPort){
@@ -66,12 +65,6 @@ public class Chat implements Serializable {
         System.out.println("[Send MSG] IO: " + e.getMessage());
         e.printStackTrace();
       }
-    }
-    public void join(int toPort){
-
-    }
-    public void accept(int port){
-
     }
     public void run(){
       //System.out.println("The Server Run method was called.");
