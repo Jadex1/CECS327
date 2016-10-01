@@ -2,34 +2,19 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
  /*****************************//**
- * \brief It implements a distributed chat.
+  * \brief It implements a distributed chat.
   * It creates a ring and delivers messages
   * using flooding
   **********************************/
 public class Chat implements Serializable {
-  private int pred;// might need to be node
-  private int succ;// might need to be node
+  public int pred;// might need to be node
+  public int succ;// might need to be node
   public enum enum_MSG {
     JOIN,     // 0
     ACCEPT,   // 1
     LEAVE,    // 2
     PUT,      // 3
   };
-
-  /*****************************//**
-  * \class Message class "chat.java"
-  * \brief LEAVE: Id_pred, Port_pred, IP_pred
-  **********************************/
-  void leave(String idPred, String portPred, int ipPred) {
-    //TODO: Fill in here.
-  }
-  /*****************************//**
-  * \class Message class "chat.java"
-  * \brief PUT: idSender, idDest, payload
-  **********************************/
-  void put(int senderId, int destId, String someText) {
-    //TODO: Fill in here.
-  }
   public class Message implements Serializable {
     public enum_MSG msgid;
     public int portSrc;
@@ -46,19 +31,20 @@ public class Chat implements Serializable {
     //  String id;
     int intialPort;
     public Server(int p) {//Server takes a port only
-      //set the r
-      System.out.println("The Server method was called and was assigned to port: "+p);
-      this.pred = p;// this instances local variable.
+      System.out.println("The Server was created and was assigned to port: "+p);
       intialPort = p;
-      //this.id = id;
     }
     /*****************************//**
     * \class Message class "chat.java"
     * \brief JOIN: id, port
     **********************************/
     public void joinAnotherServer(int port) {
-      this.succ = port;
-      System.out.println("The messagee join method was called.");
+      System.out.println("Join Another Sever Method called");
+      succ = port;
+      // what if this port doesn't exist?
+      // what if I'm already assigned to one?
+      // in theory all my connection is a record of what port i'm suppose to
+      // be connected too. s
     }
     /*****************************//**
     * \class Message class "chat.java"
@@ -81,20 +67,13 @@ public class Chat implements Serializable {
         e.printStackTrace();
       }
     }
-    public void join(int toPort){
-
-    }
-    public void accept(int port){
-
-    }
     public void run(){
-      //System.out.println("The Server Run method was called.");
       /*****************************//**
       * \brief It allows the system to interact with the participants.
       **********************************/
       // This is from the abstract class.
       try {
-        ServerSocket servSock = new ServerSocket(port);// create the server off port
+        ServerSocket servSock = new ServerSocket(intialPort);// create the server off port
         System.out.println("Waiting for client on port " + servSock.getLocalPort() + "...");
         while(true) {
           Socket clntSock = servSock.accept(); // .accept() returns a socket object
@@ -107,28 +86,31 @@ public class Chat implements Serializable {
             //System.out.println("Please enter a port to connect to: ");
             ///PUT
             if(m.msgid == enum_MSG.PUT){//if message is PUT
-              if(m.portDest == port){//AND its meant for me
+              if(m.portDest == intialPort){//AND its meant for me
                 System.out.println(m.text + " portSrc:" + m.portSrc);
-              } else if(m.portSrc == port){
+              } else if(m.portSrc == intialPort){
                 System.out.println("User not availible");
               } else{
-                sendMsgToNode(m,succ);
+                sendMsgToNode(m, succ);
               }
             }
             ///JOIN
             if(m.msgid == enum_MSG.JOIN) {//if message is JOIN
+
               if(m.fromInput == true) {
 
                 m.fromInput = false;
+                // reading the contents of the message and updating the succ
                 succ = m.portDest;
-                sendMsgToNode(m,m.portDest);
+
+                sendMsgToNode(m, m.portDest);// i don't think this should be here.
 
               } else {//from someone else
                 pred = m.portSrc;
                 //printRoutingTable();
               }
             }
-            System.out.println(pred + "--->" + "[" + port + "] " + "--->" + succ);
+            System.out.println(pred + "--->" + "[" + intialPort + "] " + "--->" + succ);
             //  clntSock.close();
           } catch(ClassNotFoundException e) {
             System.out.println("[Server] IO Class: " + e.getMessage());
@@ -167,9 +149,8 @@ public class Chat implements Serializable {
           System.out.println("[Client] Just connected to " + socket.getRemoteSocketAddress());
           ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
           ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-
-          System.out.println("Enter join <port> to join a node");
-          //System.out.println("Enter put <message> to chat to node("+port +")");
+          //System.out.println("Enter join <port> to join a node");
+          System.out.println("Enter put <message> to chat to node("+port +")");
           String input = System.console().readLine();
 
           //split input by spaces
@@ -229,15 +210,14 @@ public class Chat implements Serializable {
     // on seperate threads
 
     // On instanitate of this class make sure port this node points to itself.
-     this.pred = port;
-     this.succ = port;
-
-    Thread server = new Thread(new Server(port));// 8000
-    Thread client = new Thread(new Client(idThing, port)); // Localhost, 8000
+    this.pred = port;
+    this.succ = port;
+    Thread server = new Thread(new Server(port));// 4200
+    Thread client = new Thread(new Client(idThing, port)); // Localhost, 4200
     server.start();
     client.start();
     try {
-      client.join();
+      client.join();// not our server join methods.
       server.join();
     } catch (InterruptedException e){
       System.out.println("Thread: " + e.getMessage());
