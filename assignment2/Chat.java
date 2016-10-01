@@ -7,8 +7,8 @@ import java.util.*;
   * using flooding
   **********************************/
 public class Chat implements Serializable {
-  public int pred;// might need to be node
-  public int succ;// might need to be node
+  public static int predPort;// port before me
+  public static int succPort;// port after me
   public enum enum_MSG {
     JOIN,     // 0
     ACCEPT,   // 1
@@ -29,7 +29,6 @@ public class Chat implements Serializable {
   private class Server implements Runnable {
     // this why you have the void "run" method.
     //  String id;
-    int intialPort;
     public Server(int p) {//Server takes a port only
       System.out.println("The Server was created and was assigned to port: "+p);
       intialPort = p;
@@ -40,7 +39,7 @@ public class Chat implements Serializable {
     **********************************/
     public void joinAnotherServer(int port) {
       System.out.println("Join Another Sever Method called");
-      succ = port;
+      this.succPort = port;
       // what if this port doesn't exist?
       // what if I'm already assigned to one?
       // in theory all my connection is a record of what port i'm suppose to
@@ -91,7 +90,7 @@ public class Chat implements Serializable {
               } else if(m.portSrc == intialPort){
                 System.out.println("User not availible");
               } else{
-                sendMsgToNode(m, succ);
+                sendMsgToNode(m, succPort);
               }
             }
             ///JOIN
@@ -100,17 +99,17 @@ public class Chat implements Serializable {
               if(m.fromInput == true) {
 
                 m.fromInput = false;
-                // reading the contents of the message and updating the succ
-                succ = m.portDest;
+                // reading the contents of the message and updating the succPort
+                succPort = m.portDest;
 
                 sendMsgToNode(m, m.portDest);// i don't think this should be here.
 
               } else {//from someone else
-                pred = m.portSrc;
+                predPort = m.portSrc;
                 //printRoutingTable();
               }
             }
-            System.out.println(pred + "--->" + "[" + intialPort + "] " + "--->" + succ);
+            System.out.println(predPort + "--->" + "[" + intialPort + "] " + "--->" + succPort);
             //  clntSock.close();
           } catch(ClassNotFoundException e) {
             System.out.println("[Server] IO Class: " + e.getMessage());
@@ -210,8 +209,8 @@ public class Chat implements Serializable {
     // on seperate threads
 
     // On instanitate of this class make sure port this node points to itself.
-    this.pred = port;
-    this.succ = port;
+    this.predPort = port;
+    this.succPort = port;
     Thread server = new Thread(new Server(port));// 4200
     Thread client = new Thread(new Client(idThing, port)); // Localhost, 4200
     server.start();
