@@ -7,8 +7,10 @@ import java.util.*;
   * using flooding
   **********************************/
 public class Chat implements Serializable {
-  private int pred;// might need to be node
-  private int succ;// might need to be node
+  public int pred;// predecessor, the node after.
+  public int succ;// succecessor, the node before.
+  public String text;
+
   public enum enum_MSG {
     JOIN,     // 0
     ACCEPT,   // 1
@@ -16,26 +18,8 @@ public class Chat implements Serializable {
     PUT,      // 3
   };
 
-  /*****************************//**
-  * \class Message class "chat.java"
-  * \brief LEAVE: Id_pred, Port_pred, IP_pred
-  **********************************/
-  void leave(String idPred, String portPred, int ipPred) {
-    //TODO: Fill in here.
-  }
-  /*****************************//**
-  * \class Message class "chat.java"
-  * \brief PUT: idSender, idDest, payload
-  **********************************/
-  void put(int senderId, int destId, String someText) {
-    //TODO: Fill in here.
-  }
   public class Message implements Serializable {
     public enum_MSG msgid;
-    public int portSrc;
-    public int portDest;
-    public String text;
-    public Boolean fromInput;
   }
   /*****************************//**
   * \class Server class "chat.java"
@@ -46,7 +30,9 @@ public class Chat implements Serializable {
     //  String id;
     int intialPort;
     public Server(int p) {//Server takes a port only
-      //set the r
+      //NOTE: I start the app out and I tell this instance of the app what port it starts on.
+      // This is the value for initialPort. it will not change through the lifecycle
+      // of the app.
       System.out.println("The Server method was called and was assigned to port: "+p);
       this.pred = p;// this instances local variable.
       intialPort = p;
