@@ -48,16 +48,16 @@ public class Chat implements Serializable {
     public Server(int p) {//Server takes a port only
       //set the r
       System.out.println("The Server method was called and was assigned to port: "+p);
-      this.pred = p;// this instances local variable.
+      pred = p;// this instances local variable.
       intialPort = p;
-      //this.id = id;
+      //id = id;
     }
     /*****************************//**
     * \class Message class "chat.java"
     * \brief JOIN: id, port
     **********************************/
     public void joinAnotherServer(int port) {
-      this.succ = port;
+      succ = port;
       System.out.println("The messagee join method was called.");
     }
     /*****************************//**
@@ -96,7 +96,7 @@ public class Chat implements Serializable {
       **********************************/
       // This is from the abstract class.
       try {
-        ServerSocket servSock = new ServerSocket(port);// create the server off port
+        ServerSocket servSock = new ServerSocket(intialPort);// create the server off port
         System.out.println("Waiting for client on port " + servSock.getLocalPort() + "...");
         while(true) {
           Socket clntSock = servSock.accept(); // .accept() returns a socket object
@@ -109,10 +109,10 @@ public class Chat implements Serializable {
             //System.out.println("Please enter a port to connect to: ");
             ///PUT
             if(m.msgid == enum_MSG.PUT){//if message is PUT
-              if(m.portDest == port){//AND its meant for me
+              if(m.portDest == intialPort){//AND its meant for me
 
                 System.out.println(m.text + " portSrc:" + m.portSrc);
-              } else if(m.portSrc == port){
+              } else if(m.portSrc == intialPort){
                 System.out.println("User not availible");
               } else{
                 sendMsgToNode(m,succ);
@@ -125,7 +125,7 @@ public class Chat implements Serializable {
                   m.fromInput = false;
                   sendMsgToNode(m,pred);
                   sendMsgToNode(m,succ);
-                  System.out.println("Node:"+port+" exiting");
+                  System.out.println("Node:"+intialPort+" exiting");
                   System.exit(0);
               }
               else{
@@ -136,10 +136,10 @@ public class Chat implements Serializable {
                   list.add(Integer.parseInt(s));
                 }
                 list.toArray();
-                if(list.get(0) == port){//if im pred
+                if(list.get(0) == intialPort){//if im pred
                     succ = list.get(1);//my succ == leaving node's succ
                 }
-                else if(list.get(1) == port){//if im succ
+                else if(list.get(1) == intialPort){//if im succ
                   pred = list.get(0);//my pred == leaving node's pred
                 }
               }
@@ -157,7 +157,7 @@ public class Chat implements Serializable {
                 //printRoutingTable();
               }
             }
-            System.out.println(pred + "--->" + "[" + port + "] " + "--->" + succ);
+            System.out.println(pred + "--->" + "[" + intialPort + "] " + "--->" + succ);
             //  clntSock.close();
           } catch(ClassNotFoundException e) {
             System.out.println("[Server] IO Class: " + e.getMessage());
@@ -181,8 +181,8 @@ public class Chat implements Serializable {
     int port;
     public Client(String id, int p) {
       System.out.println("The Client was created on port: "+p+" with Id: "+id);
-      this.port = p;
-      this.id = id;
+      port = p;
+      id = id;
     }
 
     /*****************************//**
@@ -267,8 +267,8 @@ public class Chat implements Serializable {
     // on seperate threads
 
     // On instanitate of this class make sure port this node points to itself.
-     this.pred = port;
-     this.succ = port;
+     pred = port;
+     succ = port;
 
     Thread server = new Thread(new Server(port));// 8000
     Thread client = new Thread(new Client(idThing, port)); // Localhost, 8000
