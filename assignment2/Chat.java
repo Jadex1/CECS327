@@ -18,6 +18,8 @@ public class Chat implements Serializable {
   };
 
   public class Message implements Serializable {
+    public int portSrc;
+    public int portDest;
     public enum_MSG msgid;
   }
   /*****************************//**
