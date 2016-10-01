@@ -83,12 +83,6 @@ public class Chat implements Serializable {
       }
 
     }
-    public void join(int toPort){
-
-    }
-    public void accept(int port){
-
-    }
     public void run(){
       //System.out.println("The Server Run method was called.");
       /*****************************//**
