@@ -43,11 +43,12 @@ public class Chat implements Serializable {
       // take any number not currently assigned to me, and assign it to my successor.
       System.out.println("Join Another Sever Method called");
       // I want to wrap this in a try/catch block.
-      if(this.succPort == port) {
+      if(succPort == port) {
         System.out.println("Already, connected, can not connect to self again.");
       } else{
-        this.succPort = port;
+        succPort = port;
       }
+      System.out.println(predPort + "--->" + "[" + intialPort + "] " + "--->" + succPort);
       // what if this port doesn't exist?
       // answer: throw an error. and don't change.
       // what if I'm already assigned to one?
@@ -63,11 +64,12 @@ public class Chat implements Serializable {
       // take any number not currently assigned to me, and assign it to my successor.
       System.out.println("Accept Another Sever Method called");
       // I want to wrap this in a try/catch block.
-      if(this.predPort == port) {
+      if(predPort == port) {
         System.out.println("Already, connected, can not connect to self again.");
       } else{
-        this.predPort = port;
+        predPort = port;
       }
+      System.out.println(predPort + "--->" + "[" + intialPort + "] " + "--->" + succPort);
     }
     public void sendMsgToNode(Message m, int toPort){
       try{
