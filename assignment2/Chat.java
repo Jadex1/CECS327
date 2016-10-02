@@ -32,7 +32,6 @@ public class Chat implements Serializable {
     // this why you have the void "run" method.
     //  String id;
     public Server(int p) {//Server takes a port only
-      System.out.println("The Server was created and was assigned to port: "+p);
       intialPort = p;
     }
     /*****************************//**
@@ -41,7 +40,6 @@ public class Chat implements Serializable {
     **********************************/
     public void joinAnotherServer(int port) {
       // take any number not currently assigned to me, and assign it to my successor.
-      System.out.println("Join Another Sever Method called");
       // I want to wrap this in a try/catch block.
       if(succPort == port) {
         System.out.println("Already, connected, can not connect to self again.");
@@ -55,7 +53,6 @@ public class Chat implements Serializable {
     **********************************/
     public void acceptAnotherServer(int port) {
       // take any number not currently assigned to me, and assign it to my successor.
-      System.out.println("Accept Another Sever Method called");
       // I want to wrap this in a try/catch block.
       if(predPort == port) {
         System.out.println("Already, connected, can not connect to self again.");
@@ -107,7 +104,7 @@ public class Chat implements Serializable {
             //LEAVE
             if(m.msgid == enum_MSG.LEAVE){
               if(m.fromInput == true){
-                m.text = pred + " " + succ;
+                m.text = predPort+ " " + succPort;
                 m.fromInput = false;
                 System.out.println("Node:"+intialPort+" exiting");
                 System.exit(0);
@@ -120,10 +117,10 @@ public class Chat implements Serializable {
                 }
                 list.toArray();
                 if(list.get(0) == intialPort){//if im pred
-                  succ = list.get(1);//my succ == leaving node's succ
+                  succPort = list.get(1);//my succ == leaving node's succ
                 }
                 if(list.get(1) == intialPort){//if im succ
-                  pred = intialPort;
+                  predPort = intialPort;
                 }
               }
             }
@@ -243,8 +240,8 @@ public class Chat implements Serializable {
     // Initialization of the peer
     // on seperate threads
     // On instanitate of this class make sure port this node points to itself.
-    pred = port;
-    succ = port;
+    predPort = port;
+    succPort = port;
     Thread server = new Thread(new Server(port));// 8000
     Thread client = new Thread(new Client(idThing, port)); // Localhost, 8000
     server.start();
