@@ -78,19 +78,16 @@ public class Chat implements Serializable {
       /*****************************//**
       * \brief It allows the system to interact with the participants.
       **********************************/
-      // This is from the abstract class.
       try {
         ServerSocket servSock = new ServerSocket(intialPort);// create the server off port
         System.out.println("Waiting for client on port " + servSock.getLocalPort() + "...");
         while(true) {
           Socket clntSock = servSock.accept(); // .accept() returns a socket object
-          //System.out.println("The Server Run method was called In while loop.");
           System.out.println("[Server] Just connected to " + clntSock.getRemoteSocketAddress());
           ObjectInputStream  ois = new ObjectInputStream(clntSock.getInputStream());
           ObjectOutputStream oos = new ObjectOutputStream(clntSock.getOutputStream());
           try{
             Message m = (Message)ois.readObject();// not sure what's going on here (magic).
-            //System.out.println("Please enter a port to connect to: ");
             ///PUT
             if(m.msgid == enum_MSG.PUT){//if message is PUT
               if(m.portDest == intialPort){//AND its meant for me
@@ -135,15 +132,11 @@ public class Chat implements Serializable {
               }
             }
             System.out.println(predPort + "--->" + "[" + intialPort + "] " + "--->" + succPort);
-            //  clntSock.close();
           } catch(ClassNotFoundException e) {
             System.out.println("[Server] IO Class: " + e.getMessage());
           }
-          //printRoutingTable();
         }
       } catch(SocketException e) {
-        // Handle Messages
-        //clntSock.close();
         System.out.println("[Server] Socket: " + e.getMessage());
       } catch(IOException e) {
         System.out.println("[Server] IO: " + e.getMessage());
@@ -165,7 +158,6 @@ public class Chat implements Serializable {
     * \brief It allows the user to interact with the system.
     **********************************/
     public void run() {
-      //System.out.println("The Client-run-Method was called.");
       while(true){
         try{
           Socket socket = new Socket(id, port);
@@ -230,16 +222,6 @@ public class Chat implements Serializable {
    * number of the port.
    */
   public Chat(String idThing, int port) {// for example: localhost 8000
-    /* NOTE:
-     * The chat method is like a "main" method sort of.
-     * It get's passed the localhost and 8000, but it passes those to the other client and
-     * server classe which are seperate threads. If you remmber from CECS 326 threads are all
-     * that make up a server. A single thread can listen one port.
-     */
-    System.out.println("The Chat Method was called, port: "+port+" id: "+idThing);
-    // Initialization of the peer
-    // on seperate threads
-    // On instanitate of this class make sure port this node points to itself.
     predPort = port;
     succPort = port;
     Thread server = new Thread(new Server(port));// 8000
