@@ -166,7 +166,7 @@ public class Chat implements Serializable {
           ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
           //TODO: in the prompt create a list of commands to enter, instead of the generic,
           // print ln
-          System.out.println("Please enter a the following, option 1) join <port>,  put <message> to chat to node("+port +")");
+          System.out.println("Please enter a the following option,\n 1)join <port>\n 2)put <destination port> <message>\n 3)Leave\n Note: press ENTER to see nodes predessor and successor\n");
           String input = System.console().readLine();
           //split input by spaces
           List<String> list = new ArrayList<String>();
