@@ -119,7 +119,6 @@ public class Chat implements Serializable {
                 sendMsgToNode(m, m.portDest);// i don't think this should be here.
               } else {//from someone else
                 predPort = m.portSrc;
-                //printRoutingTable();
               }
             }
             System.out.println(predPort + "--->" + "[" + intialPort + "] " + "--->" + succPort);
