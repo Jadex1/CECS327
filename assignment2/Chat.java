@@ -92,8 +92,6 @@ public class Chat implements Serializable {
             if(m.msgid == enum_MSG.PUT){//if message is PUT
               if(m.portDest == intialPort){//AND its meant for me
                 System.out.println(m.text + " portSrc:" + m.portSrc);
-              } else if(m.portSrc == intialPort){
-                System.out.println("User not availible");
               } else{
                 sendMsgToNode(m, succPort);
               }
@@ -174,9 +172,6 @@ public class Chat implements Serializable {
             list.add(s);
           }
           list.toArray();
-          list.forEach((temp) -> {
-		         System.out.println(temp);
-           });
           if(list.contains("put")){//send msg from clint(input) to Node server
             Message m = new Message();
             m.text = list.get(2);
