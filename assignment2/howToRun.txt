@@ -1,7 +1,10 @@
-java Chat localhost <port>
-<port to client should connect to>
-
-[in another terminal tab]
-
-java Chat localhost <port>+1
-<port>
+Steps & notes to run program
+1). Run javac Chat.java
+2). Open up three seperate terminal windows
+3). In each window type, "java Chat localhost 4200", for each window it's 4200 + i; "java Chat <id> <port> -> java Chat localhost 4200"
+4). In the first window, type "join 4201"
+5). In the second window, type "join 4202"
+6). In the third window, type "join 4200"
+At this point all the servers are connected in a loop.
+7). In any terminal window type, "<put port message>" to send a message.
+8). 
