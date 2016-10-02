@@ -1,0 +1,7 @@
+java Chat localhost <port>
+<port to client should connect to>
+
+[in another terminal tab]
+
+java Chat localhost <port>+1
+<port>
