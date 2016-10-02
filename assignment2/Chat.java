@@ -1,5 +1,5 @@
 // James Hall,
-// Brendan Mcmahon
+// Brendan McMahon
 import java.net.*;
 import java.io.*;
 import java.util.*;
