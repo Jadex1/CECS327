@@ -76,7 +76,7 @@ public class Chat implements Serializable {
         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
         oos.writeObject(m);
       } catch(SocketException e) {
-        System.out.println("[Send MSG] Socket: " + e.getMessage());
+        System.out.println("[Send MSG] User not availible");
       } catch(IOException e) {
         System.out.println("[Send MSG] IO: " + e.getMessage());
         e.printStackTrace();
@@ -104,11 +104,8 @@ public class Chat implements Serializable {
             ///PUT
             if(m.msgid == enum_MSG.PUT){//if message is PUT
               if(m.portDest == intialPort){//AND its meant for me
-
                 System.out.println(m.text + " portSrc:" + m.portSrc);
-              } else if(m.portSrc == intialPort){
-                System.out.println("User not availible");
-              } else{
+              }else{
                 sendMsgToNode(m,succ);
               }
             }
@@ -117,8 +114,10 @@ public class Chat implements Serializable {
               if(m.fromInput == true){
                   m.text = pred + " " + succ;
                   m.fromInput = false;
-                  sendMsgToNode(m,pred);
-                  sendMsgToNode(m,succ);
+                  if(pred != intialPort){
+                    }sendMsgToNode(m,pred);
+                  if(succ != intialPort){
+                    }sendMsgToNode(m,succ);
                   System.out.println("Node:"+intialPort+" exiting");
                   System.exit(0);
               }
@@ -133,8 +132,8 @@ public class Chat implements Serializable {
                 if(list.get(0) == intialPort){//if im pred
                     succ = list.get(1);//my succ == leaving node's succ
                 }
-                else if(list.get(1) == intialPort){//if im succ
-                  pred = list.get(0);//my pred == leaving node's pred
+                if(list.get(1) == intialPort){//if im succ
+                  pred = intialPort;
                 }
               }
             }
@@ -143,7 +142,7 @@ public class Chat implements Serializable {
               if(m.fromInput == true) {
 
                 m.fromInput = false;
-                succ = m.portDest;
+                succ = m.portDest;//join another server (portDEst,)->send message node port dest
                 sendMsgToNode(m,m.portDest);
 
               } else {//from someone else
