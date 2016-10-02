@@ -259,7 +259,6 @@ public class Chat implements Serializable {
   * \param port where the server will listen
   **********************************/
   public static void main(String[] args) {
-    System.out.println("The main thread was hit.");
     if (args.length < 2 ) {
       throw new IllegalArgumentException("Parameter: <id> <port>");
     }
