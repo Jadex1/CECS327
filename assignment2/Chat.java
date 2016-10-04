@@ -104,6 +104,8 @@ public class Chat implements Serializable {
                 m.succ = succPort;
                 m.pred = predPort;
                 m.fromInput = false;
+                sendMsgToNode(m,succPort);
+                sendMsgToNode(m,predPort);
                 System.out.println("Node:"+intialPort+" exiting");
                 System.exit(0);
               } else {
