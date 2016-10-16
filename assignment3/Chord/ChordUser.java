@@ -14,7 +14,7 @@ public class ChordUser {
       @Override
       public void run() {
         try {
-          Chord chord = new Chord(port);
+          Chord chord = new Chord(port);// first hit to the chord class. 
           System.out.println("Usage: \n\tjoin <port>\n\twrite <file> (the file must be an integer stored in the working directory, i.e, ./port/file");
   	      System.out.println("\tread <file>\n\tdelete <file>\n\tprint");
           Scanner scan= new Scanner(System.in);
@@ -81,7 +81,7 @@ public class ChordUser {
           throw new IllegalArgumentException("Parameter: <port>");
         }
       try{
-        ChordUser chordUser=new ChordUser( Integer.parseInt(args[0]));
+        ChordUser chordUser = new ChordUser( Integer.parseInt(args[0]));
       } catch (Exception e) {
           e.printStackTrace();
           System.exit(1);

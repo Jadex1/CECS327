@@ -161,7 +161,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
          finger[nextFinger] = null;
          e.printStackTrace();
      }
-  }
+    }
   public void checkPredecessor() {
     try {
       if (predecessor != null && !predecessor.isAlive()){
