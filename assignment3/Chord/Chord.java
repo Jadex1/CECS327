@@ -26,7 +26,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     }
     return null;
   }
-  public Boolean isKeyInSemiCloseInterval(int key, int key1, int key2) {
+  public Boolean isKeyInSemiCloseInterval(int key, int key1, int key2){
     if (key1 < key2) {
       return (key > key1 && key <= key2);
     } else {
@@ -40,7 +40,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       return (key > key1 || key < key2);
     }
   }
-  public void put(int guid, InputStream stream) throws RemoteException {
+  public void put(int guid, InputStream stream) throws RemoteException{
     //TODO Store the file at ./port/repository/guid
     try {
       String fileName = "./"+i+"/repository/" + guid;
@@ -68,7 +68,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   public boolean isAlive() throws RemoteException {
     return true;
   }
-  public ChordMessageInterface getPredecessor() throws RemoteException {
+  public ChordMessageInterface getPredecessor() throws RemoteException{
     return predecessor;
   }
   public ChordMessageInterface locateSuccessor(int key) throws RemoteException {

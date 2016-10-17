@@ -15,67 +15,65 @@ public class ChordUser{
         System.out.println("\tread <file>\n\tdelete <file>\n\tprint");
         System.out.println("Enter: ");
         try{
-          Chord chord = new Chord(port);
+          Chord chord = new Chord(port);//The errors are coming from here.
           Scanner scan= new Scanner(System.in);
           String delims = "[ ]+";
           String command = "";
           while (true) {
-            String text= scan.nextLine();
+            String text = scan.nextLine();
             String[] tokens = text.split(delims);
             if (tokens[0].equals("join") && tokens.length == 2) {
               System.out.println("Join Mutha Fucka");
-              try {
-                chord.joinRing("localhost", Integer.parseInt(tokens[1]));
-              }catch(IOException e) {
-                System.out.println("Error joining the ring!");
-              }
+              // try {
+              //   chord.joinRing("localhost", Integer.parseInt(tokens[1]));
+              // }catch(IOException e) {
+              //   System.out.println("Error joining the ring!");
+              // }
             }
             if (tokens[0].equals("print")){
                 System.out.println("Print shit mutha fucka");
-                chord.Print();
+                // chord.Print();
               }
             if (tokens[0].equals("write") && tokens.length == 2) {
               System.out.println("Write shit muthafcuka");
-              try{
-                String path;
-                int guid = Integer.parseInt(tokens[1]);
-                // If you are using windows you have to use
-                // // path = ".\\"+  port +"\\"+Integer.parseInt(tokens[1]); // path to file
-  			        path = "./"+  port +"/"+guid; // path to file
-  			        FileStream file = new FileStream(path);
-  		          ChordMessageInterface peer = chord.locateSuccessor(guid);
-  			        peer.put(guid, file); // put file into ring
-              }catch(FileNotFoundException e1){
-                e1.printStackTrace();
-                System.out.println("File was not found!");
-              }catch (RemoteException e1) {
-                e1.printStackTrace();
-                System.out.println("File was not found!");
-              }catch(IOException e){
-                e.printStackTrace();
-                System.out.println("Could not put file!");
-              }
+              // try{
+              //   String path;
+              //   int guid = Integer.parseInt(tokens[1]);
+              //   // If you are using windows you have to use
+              //   // // path = ".\\"+  port +"\\"+Integer.parseInt(tokens[1]); // path to file
+  			      //   path = "./"+  port +"/"+guid; // path to file
+  			      //   FileStream file = new FileStream(path);
+  		        //   ChordMessageInterface peer = chord.locateSuccessor(guid);
+  			      //   peer.put(guid, file); // put file into ring
+              // }catch(FileNotFoundException e1){
+              //   e1.printStackTrace();
+              //   System.out.println("File was not found!");
+              // }catch (RemoteException e1) {
+              //   e1.printStackTrace();
+              //   System.out.println("File was not found!");
+              // }catch(IOException e){
+              //   e.printStackTrace();
+              //   System.out.println("Could not put file!");
+              // }
             }
             if (tokens[0].equals("read") && tokens.length == 2) {
               System.out.println("read shit mutha fucka");
-              try {
-           			// TODO:
-                chord.get(Integer.parseInt(tokens[1]));
-              }catch (IOException e) {
-                System.out.println("Could not get file!");
-              }
+              // try {// 		// TODO:
+              //   chord.get(Integer.parseInt(tokens[1]));
+              // }catch (IOException e) {
+              //   System.out.println("Could not get file!");
+              // }
             }
             if (tokens[0].equals("delete") && tokens.length == 2) {
               System.out.println("whatever! Detele mother fucker!");
-              try {
-                chord.delete(Integer.parseInt(tokens[1]));
-              } catch (IOException e) {
-                System.out.println("Could not delete file!");
-              }
+              // try {
+              //   chord.delete(Integer.parseInt(tokens[1]));
+              // } catch (IOException e) {
+              //   System.out.println("Could not delete file!");
+              // }
             }
           }
         }catch(RemoteException e){
-        
         }
       }
     }, 1000, 1000);
