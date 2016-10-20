@@ -40,7 +40,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       return (key > key1 || key < key2);
     }
   }
-  public void put(int guid, InputStream stream) throws RemoteException{
+  public void put(int guid, InputStream stream) throws\ RemoteException{
     //TODO Store the file at ./port/repository/guid
     try {
       String fileName = "./"+i+"/repository/" + guid;
