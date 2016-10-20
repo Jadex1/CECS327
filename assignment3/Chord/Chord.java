@@ -149,11 +149,11 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       int nextId;
       if (nextFinger == 0){ // && successor != null)
         nextId = (this.getId() + (1 << nextFinger));
-      } else{
+      } else if (finger[nextFinger - 1] != null){
         nextId = finger[nextFinger -1].getId();
       }
-      finger[nextFinger] = locateSuccessor(nextId);
 
+      finger[nextFinger] = locateSuccessor(nextId);
       if (finger[nextFinger].getId() == i){
         finger[nextFinger] = null;
       } else{
@@ -174,6 +174,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       e.printStackTrace();
     }
   }
+
   public Chord(int port) throws RemoteException {
     int j;
     finger = new ChordMessageInterface[M];
