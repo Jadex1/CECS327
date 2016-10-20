@@ -40,8 +40,9 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       return (key > key1 || key < key2);
     }
   }
-  public void put(int guid, InputStream stream) throws\ RemoteException{
-    //TODO Store the file at ./port/repository/guid
+  public void put(int guid, InputStream stream) throws RemoteException{
+
+    //TODO Store the file at "./" port/repository/guid
     try {
       String fileName = "./"+i+"/repository/" + guid;
       FileOutputStream output = new FileOutputStream(fileName);
@@ -150,8 +151,9 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
         nextId = (this.getId() + (1 << nextFinger));
       } else{
         nextId = finger[nextFinger -1].getId();
-        finger[nextFinger] = locateSuccessor(nextId);
       }
+      finger[nextFinger] = locateSuccessor(nextId);
+
       if (finger[nextFinger].getId() == i){
         finger[nextFinger] = null;
       } else{
