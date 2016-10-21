@@ -56,7 +56,9 @@ public class ChordUser{
   			        path = "./"+  port +"/"+guid; // path to file
   			        FileStream file = new FileStream(path);
   		          ChordMessageInterface peer = chord.locateSuccessor(guid);
-  			        peer.put(guid, file); // put file into ring
+                peer.put(guid, file); // put file into ring
+                //file is just an object,
+                //NOTE: I'm not sure where to get the file or find it.
               }catch(FileNotFoundException e1){
                 e1.printStackTrace();
                 System.out.println("File was not found!");
@@ -70,7 +72,7 @@ public class ChordUser{
             }
             if (tokens[0].equals("read") && tokens.length == 2) {
               System.out.println("read shit mutha fucka");
-              try {// 		// TODO:
+              try {//
                 chord.get(Integer.parseInt(tokens[1]));
               }catch (IOException e) {
                 System.out.println("Could not get file!");

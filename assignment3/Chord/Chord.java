@@ -41,16 +41,20 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     }
   }
   public void put(int guid, InputStream stream) throws RemoteException{
-
+    //
     //TODO Store the file at "./" port/repository/guid
     try {
+
       String fileName = "./"+i+"/repository/" + guid;
+      // read-up on fileoutputstream
       FileOutputStream output = new FileOutputStream(fileName);
+
       while (stream.available() > 0){
         output.write(stream.read());
         output.flush();
         output.close();
       }
+
      } catch (IOException e) {
        System.out.println(e);
      }
@@ -89,7 +93,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     return successor;
   }
   public ChordMessageInterface closestPrecedingNode(int key) throws RemoteException {
-      // todo
+      // TODO:
        return successor;
    }
   public void joinRing(String ip, int port)  throws RemoteException {
