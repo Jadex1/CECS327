@@ -41,7 +41,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     }
   }
   public void put(int guid, InputStream stream) throws RemoteException{
-    //
+
     //TODO Store the file at "./" port/repository/guid
     try {
 
@@ -97,6 +97,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
        return successor;
    }
   public void joinRing(String ip, int port)  throws RemoteException {
+    
     try{
       System.out.println("Get Registry to joining ring");
       Registry registry = LocateRegistry.getRegistry(ip, port);
