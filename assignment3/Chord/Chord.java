@@ -137,10 +137,11 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
        }
     }
     public void notify(ChordMessageInterface j) throws RemoteException {
-        if (predecessor == null || (predecessor != null && isKeyInOpenInterval(j.getId(), predecessor.getId(), i)))
-	 // TODO
-	 //transfer keys in the range [j,i) to j;
-	  predecessor = j;
+      if (predecessor == null || (predecessor != null && isKeyInOpenInterval(j.getId(), predecessor.getId(), i))){
+        // TODO
+      }
+      //transfer keys in the range [j,i) to j;
+  	  predecessor = j;
     }
     public void fixFingers() {
         int id= i;
