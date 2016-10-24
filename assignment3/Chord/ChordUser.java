@@ -24,19 +24,25 @@ public class ChordUser{
             String text = scan.nextLine();
             String[] tokens = text.split(delims);
             if (tokens[0].equals("join") && tokens.length == 2) {
-              try {
+              try {                              //The second value you pass in.
                 chord.joinRing("localhost", Integer.parseInt(tokens[1]));
-              }catch(IOException e) {
+              } catch (IOException e) {
                 System.out.println("Error joining the ring!");
               }
             }
+            /*
+             * Print will print the routes of the chord.
+             */
             if (tokens[0].equals("print")){
-                 chord.Print();
-              }
+              chord.Print();
+            }
             if (tokens[0].equals("write") && tokens.length == 2) {
               try{
                 String path;
+                // this is either a known number or a created number.
                 int guid = Integer.parseInt(tokens[1]);
+                String thingOfaKey = Integer.toString(guid);
+                System.out.println(thingOfaKey);
                 // If you are using windows you have to use
                 path = ".\\"+  port +"\\"+Integer.parseInt(tokens[1]); // path to file
   			        //path = "./"+  port +"/"+guid; // path to file
@@ -57,7 +63,7 @@ public class ChordUser{
               }
             }
             if (tokens[0].equals("read") && tokens.length == 2) {
-              try {//
+              try { //TODO:
                 chord.get(Integer.parseInt(tokens[1]));
               }catch (IOException e) {
                 System.out.println("Could not get file!");
@@ -81,8 +87,8 @@ public class ChordUser{
       throw new IllegalArgumentException("Parameter: <port>");
     }
     try {
-      ChordUser chordUser=new ChordUser( Integer.parseInt(args[0]));
-    }catch(Exception e) {
+      ChordUser chordUser = new ChordUser(Integer.parseInt(args[0]));
+    } catch (Exception e) {
       e.printStackTrace();
       System.exit(0);
     }

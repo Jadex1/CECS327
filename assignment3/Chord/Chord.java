@@ -4,6 +4,7 @@ import java.rmi.server.*;
 import java.net.*;
 import java.util.*;
 import java.io.*;
+import java.security.MessageDigest;
 
 public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordMessageInterface {
   public static final int M = 2;
@@ -42,29 +43,35 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   }
   public void put(int guid, InputStream stream) throws RemoteException{
     //TODO Store the file at "./" port/repository/guid
-    // "./port/repository/guid"
+    // "./port/repository/guid-hash"
+    // convert guid into a md5 hash
+    // create a new path to save off of that.,
+    // save thhe has
     try {
       String fileName = "./"+i+"/repository/" + guid;
       // read-up on fileoutputstream
       FileOutputStream output = new FileOutputStream(fileName);
-
       while (stream.available() > 0){
         output.write(stream.read());
         output.flush();
         output.close();
       }
-
      } catch (IOException e) {
        System.out.println(e);
      }
   }
+  // this returns a file given a guid
   public InputStream get(int guid) throws RemoteException {
+    // any arbitray number, with the md5,
+    // I'm given a number
+    // if the md5, and number passed in don't exist, neither does the fiel.
+    // else return what it found.
     FileStream file = null;
     //TODO get  the file ./port/repository/guid
     return file;
   }
   public void delete(int guid) throws RemoteException {
-        //TODO delet the file ./port/repository/guid
+        //TODO delete the file ./port/repository/guid
   }
   public int getId() throws RemoteException {
       return i;
@@ -75,7 +82,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   public ChordMessageInterface getPredecessor() throws RemoteException{
     return predecessor;
   }
-  public ChordMessageInterface locateSuccessor(int key) throws RemoteException {
+  public ChordMessageInterface locateSuccessor(int key) throws RemoteException{
     if (key == i){
       throw new IllegalArgumentException("Key must be distinct that  " + i);
     }
@@ -92,25 +99,23 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     return successor;
   }
   public ChordMessageInterface closestPrecedingNode(int key) throws RemoteException {
+    // look for the nodes that have me this port number as a preceeding node, or who is related to me as a note. Other nodes will have records of other nodes.
     // TODO:
     return successor;
    }
-
   public void joinRing(String ip, int port)  throws RemoteException {
     try{
       System.out.println("Get Registry to joining ring");
       Registry registry = LocateRegistry.getRegistry(ip, port);
-      System.out.println("shit here");
       ChordMessageInterface chord = (ChordMessageInterface)(registry.lookup("Chord"));
-      System.out.println("after chord");
       predecessor = null;
       successor = chord.locateSuccessor(this.getId());
-       System.out.println("Joining ring");
+      System.out.println("Joining ring");
      } catch(RemoteException | NotBoundException e){
        successor = this;
      }
    }
-   public void findingNextSuccessor() {
+  public void findingNextSuccessor() {
      int i;
      successor = this;
      for (i = 0;  i< M; i++) {
@@ -123,7 +128,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
        }
      }
    }
-   public void stabilize() {
+  public void stabilize() {
      boolean error = false;
      try {
        if (successor != null) {
@@ -141,10 +146,10 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
      if (error){
        findingNextSuccessor();
      }
-  }
+   }
   public void notify(ChordMessageInterface j) throws RemoteException {
     if (predecessor == null || (predecessor != null && isKeyInOpenInterval(j.getId(), predecessor.getId(), i))){
-      // TODO
+      // TODO:
       // //transfer keys in the range [j,i) to j;
       predecessor = j;
     }
@@ -186,6 +191,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     for (j=0;j<M; j++){
       finger[j] = null;
     }
+    // do we turn it into a guid here? no
     i = port;
     predecessor = null;
     successor = this;
