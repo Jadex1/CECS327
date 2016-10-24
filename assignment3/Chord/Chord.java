@@ -41,10 +41,9 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     }
   }
   public void put(int guid, InputStream stream) throws RemoteException{
-
     //TODO Store the file at "./" port/repository/guid
+    // "./port/repository/guid"
     try {
-
       String fileName = "./"+i+"/repository/" + guid;
       // read-up on fileoutputstream
       FileOutputStream output = new FileOutputStream(fileName);
@@ -80,12 +79,12 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     if (key == i){
       throw new IllegalArgumentException("Key must be distinct that  " + i);
     }
-    if (successor.getId() != i) {
+    if (successor.getId() != i){
       if (isKeyInSemiCloseInterval(key, i, successor.getId())){
         return successor;
       }
       ChordMessageInterface j = closestPrecedingNode(key);
-      if (j == null) {
+      if (j == null){
         return null;
       }
       return j.locateSuccessor(key);
@@ -93,16 +92,17 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     return successor;
   }
   public ChordMessageInterface closestPrecedingNode(int key) throws RemoteException {
-      // TODO:
-       return successor;
+    // TODO:
+    return successor;
    }
 
   public void joinRing(String ip, int port)  throws RemoteException {
     try{
       System.out.println("Get Registry to joining ring");
       Registry registry = LocateRegistry.getRegistry(ip, port);
-      // error here.
+      System.out.println("shit here");
       ChordMessageInterface chord = (ChordMessageInterface)(registry.lookup("Chord"));
+      System.out.println("after chord");
       predecessor = null;
       successor = chord.locateSuccessor(this.getId());
        System.out.println("Joining ring");

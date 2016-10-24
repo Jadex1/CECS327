@@ -2,25 +2,17 @@ import java.rmi.*;
 import java.net.*;
 import java.util.*;
 import java.io.*;
-
 public class ChordUser{
-
   int port;
-
   public ChordUser(int p){
-
     port = p;
     Timer timer1 = new Timer();
     timer1.scheduleAtFixedRate(new TimerTask(){
-
       @Override
-
       public void run(){
-
         System.out.println("Usage: \n\tjoin <port>\n\twrite <file> (the file must be an integer stored in the working directory, i.e, ./port/file");
         System.out.println("\tread <file>\n\tdelete <file>\n\tprint");
         System.out.println("Enter: ");
-
         try{
 
           Chord chord = new Chord(port);//The errors are coming from here.
@@ -29,13 +21,9 @@ public class ChordUser{
           String command = "";
 
           while (true) {
-
             String text = scan.nextLine();
             String[] tokens = text.split(delims);
-
             if (tokens[0].equals("join") && tokens.length == 2) {
-
-              System.out.println("Join Mutha Fucka");
               try {
                 chord.joinRing("localhost", Integer.parseInt(tokens[1]));
               }catch(IOException e) {
@@ -43,17 +31,15 @@ public class ChordUser{
               }
             }
             if (tokens[0].equals("print")){
-                System.out.println("Print shit mutha fucka");
                  chord.Print();
               }
             if (tokens[0].equals("write") && tokens.length == 2) {
-              System.out.println("Write shit muthafcuka");
               try{
                 String path;
                 int guid = Integer.parseInt(tokens[1]);
                 // If you are using windows you have to use
-               path = ".\\"+  port +"\\"+Integer.parseInt(tokens[1]); // path to file
-  			        path = "./"+  port +"/"+guid; // path to file
+                path = ".\\"+  port +"\\"+Integer.parseInt(tokens[1]); // path to file
+  			        //path = "./"+  port +"/"+guid; // path to file
   			        FileStream file = new FileStream(path);
   		          ChordMessageInterface peer = chord.locateSuccessor(guid);
                 peer.put(guid, file); // put file into ring
@@ -71,7 +57,6 @@ public class ChordUser{
               }
             }
             if (tokens[0].equals("read") && tokens.length == 2) {
-              System.out.println("read shit mutha fucka");
               try {//
                 chord.get(Integer.parseInt(tokens[1]));
               }catch (IOException e) {
@@ -79,7 +64,6 @@ public class ChordUser{
               }
             }
             if (tokens[0].equals("delete") && tokens.length == 2) {
-              System.out.println("whatever! Detele mother fucker!");
               try {
                 chord.delete(Integer.parseInt(tokens[1]));
               } catch (IOException e) {
