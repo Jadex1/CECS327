@@ -26,7 +26,7 @@ public class ChordUser{
             String text = scan.nextLine();
             String[] tokens = text.split(delims);
             if (tokens[0].equals("join") && tokens.length == 2) {
-              try {                              //The second value you pass in.
+              try {//The second value you pass in.
                 chord.joinRing("localhost", Integer.parseInt(tokens[1]));
               } catch (IOException e) {
                 System.out.println("Error joining the ring!");
@@ -40,20 +40,28 @@ public class ChordUser{
             }
             if (tokens[0].equals("write") && tokens.length == 2) {
               try{
+                // "write_ *anything* "
+                // string = antying;
+                // MD5(anything)
+                // filename = md5(anything)
                 String path;
                 // this is either a known number or a created number.
-                int guid = Integer.parseInt(tokens[1]);
-                String thingOfaKey = Integer.toString(guid);
+                int guid = Integer.parseInt(tokens[1]);// name of a file.]
+                // token
+                String thingOfaKey = Integer.toString(guid);// equal to token[1]
                 MessageDigest md = MessageDigest.getInstance("MD5");
-                md.update(thingOfaKey.getBytes());
-                byte byteData[] = md.digest();
-                //convert the byte to hex format method 1
-                StringBuffer sb = new StringBuffer();
-                for (int i = 0; i < byteData.length; i++) {
-                  sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
-                }
-                System.out.println("Digest(in hex format):: " + sb.toString());
-                //System.out.println("MD5: "+ new BigInteger(1, m.digest()).toString(16));
+
+                md.update(thingOfaKey.getBytes());// should be "big integer"
+                byte[] byteData = md.digest();
+              //  convert the byte to hex format method 1
+               StringBuffer sb = new StringBuffer();
+               for (int i = 0; i < byteData.length; i++) {
+                 sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+               }
+
+               System.out.println("Digest(in hex format):: " + sb.toString());
+
+               System.out.println("MD5: "+ new BigInteger(1, m.digest()).toString(16));
 
                 // If you are using windows you have to use
                 path = ".\\"+  port +"\\"+Integer.parseInt(tokens[1]); // path to file

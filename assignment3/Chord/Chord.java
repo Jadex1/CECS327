@@ -47,9 +47,20 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     // convert guid into a md5 hash
     // create a new path to save off of that.,
     // save thhe has
+    //
     try {
-      String fileName = "./"+i+"/repository/" + guid;
-      // read-up on fileoutputstream
+      String thingOfaKey = Integer.toString(guid);
+      MessageDigest md = MessageDigest.getInstance("MD5");
+      md.update(thingOfaKey.getBytes());
+      byte[] byteData = md.digest();
+      StringBuffer sb = new StringBuffer();
+      for(int i = 0; i < byteData.length; i++){
+        sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+      }
+       System.out.println("Digest(in hex format):: "+sb.toString());
+       System.out.println("MD5:: "+ new BigInteger(1, m.digest()).toString(1));
+       String fileName = "./"+i+"/repository/" + guid;
+       // read-up on fileoutputstream
       FileOutputStream output = new FileOutputStream(fileName);
       while (stream.available() > 0){
         output.write(stream.read());
