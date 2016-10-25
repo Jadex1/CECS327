@@ -100,8 +100,8 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   public void joinRing(String ip, int port)  throws RemoteException {
     try{
       System.out.println("Get Registry to joining ring");
-      Registry registry = LocateRegistry.getRegistry(ip, port);
-      // error here.
+      Registry registry = LocateRegistry.getRegistry(port);
+      // error here. <- james's computer gets stuck here.
       ChordMessageInterface chord = (ChordMessageInterface)(registry.lookup("Chord"));
       predecessor = null;
       successor = chord.locateSuccessor(this.getId());

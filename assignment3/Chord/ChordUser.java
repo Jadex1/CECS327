@@ -3,6 +3,7 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 
+
 public class ChordUser{
 
   int port;
@@ -52,7 +53,7 @@ public class ChordUser{
                 String path;
                 int guid = Integer.parseInt(tokens[1]);
                 // If you are using windows you have to use
-               path = ".\\"+  port +"\\"+Integer.parseInt(tokens[1]); // path to file
+                System.out.println("GUID:" + guid);
   			        path = "./"+  port +"/"+guid; // path to file
   			        FileStream file = new FileStream(path);
   		          ChordMessageInterface peer = chord.locateSuccessor(guid);
