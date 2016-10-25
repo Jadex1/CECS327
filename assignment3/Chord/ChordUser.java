@@ -36,7 +36,7 @@ public class ChordUser{
 
             if (tokens[0].equals("join") && tokens.length == 2) {
 
-              System.out.println("Join Mutha Fucka");
+              System.out.println("Join!");
               try {
                 chord.joinRing("localhost", Integer.parseInt(tokens[1]));
               }catch(IOException e) {
@@ -44,17 +44,18 @@ public class ChordUser{
               }
             }
             if (tokens[0].equals("print")){
-                System.out.println("Print shit mutha fucka");
+                System.out.println("Print!");
                  chord.Print();
               }
             if (tokens[0].equals("write") && tokens.length == 2) {
-              System.out.println("Write shit muthafcuka");
+              System.out.println("Write!");
               try{
                 String path;
                 int guid = Integer.parseInt(tokens[1]);
                 // If you are using windows you have to use
                 System.out.println("GUID:" + guid);
   			        path = "./"+  port +"/"+guid; // path to file
+                System.out.println("path:" + path);
   			        FileStream file = new FileStream(path);
   		          ChordMessageInterface peer = chord.locateSuccessor(guid);
                 peer.put(guid, file); // put file into ring
@@ -72,7 +73,7 @@ public class ChordUser{
               }
             }
             if (tokens[0].equals("read") && tokens.length == 2) {
-              System.out.println("read shit mutha fucka");
+              System.out.println("Read!");
               try {//
                 chord.get(Integer.parseInt(tokens[1]));
               }catch (IOException e) {
@@ -80,7 +81,7 @@ public class ChordUser{
               }
             }
             if (tokens[0].equals("delete") && tokens.length == 2) {
-              System.out.println("whatever! Detele mother fucker!");
+              System.out.println("whatever! Delete!");
               try {
                 chord.delete(Integer.parseInt(tokens[1]));
               } catch (IOException e) {
