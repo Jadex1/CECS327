@@ -2,10 +2,7 @@ import java.rmi.*;
 import java.net.*;
 import java.util.*;
 import java.io.*;
-<<<<<<< HEAD
 
-
-=======
 >>>>>>> JamesBranchMaster
 public class ChordUser{
   int port;
@@ -29,10 +26,7 @@ public class ChordUser{
             String text = scan.nextLine();
             String[] tokens = text.split(delims);
             if (tokens[0].equals("join") && tokens.length == 2) {
-<<<<<<< HEAD
 
-              System.out.println("Join!");
-=======
 >>>>>>> JamesBranchMaster
               try {
                 chord.joinRing("localhost", Integer.parseInt(tokens[1]));
@@ -41,13 +35,7 @@ public class ChordUser{
               }
             }
             if (tokens[0].equals("print")){
-<<<<<<< HEAD
-                System.out.println("Print!");
-                 chord.Print();
-              }
-            if (tokens[0].equals("write") && tokens.length == 2) {
-              System.out.println("Write!");
-=======
+
                  chord.Print();
               }
             if (tokens[0].equals("write") && tokens.length == 2) {
@@ -56,11 +44,7 @@ public class ChordUser{
                 String path;
                 int guid = Integer.parseInt(tokens[1]);
                 // If you are using windows you have to use
-<<<<<<< HEAD
-                System.out.println("GUID:" + guid);
-  			        path = "./"+  port +"/"+guid; // path to file
-                System.out.println("path:" + path);
-=======
+
                 path = ".\\"+  port +"\\"+Integer.parseInt(tokens[1]); // path to file
   			        //path = "./"+  port +"/"+guid; // path to file
 >>>>>>> JamesBranchMaster
@@ -81,9 +65,7 @@ public class ChordUser{
               }
             }
             if (tokens[0].equals("read") && tokens.length == 2) {
-<<<<<<< HEAD
-              System.out.println("Read!");
-=======
+
 >>>>>>> JamesBranchMaster
               try {//
                 chord.get(Integer.parseInt(tokens[1]));
@@ -92,9 +74,7 @@ public class ChordUser{
               }
             }
             if (tokens[0].equals("delete") && tokens.length == 2) {
-<<<<<<< HEAD
-              System.out.println("whatever! Delete!");
-=======
+
 >>>>>>> JamesBranchMaster
               try {
                 chord.delete(Integer.parseInt(tokens[1]));
