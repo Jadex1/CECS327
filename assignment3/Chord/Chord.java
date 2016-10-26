@@ -49,6 +49,29 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     // save thhe has
     //
     try {
+      // "write_ *anything* "
+      // string = antying;
+      // MD5(anything)
+      // filename = md5(anything)
+      //   String path;
+      //   // this is either a known number or a created number.
+      //   int guid = Integer.parseInt(tokens[1]);// name of a file.]
+      //   // token
+      //   String thingOfaKey = Integer.toString(guid);// equal to token[1]
+      //   MessageDigest md = MessageDigest.getInstance("MD5");
+      //
+      //   md.update(thingOfaKey.getBytes());// should be "big integer"
+      //   byte[] byteData = md.digest();
+      // //  convert the byte to hex format method 1
+      //  StringBuffer sb = new StringBuffer();
+      //  for (int i = 0; i < byteData.length; i++) {
+      //    sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+      //  }
+      //
+      //  System.out.println("Digest(in hex format):: " + sb.toString());
+      //
+      //  System.out.println("MD5: "+ new BigInteger(1, m.digest()).toString(16));
+
       String thingOfaKey = Integer.toString(guid);
       MessageDigest md = MessageDigest.getInstance("MD5");
       md.update(thingOfaKey.getBytes());
@@ -69,7 +92,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       }
      } catch (IOException e) {
        System.out.println(e);
-     }
+     } 
   }
   // this returns a file given a guid
   public InputStream get(int guid) throws RemoteException {
@@ -82,7 +105,13 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     return file;
   }
   public void delete(int guid) throws RemoteException {
-        //TODO delete the file ./port/repository/guid
+    // Fires after file has been found.
+    if (f.delete()) {
+      System.out.println("File Deleted.");
+    }else{
+      System.out.println("File not Deleted");
+    }
+    //TODO delete the file ./port/repository/guid
   }
   public int getId() throws RemoteException {
       return i;

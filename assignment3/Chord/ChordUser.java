@@ -26,15 +26,12 @@ public class ChordUser{
             String text = scan.nextLine();
             String[] tokens = text.split(delims);
             if (tokens[0].equals("join") && tokens.length == 2) {
-              try {//The second value you pass in.
+              try {
                 chord.joinRing("localhost", Integer.parseInt(tokens[1]));
               } catch (IOException e) {
                 System.out.println("Error joining the ring!");
               }
             }
-            /*
-             * Print will print the routes of the chord.
-             */
             if (tokens[0].equals("print")){
               chord.Print();
             }
@@ -61,7 +58,7 @@ public class ChordUser{
 
                System.out.println("Digest(in hex format):: " + sb.toString());
 
-               System.out.println("MD5: "+ new BigInteger(1, m.digest()).toString(16));
+               System.out.println("MD5: "+ new BigInteger(1, md.digest()).toString(16));
 
                 // If you are using windows you have to use
                 path = ".\\"+  port +"\\"+Integer.parseInt(tokens[1]); // path to file
