@@ -73,32 +73,33 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     MessageDigest md = MessageDigest.getInstance("MD5");
     byte[] messageDigest = md.digest(thingOfaKey.getBytes());
     BigInteger number = new BigInteger(1, messageDigest);
-    String hashtext = numbre. toString(16);
-    while(hashtext.lengt()< 32){
+    String hashtext = number.toString(16);
+    while(hashtext.length()< 32){
       hashtext = "0" + hashtext;
     }
-    System.out.prinln("The result of the Hash: "+hashtext);
-    aPath = "./"+port+"/"+guid;
+    System.out.println("The result of the Hash: "+hashtext);
+    aPath = "./"+i+"/repository"+"/"+guid;
     Path p = Path.get(aPath);
-    FileStream file = new FileStream(path);
+    FileStream file = new FileStream(p);
     if(!p.exists()){
       System.out.println("The input file does not exist!");
     }else {
+      return file;
       // return the file.
     }
     //TODO get  the file ./port/repository/guid
-    return file;
+
   }
   public void delete(int guid) throws RemoteException {
     // Fires after file has been found.
     //TODO: delete the file ./port/repository/guid
     // Find file, delete, if not found print not found
     //FileStream file = new FileStream(path);
-    if (f.delete()) {
-      System.out.println("File Deleted.");
-    }else{
-      System.out.println("File not Deleted");
-    }
+    // if (f.delete()) {
+    //   System.out.println("File Deleted.");
+    // }else{
+    //   System.out.println("File not Deleted");
+    // }
 
   }
   public int getId() throws RemoteException {

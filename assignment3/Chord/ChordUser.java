@@ -53,7 +53,7 @@ public class ChordUser{
                 byte[] messageDigest = md.digest(thingOfaKey.getBytes());
                 BigInteger number = new BigInteger(1, messageDigest);// now make big int small number. in the 1000s
                 // TODO: add small number here.
-                String hashtext = number.toString(16);
+                String hashtext = number.toString(1);
                 // Now we need zero pad it if you actually want the full 32 chars.
                 while(hashtext.length() < 32){
                   hashtext = "0" + hashtext;
