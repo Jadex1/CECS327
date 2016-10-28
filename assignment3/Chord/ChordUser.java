@@ -58,16 +58,16 @@ public class ChordUser{
                 // MD5(anything)
                 // filename = md5(anything)
                 String path;
-<<<<<<< Updated upstream
                 int guid = Integer.parseInt(tokens[1]);// name of a file.
 
                 System.out.println("Shit's here"+guid);
                 String thingOfaKey = Integer.toString(guid);// equal to token[1]
                 MessageDigest md = MessageDigest.getInstance("MD5");
                 byte[] messageDigest = md.digest(thingOfaKey.getBytes());
-                BigInteger number = new BigInteger(1, messageDigest);// now make big int small number. in the 1000s
+                BigInteger bigNumber = new BigInteger(1, messageDigest);// now make big int small number. in the 1000s
                 // TODO: add small number here.
-                String hashtext = number.toString(1);
+                int smallerNumber = bigNumber.intValue();
+                String hashtext = smallerNumber.toString(16);
                 // Now we need zero pad it if you actually want the full 32 chars.
                 while(hashtext.length() < 32){
                   hashtext = "0" + hashtext;
