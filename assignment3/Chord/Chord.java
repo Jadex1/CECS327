@@ -41,6 +41,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       return (key > key1 || key < key2);
     }
   }
+  // Here we have, the  guid, and teh file obejct.
   public void put(int guid, InputStream stream) throws RemoteException{
     //TODO Store the file at "./" port/repository/guid
     // "./port/repository/guid-hash"
@@ -107,10 +108,12 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   public boolean isAlive() throws RemoteException {
     return true;
   }
+
   public ChordMessageInterface getPredecessor() throws RemoteException{
     return predecessor;
   }
   public ChordMessageInterface locateSuccessor(int key) throws RemoteException{
+
     if (key == i){
       throw new IllegalArgumentException("Key must be distinct that  " + i);
     }
@@ -129,6 +132,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   public ChordMessageInterface closestPrecedingNode(int key) throws RemoteException {
     // look for the nodes that have me this port number as a preceeding node, or who is related to me as a note. Other nodes will have records of other nodes.
     // TODO:
+
     return successor;
    }
   public void joinRing(String ip, int port)  throws RemoteException {
