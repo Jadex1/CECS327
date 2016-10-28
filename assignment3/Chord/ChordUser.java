@@ -3,6 +3,10 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 import java.math.*;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import java.security.MessageDigest;
 public class ChordUser{
   int port;
@@ -16,12 +20,10 @@ public class ChordUser{
         System.out.println("\tread <file>\n\tdelete <file>\n\tprint");
         System.out.println("Enter: ");
         try{
-
           Chord chord = new Chord(port);//The errors are coming from here.
           Scanner scan= new Scanner(System.in);
           String delims = "[ ]+";
           String command = "";
-
           while (true) {
             String text = scan.nextLine();
             String[] tokens = text.split(delims);
@@ -37,34 +39,32 @@ public class ChordUser{
             }
             if (tokens[0].equals("write") && tokens.length == 2) {
               try{
+                // make the second token look for any string.
                 // "write_ *anything* "
                 // string = antying;
                 // MD5(anything)
                 // filename = md5(anything)
                 String path;
-                // this is either a known number or a created number.
-                int guid = Integer.parseInt(tokens[1]);// name of a file.]
-                // token
+                int guid = Integer.parseInt(tokens[1]);// name of a file.
+
+                System.out.println("Shit's here"+guid);
                 String thingOfaKey = Integer.toString(guid);// equal to token[1]
                 MessageDigest md = MessageDigest.getInstance("MD5");
+                byte[] messageDigest = md.digest(thingOfaKey.getBytes());
+                BigInteger number = new BigInteger(1, messageDigest);// now make big int small number. in the 1000s
+                // TODO: add small number here.
+                String hashtext = number.toString(16);
+                // Now we need zero pad it if you actually want the full 32 chars.
+                while(hashtext.length() < 32){
+                  hashtext = "0" + hashtext;
+                }
 
-                md.update(thingOfaKey.getBytes());// should be "big integer"
-                byte[] byteData = md.digest();
-              //  convert the byte to hex format method 1
-               StringBuffer sb = new StringBuffer();
-               for (int i = 0; i < byteData.length; i++) {
-                 sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
-               }
+                System.out.println("The result of the Hash:"+hashtext);// hashtext works
+                path = "./"+  port +"/"+guid; // path to file
+                //NOTE: Still haven't wrote anything yet?
+      	        FileStream file = new FileStream(path);
 
-               System.out.println("Digest(in hex format):: " + sb.toString());
-
-               System.out.println("MD5: "+ new BigInteger(1, md.digest()).toString(16));
-
-                // If you are using windows you have to use
-                path = ".\\"+  port +"\\"+Integer.parseInt(tokens[1]); // path to file
-  			        //path = "./"+  port +"/"+guid; // path to file
-  			        FileStream file = new FileStream(path);
-  		          ChordMessageInterface peer = chord.locateSuccessor(guid);
+                ChordMessageInterface peer = chord.locateSuccessor(guid);
                 peer.put(guid, file); // put file into ring
                 //file is just an object,
                 //NOTE: I'm not sure where to get the file or find it.
@@ -77,6 +77,8 @@ public class ChordUser{
               }catch(IOException e){
                 e.printStackTrace();
                 System.out.println("Could not put file!");
+              }catch(Exception e){// generic Exception
+                throw new RuntimeException(e);
               }
             }
             if (tokens[0].equals("read") && tokens.length == 2) {
@@ -99,7 +101,7 @@ public class ChordUser{
       }
     }, 1000, 1000);
   }
-  static public void main(String args[]){
+  static public void main(String args[]) throws NoSuchAlgorithmException {
     if (args.length < 1 ) {
       throw new IllegalArgumentException("Parameter: <port>");
     }

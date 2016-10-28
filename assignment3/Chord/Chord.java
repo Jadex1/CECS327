@@ -5,7 +5,7 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 import java.security.MessageDigest;
-
+import java.math.BigInteger;
 public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordMessageInterface {
   public static final int M = 2;
   Registry registry;    // rmi registry for lookup the remote objects.
@@ -47,71 +47,59 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     // convert guid into a md5 hash
     // create a new path to save off of that.,
     // save thhe has
-    //
     try {
-      // "write_ *anything* "
-      // string = antying;
-      // MD5(anything)
-      // filename = md5(anything)
-      //   String path;
-      //   // this is either a known number or a created number.
-      //   int guid = Integer.parseInt(tokens[1]);// name of a file.]
-      //   // token
-      //   String thingOfaKey = Integer.toString(guid);// equal to token[1]
-      //   MessageDigest md = MessageDigest.getInstance("MD5");
-      //
-      //   md.update(thingOfaKey.getBytes());// should be "big integer"
-      //   byte[] byteData = md.digest();
-      // //  convert the byte to hex format method 1
-      //  StringBuffer sb = new StringBuffer();
-      //  for (int i = 0; i < byteData.length; i++) {
-      //    sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
-      //  }
-      //
-      //  System.out.println("Digest(in hex format):: " + sb.toString());
-      //
-      //  System.out.println("MD5: "+ new BigInteger(1, m.digest()).toString(16));
-
-      String thingOfaKey = Integer.toString(guid);
-      MessageDigest md = MessageDigest.getInstance("MD5");
-      md.update(thingOfaKey.getBytes());
-      byte[] byteData = md.digest();
-      StringBuffer sb = new StringBuffer();
-      for(int i = 0; i < byteData.length; i++){
-        sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
-      }
-       System.out.println("Digest(in hex format):: "+sb.toString());
-       System.out.println("MD5:: "+ new BigInteger(1, m.digest()).toString(1));
+      //  convert the byte to hex format method 1
        String fileName = "./"+i+"/repository/" + guid;
        // read-up on fileoutputstream
-      FileOutputStream output = new FileOutputStream(fileName);
-      while (stream.available() > 0){
-        output.write(stream.read());
-        output.flush();
-        output.close();
+       FileOutputStream output = new FileOutputStream(fileName);
+       while (stream.available() > 0){
+         output.write(stream.read());
+         output.flush();
+         output.close();
+       }
+      } catch (Exception e) {
+        System.out.println(e);
       }
-     } catch (IOException e) {
-       System.out.println(e);
-     } 
-  }
+   }
   // this returns a file given a guid
   public InputStream get(int guid) throws RemoteException {
     // any arbitray number, with the md5,
     // I'm given a number
     // if the md5, and number passed in don't exist, neither does the fiel.
     // else return what it found.
-    FileStream file = null;
+    // Find file, return, if not found print not found
+    String aPath;
+    String thingOfaKey = Integer.toString(guid);
+    MessageDigest md = MessageDigest.getInstance("MD5");
+    byte[] messageDigest = md.digest(thingOfaKey.getBytes());
+    BigInteger number = new BigInteger(1, messageDigest);
+    String hashtext = numbre. toString(16);
+    while(hashtext.lengt()< 32){
+      hashtext = "0" + hashtext;
+    }
+    System.out.prinln("The result of the Hash: "+hashtext);
+    aPath = "./"+port+"/"+guid;
+    Path p = Path.get(aPath);
+    FileStream file = new FileStream(path);
+    if(!p.exists()){
+      System.out.println("The input file does not exist!");
+    }else {
+      // return the file.
+    }
     //TODO get  the file ./port/repository/guid
     return file;
   }
   public void delete(int guid) throws RemoteException {
     // Fires after file has been found.
+    //TODO: delete the file ./port/repository/guid
+    // Find file, delete, if not found print not found
+    //FileStream file = new FileStream(path);
     if (f.delete()) {
       System.out.println("File Deleted.");
     }else{
       System.out.println("File not Deleted");
     }
-    //TODO delete the file ./port/repository/guid
+
   }
   public int getId() throws RemoteException {
       return i;
