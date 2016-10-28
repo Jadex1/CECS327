@@ -9,6 +9,8 @@ public class MD5{
       MessageDigest md = MessageDigest.getInstance("MD5");
       byte[] messageDigest = md.digest(input.getBytes());
       BigInteger number = new BigInteger(1, messageDigest);
+      BigInteger aMod = new BigInteger("32768");
+      System.out.println(number.mod(aMod));
       String hashtext = number.toString(16);
       while (hashtext.length() < 32) {
         hashtext = "0" + hashtext;
@@ -19,6 +21,6 @@ public class MD5{
     }
   }
   public static void main(String[] args) throws NoSuchAlgorithmException {
-    System.out.println(getMD5("Javarmi.com"));
+    System.out.println((getMD5(args[0])));
   }
 }
