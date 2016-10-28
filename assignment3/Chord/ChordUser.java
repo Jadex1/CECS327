@@ -8,26 +8,38 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import java.security.MessageDigest;
+
 public class ChordUser{
+
   int port;
+
   public ChordUser(int p){
+
     port = p;
     Timer timer1 = new Timer();
     timer1.scheduleAtFixedRate(new TimerTask(){
+
       @Override
+
       public void run(){
+
         System.out.println("Usage: \n\tjoin <port>\n\twrite <file> (the file must be an integer stored in the working directory, i.e, ./port/file");
         System.out.println("\tread <file>\n\tdelete <file>\n\tprint");
         System.out.println("Enter: ");
+
         try{
           Chord chord = new Chord(port);//The errors are coming from here.
           Scanner scan= new Scanner(System.in);
           String delims = "[ ]+";
           String command = "";
           while (true) {
+
             String text = scan.nextLine();
             String[] tokens = text.split(delims);
+
             if (tokens[0].equals("join") && tokens.length == 2) {
+
+              System.out.println("Join Mutha Fucka");
               try {
                 chord.joinRing("localhost", Integer.parseInt(tokens[1]));
               } catch (IOException e) {
@@ -37,6 +49,7 @@ public class ChordUser{
             if (tokens[0].equals("print")){
               chord.Print();
             }
+
             if (tokens[0].equals("write") && tokens.length == 2) {
               try{
                 // make the second token look for any string.
@@ -45,6 +58,7 @@ public class ChordUser{
                 // MD5(anything)
                 // filename = md5(anything)
                 String path;
+<<<<<<< Updated upstream
                 int guid = Integer.parseInt(tokens[1]);// name of a file.
 
                 System.out.println("Shit's here"+guid);
@@ -73,7 +87,7 @@ public class ChordUser{
                 System.out.println("File was not found!");
               }catch (RemoteException e1) {
                 e1.printStackTrace();
-                System.out.println("File was not found!");
+                System.out.println("Bitches, man Bitches...");
               }catch(IOException e){
                 e.printStackTrace();
                 System.out.println("Could not put file!");
@@ -89,6 +103,7 @@ public class ChordUser{
               }
             }
             if (tokens[0].equals("delete") && tokens.length == 2) {
+              System.out.println("whatever! Detele mother fucker!");
               try {
                 chord.delete(Integer.parseInt(tokens[1]));
               } catch (IOException e) {
