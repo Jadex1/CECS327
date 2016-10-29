@@ -42,8 +42,8 @@ public class ChordUser{
                 String path;
                 int guid = Integer.parseInt(tokens[1]);// name of a file.
                 path = "./"+port+"/"+guid; // path to file
-                //NOTE: Still haven't wrote anything yet?
-      	        FileStream file = new FileStream(path);
+                // STuck here
+                FileStream file = new FileStream(path);
                 ChordMessageInterface peer = chord.locateSuccessor(guid);
                 peer.put(guid, file); // put file into ring
                 //file is just an object,
@@ -57,13 +57,10 @@ public class ChordUser{
               }catch(IOException e){
                 e.printStackTrace();
                 System.out.println("Could not put file!");
-              }catch(Exception e){// generic Exception
-                e.printStackTrace();
-                throw new RuntimeException(e);
               }
             }
             if (tokens[0].equals("read") && tokens.length == 2) {
-              try { //TODO:
+              try {
                 chord.get(Integer.parseInt(tokens[1]));
               }catch (IOException e) {
                 System.out.println("Could not get file!");

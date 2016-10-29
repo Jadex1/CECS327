@@ -48,23 +48,17 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     // convert guid into a md5 hash
     // create a new path to save off of that.,
     // save thhe has
+    // Doesn't look like it's getiing here.
+    System.out.println("Got here");
     try {
       //  convert the byte to hex format method 1
-      String thingOfaKey = Integer.toString(guid);// equal to token[1]
-      MessageDigest md = MessageDigest.getInstance("MD5");
-      byte[] messageDigest = md.digest(thingOfaKey.getBytes());
-      BigInteger bigNumber = new BigInteger(1, messageDigest);
-      BigInteger aMod = new BigInteger("2768");
-      int smallerNumber = bigNumber.mod(aMod).intValue();
-      String hashtext = Integer.toString(smallerNumber);
-      System.out.println("The result of the Hash:"+hashtext);// hashtext works
-      String aPath = "./"+i+"/repository/"+smallerNumber;
-      File f = new File(aPath);
-      if(f.createNewFile()){
-        System.out.println("File Created");
-      }else{
-        System.out.println("File was not created");
-      }
+      // String thingOfaKey = Integer.toString(guid);// equal to token[1]
+      // MessageDigest md = MessageDigest.getInstance("MD5");
+      // byte[] messageDigest = md.digest(thingOfaKey.getBytes());
+      // BigInteger bigNumber = new BigInteger(1, messageDigest);
+      // BigInteger aMod = new BigInteger("2768");
+      // int smallerNumber = bigNumber.mod(aMod).intValue();
+      String aPath = "./"+i+"/repository/"+guid;
       // read-up on fileoutputstream
       FileOutputStream output = new FileOutputStream(aPath);
       while (stream.available() > 0) {
@@ -137,6 +131,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     //TODO: delete the file ./port/repository/guid
     // Find file, delete, if not found print not found
     //FileStream file = new FileStream(path);
+    //
   }
   public int getId() throws RemoteException {
       return i;
