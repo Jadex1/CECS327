@@ -46,13 +46,6 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     }
   }
   public void put(int guid, String data) throws RemoteException{
-    //TODO Store the file at "./" port/repository/guid
-    // "./port/repository/guid-hash"
-    // convert guid into a md5 hash
-    // create a new path to save off of that.,
-    // save thhe has
-    // Doesn't look like it's getiing here.
-
     System.out.println("Got here");
     File file;
     try {
@@ -65,26 +58,19 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       String aPath = "./"+smallerNumber;
       // read-up on fileoutputstream
       file = new File(aPath);
-		try (FileOutputStream fop = new FileOutputStream(file)) {
-
-			// if file doesn't exists, then create it
-			if (!file.exists()) {
+      FileOutputStream fop = new FileOutputStream(file)
+      if (!file.exists()) {
 				file.createNewFile();
 			}
-
 			// get the content in bytes
 			byte[] contentInBytes = data.getBytes();
-
 			fop.write(contentInBytes);
 			fop.flush();
 			fop.close();
-
 			System.out.println("Done");
-
-		} catch (IOException e) {
+    } catch (IOException e) {
 			e.printStackTrace();
-		}
-    } catch (Exception e) {
+		} catch (Exception e) {
       System.out.println(e+ "!");
     }
   }
