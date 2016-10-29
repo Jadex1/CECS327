@@ -56,7 +56,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       // MessageDigest md = MessageDigest.getInstance("MD5");
       // byte[] messageDigest = md.digest(thingOfaKey.getBytes());
       // BigInteger bigNumber = new BigInteger(1, messageDigest);
-      // BigInteger aMod = new BigInteger("2768");
+      // BigInteger aMod = new BigInteger("32768");
       // int smallerNumber = bigNumber.mod(aMod).intValue();
       String aPath = "./"+i+"/repository/"+guid;
       // read-up on fileoutputstream
@@ -91,7 +91,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       MessageDigest md = MessageDigest.getInstance("MD5");
       byte[] messageDigest = md.digest(thingOfaKey.getBytes());
       BigInteger bigNumber = new BigInteger(1, messageDigest);
-      BigInteger aMod = new BigInteger("2768");
+      BigInteger aMod = new BigInteger("32768");
       int smallerNumber = bigNumber.mod(aMod).intValue();
       String hashtext = Integer.toString(smallerNumber);
       String aPath = "./"+i+"/repository/"+smallerNumber;
@@ -105,6 +105,10 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     return file;
   }
   public void delete(int guid) throws RemoteException {
+    // Fires after file has been found.
+    //TODO: delete the file ./port/repository/guid
+    // Find file, delete, if not found print not found
+    //FileStream file = new FileStream(path);
     // find file path.
     // might need to write hash here too.
     // convert guid into a hash before hand.
@@ -113,9 +117,8 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       MessageDigest md = MessageDigest.getInstance("MD5");
       byte[] messageDigest = md.digest(thingOfaKey.getBytes());
       BigInteger bigNumber = new BigInteger(1, messageDigest);
-      BigInteger aMod = new BigInteger("2768");
+      BigInteger aMod = new BigInteger("32768");
       int smallerNumber = bigNumber.mod(aMod).intValue();
-      String hashtext = Integer.toString(smallerNumber);
       String aPath = "./"+i+"/repository/"+smallerNumber;
       File f = new File(aPath);
       if (f.delete()) {
@@ -127,11 +130,6 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       System.out.println(e);
       System.out.println("The input file does not exist");
     }
-    // Fires after file has been found.
-    //TODO: delete the file ./port/repository/guid
-    // Find file, delete, if not found print not found
-    //FileStream file = new FileStream(path);
-    //
   }
   public int getId() throws RemoteException {
       return i;
