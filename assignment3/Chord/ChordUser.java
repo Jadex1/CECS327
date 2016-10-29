@@ -39,34 +39,11 @@ public class ChordUser{
             }
             if (tokens[0].equals("write") && tokens.length == 2) {
               try{
-                // make the second token look for any string.
-                // "write_ *anything* "
-                // string = antying;
-                // MD5(anything)
-                // filename = md5(anything)
                 String path;
                 int guid = Integer.parseInt(tokens[1]);// name of a file.
-
-                System.out.println("Shit's here"+guid);
-                String thingOfaKey = Integer.toString(guid);// equal to token[1]
-                MessageDigest md = MessageDigest.getInstance("MD5");
-                byte[] messageDigest = md.digest(thingOfaKey.getBytes());
-                BigInteger bigNumber = new BigInteger(1, messageDigest);// now make big int small number. in the 1000s
-                BigInteger aMod = new BigInteger("2768");
-
-                // TODO: add small number here.
-                int smallerNumber = bigNumber.mod(aMod).intValue();
-                String hashtext = Integer.toString(smallerNumber);
-                // Now we need zero pad it if you actually want the full 32 chars.
-                // while(hashtext.length() < 32){
-                //   hashtext = "0" + hashtext;
-                // }
-
-                System.out.println("The result of the Hash:"+hashtext);// hashtext works
-                path = "./"+port+"/"+hashtext; // path to file
+                path = "./"+port+"/"+guid; // path to file
                 //NOTE: Still haven't wrote anything yet?
       	        FileStream file = new FileStream(path);
-
                 ChordMessageInterface peer = chord.locateSuccessor(guid);
                 peer.put(guid, file); // put file into ring
                 //file is just an object,

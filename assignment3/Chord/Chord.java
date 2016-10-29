@@ -4,8 +4,9 @@ import java.rmi.server.*;
 import java.net.*;
 import java.util.*;
 import java.io.*;
-import java.security.MessageDigest;
 import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordMessageInterface {
   public static final int M = 2;
   Registry registry;    // rmi registry for lookup the remote objects.
@@ -49,18 +50,26 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     // save thhe has
     try {
       //  convert the byte to hex format method 1
-       String fileName = "./"+i+"/repository/" + guid;
-       // read-up on fileoutputstream
-       FileOutputStream output = new FileOutputStream(fileName);
-       while (stream.available() > 0){
-         output.write(stream.read());
-         output.flush();
-         output.close();
-       }
-      } catch (Exception e) {
-        System.out.println(e);
+      // String thingOfaKey = Integer.toString(guid);// equal to token[1]
+      // MessageDigest md = MessageDigest.getInstance("MD5");
+      // byte[] messageDigest = md.digest(thingOfaKey.getBytes());
+      // BigInteger bigNumber = new BigInteger(1, messageDigest);
+      // BigInteger aMod = new BigInteger("2768");
+      // int smallerNumber = bigNumber.mod(aMod).intValue();
+      // String hashtext = Integer.toString(smallerNumber);
+      // System.out.println("The result of the Hash:"+hashtext);// hashtext works
+      String fileName = "./"+i+"/repository/"+guid;
+      // read-up on fileoutputstream
+      FileOutputStream output = new FileOutputStream(fileName);
+      while (stream.available() > 0) {
+        output.write(stream.read());
+        output.flush();
+        output.close();
       }
-   }
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+  }
   // this returns a file given a guid
   public InputStream get(int guid) throws RemoteException {
     // any arbitray number, with the md5,
@@ -68,7 +77,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     // if the md5, and number passed in don't exist, neither does the fiel.
     // else return what it found.
     // Find file, return, if not found print not found
-    String aPath;
+    String aPath = "./"+i+"/repository/"+guid;
 
     FileStream file = null;
     // String thingOfaKey = Integer.toString(guid);
@@ -95,6 +104,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
 
   }
   public void delete(int guid) throws RemoteException {
+    String aPath = "./"+i+"/repository/"+guid;
     // Fires after file has been found.
     //TODO: delete the file ./port/repository/guid
     // Find file, delete, if not found print not found
