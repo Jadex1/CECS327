@@ -65,13 +65,15 @@ public class ChordUser{
                 MessageDigest md = MessageDigest.getInstance("MD5");
                 byte[] messageDigest = md.digest(thingOfaKey.getBytes());
                 BigInteger bigNumber = new BigInteger(1, messageDigest);// now make big int small number. in the 1000s
+                BigInteger aMod = new BigInteger("32768");
+
                 // TODO: add small number here.
-                int smallerNumber = bigNumber.intValue();
-                String hashtext = smallerNumber.toString(16);
+                int smallerNumber = bigNumber.mod(aMod).intValue();
+                String hashtext = Integer.toString(smallerNumber);
                 // Now we need zero pad it if you actually want the full 32 chars.
-                while(hashtext.length() < 32){
-                  hashtext = "0" + hashtext;
-                }
+                // while(hashtext.length() < 32){
+                //   hashtext = "0" + hashtext;
+                // }
 
                 System.out.println("The result of the Hash:"+hashtext);// hashtext works
                 path = "./"+  port +"/"+guid; // path to file
@@ -87,11 +89,12 @@ public class ChordUser{
                 System.out.println("File was not found!");
               }catch (RemoteException e1) {
                 e1.printStackTrace();
-                System.out.println("Bitches, man Bitches...");
+                System.out.println("File was not found!");
               }catch(IOException e){
                 e.printStackTrace();
                 System.out.println("Could not put file!");
               }catch(Exception e){// generic Exception
+                e.printStackTrace();
                 throw new RuntimeException(e);
               }
             }
@@ -116,7 +119,7 @@ public class ChordUser{
       }
     }, 1000, 1000);
   }
-  static public void main(String args[]) throws NoSuchAlgorithmException {
+  static public void main(String args[]){
     if (args.length < 1 ) {
       throw new IllegalArgumentException("Parameter: <port>");
     }

@@ -70,24 +70,28 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     // else return what it found.
     // Find file, return, if not found print not found
     String aPath;
-    String thingOfaKey = Integer.toString(guid);
-    MessageDigest md = MessageDigest.getInstance("MD5");
-    byte[] messageDigest = md.digest(thingOfaKey.getBytes());
-    BigInteger number = new BigInteger(1, messageDigest);
-    String hashtext = number.toString(16);
-    while(hashtext.length()< 32){
-      hashtext = "0" + hashtext;
-    }
-    System.out.println("The result of the Hash: "+hashtext);
-    aPath = "./"+i+"/repository"+"/"+guid;
-    Path p = Path.get(aPath);
-    FileStream file = new FileStream(p);
-    if(!p.exists()){
-      System.out.println("The input file does not exist!");
-    }else {
-      return file;
-      // return the file.
-    }
+
+    FileStream file = null;
+    // String thingOfaKey = Integer.toString(guid);
+    // MessageDigest md = MessageDigest.getInstance("MD5");
+    // byte[] messageDigest = md.digest(thingOfaKey.getBytes());
+    // BigInteger number = new BigInteger(1, messageDigest);
+    // String hashtext = number.toString(16);
+    // while(hashtext.length()< 32){
+    //   hashtext = "0" + hashtext;
+    // }
+    // System.out.println("The result of the Hash: "+hashtext);
+    // aPath = "./"+i+"/repository"+"/"+guid;
+    // File aFile = new File(aPath);
+    return file;
+  //   Path p = Path.get(aPath);
+  // //  FileStream file = new FileStream(p);
+  //   if(!p.exists()){
+  //     System.out.println("The input file does not exist!");
+  //   }else {
+  //     return file;
+  //     // return the file.
+  //   }
     //TODO get  the file ./port/repository/guid
 
   }
