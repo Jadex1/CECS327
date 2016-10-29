@@ -42,8 +42,9 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       return (key > key1 || key < key2);
     }
   }
-  public void put(int guid, InputStream stream) throws RemoteException{
+  public void put(int guid) throws RemoteException{
     System.out.println("Got here");
+    File file;
     try {
       String thingOfaKey = Integer.toString(guid);// equal to token[1]
       MessageDigest md = MessageDigest.getInstance("MD5");
@@ -51,7 +52,9 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       BigInteger bigNumber = new BigInteger(1, messageDigest);
       BigInteger aMod = new BigInteger("32768");
       int smallerNumber = bigNumber.mod(aMod).intValue();
-      String aPath = "./"+i+"/"+guid;
+      
+      String aPath = "./"+i+"/"+guid;// guid <-- which is a hashtext
+      // we need to save the
       // read-up on fileoutputstream
       File somethingFile = new File(aPath);
       FileOutputStream output = new FileOutputStream(somethingFile);
