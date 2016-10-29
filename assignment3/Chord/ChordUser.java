@@ -45,8 +45,6 @@ public class ChordUser{
                 ChordMessageInterface peer = chord.locateSuccessor(guid);
                 peer.put(guid,data); // put file into ring
                 //file is just an object,
-
-                //NOTE: I'm not sure where to get the file or find it.
               }catch(FileNotFoundException e1){
                 e1.printStackTrace();
                 System.out.println("File was not found!");

@@ -46,24 +46,23 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     }
   }
   public void put(int guid, String data) throws RemoteException{
-    System.out.println("Got here");
-    File file;
+    File aFile;
+    String thingOfaKey = Integer.toString(guid);// equal to token[1]
     try {
-      String thingOfaKey = Integer.toString(guid);// equal to token[1]
       MessageDigest md = MessageDigest.getInstance("MD5");
       byte[] messageDigest = md.digest(thingOfaKey.getBytes());
       BigInteger bigNumber = new BigInteger(1, messageDigest);
       BigInteger aMod = new BigInteger("32768");
       int smallerNumber = bigNumber.mod(aMod).intValue();
       String aPath = "./"+smallerNumber;
-      // read-up on fileoutputstream
-      file = new File(aPath);
-      FileOutputStream fop = new FileOutputStream(file)
-      if (!file.exists()) {
-				file.createNewFile();
+      aFile = new File(aPath);
+      FileOutputStream fop = new FileOutputStream(aFile);
+      if (!aFile.exists()) {
+				aFile.createNewFile();
+        System.out.println("File Created");
 			}
+      byte[] contentInBytes = data.getBytes();
 			// get the content in bytes
-			byte[] contentInBytes = data.getBytes();
 			fop.write(contentInBytes);
 			fop.flush();
 			fop.close();
@@ -76,14 +75,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   }
   public InputStream get(int guid) throws RemoteException {
     // Find file, return, if not found print not found
-    //Path p = Path.get(aPath);
     FileStream file = null; // new FileStream(p);
-    //   if(!p.exists()){
-    //     System.out.println("The input file does not exist!");
-    //   }else {
-    //     return file;
-    //     // return the file.
-    //   }
     // TODO get  the file ./port/repository/guid
     try{
       String thingOfaKey = Integer.toString(guid);// equal to token[1]
@@ -95,16 +87,19 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       String hashtext = Integer.toString(smallerNumber);
       String aPath = "./"+smallerNumber;
       File aFile = new File(aPath);
+      // String aString = new String(contentInBytes);
+      // System.out.println(aString);
+
       if(!aFile.exists()){
         System.out.println("The input file does not exists!");
-      }
-      else {
+      } else {
         System.out.println("File at path:"+aPath+" exists!");
       }
     } catch (Exception e) {
       System.out.println(e);
     }
-    return file;
+    // return a string of whatever is saved.
+    return file; // make it return a string of the data.
   }
   public void delete(int guid) throws RemoteException {
     try{
@@ -113,15 +108,16 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       byte[] messageDigest = md.digest(thingOfaKey.getBytes());
       BigInteger bigNumber = new BigInteger(1, messageDigest);
       BigInteger aMod = new BigInteger("32768");
+
       int smallerNumber = bigNumber.mod(aMod).intValue();
-      String aPath = "./"+i+"/repository/"+smallerNumber;
+      String aPath = "./"+smallerNumber;
       File f = new File(aPath);
       if (f.delete()) {
         System.out.println("File Deleted.");
       } else{
         System.out.println("The input file does not exist");
       }
-    } catch (Exception e){
+    } catch (Exception e) {
       System.out.println(e);
       System.out.println("The input file does not exist");
     }
