@@ -11,7 +11,7 @@ public interface ChordMessageInterface extends Remote
     public boolean isAlive() throws RemoteException;
     public int getId() throws RemoteException;
 
-    public void put(int guid, InputStream file) throws IOException, RemoteException;
+    public void put(int guid,String data) throws IOException, RemoteException;
     public InputStream get(int id) throws IOException, RemoteException;
     public void delete(int id) throws IOException, RemoteException;
 }

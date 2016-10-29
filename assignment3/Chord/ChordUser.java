@@ -37,15 +37,13 @@ public class ChordUser{
             if (tokens[0].equals("print")){
               chord.Print();
             }
-            if (tokens[0].equals("write") && tokens.length == 2) {
+            if (tokens[0].equals("write") && tokens.length == 3) {
               try{
                 String path;
                 int guid = Integer.parseInt(tokens[1]);// name of a file.
-                path = "./"+port+"/"+guid; // path to file
-                // STuck here
-                FileStream file = new FileStream(path);
+                String data = tokens[2];
                 ChordMessageInterface peer = chord.locateSuccessor(guid);
-                peer.put(guid, file); // put file into ring
+                peer.put(guid,data); // put file into ring
                 //file is just an object,
                 //NOTE: I'm not sure where to get the file or find it.
               }catch(FileNotFoundException e1){

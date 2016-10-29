@@ -7,6 +7,9 @@ import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordMessageInterface {
   public static final int M = 2;
   Registry registry;    // rmi registry for lookup the remote objects.
@@ -42,7 +45,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       return (key > key1 || key < key2);
     }
   }
-  public void put(int guid, InputStream stream) throws RemoteException{
+  public void put(int guid, String data) throws RemoteException{
     //TODO Store the file at "./" port/repository/guid
     // "./port/repository/guid-hash"
     // convert guid into a md5 hash
@@ -51,23 +54,37 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     // Doesn't look like it's getiing here.
     System.out.println("Got here");
     try {
-      //  convert the byte to hex format method 1
-      // String thingOfaKey = Integer.toString(guid);// equal to token[1]
-      // MessageDigest md = MessageDigest.getInstance("MD5");
-      // byte[] messageDigest = md.digest(thingOfaKey.getBytes());
-      // BigInteger bigNumber = new BigInteger(1, messageDigest);
-      // BigInteger aMod = new BigInteger("32768");
-      // int smallerNumber = bigNumber.mod(aMod).intValue();
-      String aPath = "./"+i+"/repository/"+guid;
+       //convert the byte to hex format method 1
+      String thingOfaKey = Integer.toString(guid);// equal to token[1]
+      MessageDigest md = MessageDigest.getInstance("MD5");
+      byte[] messageDigest = md.digest(thingOfaKey.getBytes());
+      BigInteger bigNumber = new BigInteger(1, messageDigest);
+      BigInteger aMod = new BigInteger("32768");
+      int smallerNumber = bigNumber.mod(aMod).intValue();
+      String aPath = "./"+smallerNumber;
       // read-up on fileoutputstream
-      FileOutputStream output = new FileOutputStream(aPath);
-      while (stream.available() > 0) {
-        output.write(stream.read());
-        output.flush();
-        output.close();
-      }
+      File file = new File(aPath);
+		try (FileOutputStream fop = new FileOutputStream(file)) {
+
+			// if file doesn't exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+			// get the content in bytes
+			byte[] contentInBytes = data.getBytes();
+
+			fop.write(contentInBytes);
+			fop.flush();
+			fop.close();
+
+			System.out.println("Done");
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     } catch (Exception e) {
-      System.out.println(e);
+      System.out.println(e+ "!");
     }
   }
   // this returns a file given a guid
@@ -94,10 +111,13 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       BigInteger aMod = new BigInteger("32768");
       int smallerNumber = bigNumber.mod(aMod).intValue();
       String hashtext = Integer.toString(smallerNumber);
-      String aPath = "./"+i+"/repository/"+smallerNumber;
+      String aPath = "./"+smallerNumber;
       File aFile = new File(aPath);
       if(!aFile.exists()){
         System.out.println("The input file does not exists!");
+      }
+      else {
+        System.out.println("File at path:"+aPath+" exists!");
       }
     } catch (Exception e) {
       System.out.println(e);
