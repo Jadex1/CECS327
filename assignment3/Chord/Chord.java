@@ -105,10 +105,17 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   }
   public void delete(int guid) throws RemoteException {
     // find file path.
-    String aPath = "./"+i+"/repository/"+guid;
-    // deletes
-    deleteFile(new File(aPath));
+    // might need to write hash here too.\
 
+    // convert guid into a hash before hand.
+    String aPath = "./"+i+"/repository/"+guid;
+    File f = new File(aPath);
+    
+    if(f.exists()){
+      deleteFile(new File(aPath));
+    }else{
+      System.out.println("The input file does not exist");
+    }
     // Fires after file has been found.
     //TODO: delete the file ./port/repository/guid
     // Find file, delete, if not found print not found
