@@ -65,7 +65,7 @@ public class ChordUser{
                 MessageDigest md = MessageDigest.getInstance("MD5");
                 byte[] messageDigest = md.digest(thingOfaKey.getBytes());
                 BigInteger bigNumber = new BigInteger(1, messageDigest);// now make big int small number. in the 1000s
-                BigInteger aMod = new BigInteger("32768");
+                BigInteger aMod = new BigInteger("2768");
 
                 // TODO: add small number here.
                 int smallerNumber = bigNumber.mod(aMod).intValue();
@@ -76,7 +76,7 @@ public class ChordUser{
                 // }
 
                 System.out.println("The result of the Hash:"+hashtext);// hashtext works
-                path = "./"+  port +"/"+guid; // path to file
+                path = "./"+port+"/"+hashtext; // path to file
                 //NOTE: Still haven't wrote anything yet?
       	        FileStream file = new FileStream(path);
 
