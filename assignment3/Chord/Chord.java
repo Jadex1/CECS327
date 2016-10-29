@@ -58,7 +58,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       int smallerNumber = bigNumber.mod(aMod).intValue();
       String hashtext = Integer.toString(smallerNumber);
       System.out.println("The result of the Hash:"+hashtext);// hashtext works
-      String fileName = "./"+i+"/repository/"+guid;
+      String aPath = "./"+i+"/repository/"+smallerNumber;
       File f = new File(aPath);
       if(f.createNewFile()){
         System.out.println("File Created");
@@ -66,7 +66,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
         System.out.println("File was not created");
       }
       // read-up on fileoutputstream
-      FileOutputStream output = new FileOutputStream(fileName);
+      FileOutputStream output = new FileOutputStream(aPath);
       while (stream.available() > 0) {
         output.write(stream.read());
         output.flush();
@@ -83,8 +83,8 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     // if the md5, and number passed in don't exist, neither does the fiel.
     // else return what it found.
     // Find file, return, if not found print not found
-    //   Path p = Path.get(aPath);
-    //   FileStream file = new FileStream(p);
+    //Path p = Path.get(aPath);
+    FileStream file = null; // new FileStream(p);
     //   if(!p.exists()){
     //     System.out.println("The input file does not exist!");
     //   }else {
@@ -100,45 +100,43 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       BigInteger aMod = new BigInteger("2768");
       int smallerNumber = bigNumber.mod(aMod).intValue();
       String hashtext = Integer.toString(smallerNumber);
-      String aPath = "./"+i+"/repository/"+guid;
-      if(!f.exists()){
+      String aPath = "./"+i+"/repository/"+smallerNumber;
+      File aFile = new File(aPath);
+      if(!aFile.exists()){
         System.out.println("The input file does not exists!");
-      } else {
-        FileStream file = null;
-        return file;
       }
     } catch (Exception e) {
       System.out.println(e);
     }
+    return file;
   }
   public void delete(int guid) throws RemoteException {
     // find file path.
     // might need to write hash here too.
     // convert guid into a hash before hand.
-    String thingOfaKey = Integer.toString(guid);// equal to token[1]
-    MessageDigest md = MessageDigest.getInstance("MD5");
-    byte[] messageDigest = md.digest(thingOfaKey.getBytes());
-    BigInteger bigNumber = new BigInteger(1, messageDigest);
-    BigInteger aMod = new BigInteger("2768");
-    int smallerNumber = bigNumber.mod(aMod).intValue();
-    String hashtext = Integer.toString(smallerNumber);
-    String aPath = "./"+i+"/repository/"+guid;
-    File f = new File(aPath);
-    if(f.exists()){
-      deleteFile(new File(aPath));
-    }else{
+    try{
+      String thingOfaKey = Integer.toString(guid);// equal to token[1]
+      MessageDigest md = MessageDigest.getInstance("MD5");
+      byte[] messageDigest = md.digest(thingOfaKey.getBytes());
+      BigInteger bigNumber = new BigInteger(1, messageDigest);
+      BigInteger aMod = new BigInteger("2768");
+      int smallerNumber = bigNumber.mod(aMod).intValue();
+      String hashtext = Integer.toString(smallerNumber);
+      String aPath = "./"+i+"/repository/"+smallerNumber;
+      File f = new File(aPath);
+      if (f.delete()) {
+        System.out.println("File Deleted.");
+      } else{
+        System.out.println("The input file does not exist");
+      }
+    } catch (Exception e){
+      System.out.println(e);
       System.out.println("The input file does not exist");
     }
     // Fires after file has been found.
     //TODO: delete the file ./port/repository/guid
     // Find file, delete, if not found print not found
     //FileStream file = new FileStream(path);
-    // if (f.delete()) {
-    //   System.out.println("File Deleted.");
-    // }else{
-    //   System.out.println("File not Deleted");
-    // }
-
   }
   public int getId() throws RemoteException {
       return i;
