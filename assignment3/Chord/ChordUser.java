@@ -41,16 +41,11 @@ public class ChordUser{
               try{
                 String path;
                 int guid = Integer.parseInt(tokens[1]);// name of a file.
-<<<<<<< HEAD
                 String data = tokens[2];
                 ChordMessageInterface peer = chord.locateSuccessor(guid);
                 peer.put(guid,data); // put file into ring
                 //file is just an object,
-=======
-                path = "./"+port+"/"+guid; // path to file
-                ChordMessageInterface peer = chord.locateSuccessor(guid);
-                peer.put(guid); // put file into ring <---!!
->>>>>>> origin/JamesBranchMaster
+
                 //NOTE: I'm not sure where to get the file or find it.
               }catch(FileNotFoundException e1){
                 e1.printStackTrace();

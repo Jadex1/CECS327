@@ -59,17 +59,12 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     System.out.println("Got here");
     File file;
     try {
-<<<<<<< HEAD
-       //convert the byte to hex format method 1
-=======
->>>>>>> origin/JamesBranchMaster
       String thingOfaKey = Integer.toString(guid);// equal to token[1]
       MessageDigest md = MessageDigest.getInstance("MD5");
       byte[] messageDigest = md.digest(thingOfaKey.getBytes());
       BigInteger bigNumber = new BigInteger(1, messageDigest);
       BigInteger aMod = new BigInteger("32768");
       int smallerNumber = bigNumber.mod(aMod).intValue();
-<<<<<<< HEAD
       String aPath = "./"+smallerNumber;
       // read-up on fileoutputstream
       File file = new File(aPath);
@@ -92,18 +87,6 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-=======
-      
-      String aPath = "./"+i+"/"+guid;// guid <-- which is a hashtext
-      // we need to save the
-      // read-up on fileoutputstream
-      File somethingFile = new File(aPath);
-      FileOutputStream output = new FileOutputStream(somethingFile);
-      output.write();
-      output.flush();
-      output.close();
-      System.out.println("File was created");
->>>>>>> origin/JamesBranchMaster
     } catch (Exception e) {
       System.out.println(e+ "!");
     }
@@ -127,13 +110,8 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       BigInteger aMod = new BigInteger("32768");
       int smallerNumber = bigNumber.mod(aMod).intValue();
       String hashtext = Integer.toString(smallerNumber);
-<<<<<<< HEAD
       String aPath = "./"+smallerNumber;
       File aFile = new File(aPath);
-=======
-      String aPath = "./"+i+"/repository/"+smallerNumber;
-      FileStream aFile = new FileStream(aPath);
->>>>>>> origin/JamesBranchMaster
       if(!aFile.exists()){
         System.out.println("The input file does not exists!");
       }
