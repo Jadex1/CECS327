@@ -11,7 +11,6 @@ public class MD5{
       BigInteger number = new BigInteger(1, messageDigest);
       BigInteger aMod = new BigInteger("32768");
       return number.mod(aMod);
-
     } catch(Exception e){// generic Exception
       throw new RuntimeException(e);
     }

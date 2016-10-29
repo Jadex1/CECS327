@@ -50,15 +50,21 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     // save thhe has
     try {
       //  convert the byte to hex format method 1
-      // String thingOfaKey = Integer.toString(guid);// equal to token[1]
-      // MessageDigest md = MessageDigest.getInstance("MD5");
-      // byte[] messageDigest = md.digest(thingOfaKey.getBytes());
-      // BigInteger bigNumber = new BigInteger(1, messageDigest);
-      // BigInteger aMod = new BigInteger("2768");
-      // int smallerNumber = bigNumber.mod(aMod).intValue();
-      // String hashtext = Integer.toString(smallerNumber);
-      // System.out.println("The result of the Hash:"+hashtext);// hashtext works
+      String thingOfaKey = Integer.toString(guid);// equal to token[1]
+      MessageDigest md = MessageDigest.getInstance("MD5");
+      byte[] messageDigest = md.digest(thingOfaKey.getBytes());
+      BigInteger bigNumber = new BigInteger(1, messageDigest);
+      BigInteger aMod = new BigInteger("2768");
+      int smallerNumber = bigNumber.mod(aMod).intValue();
+      String hashtext = Integer.toString(smallerNumber);
+      System.out.println("The result of the Hash:"+hashtext);// hashtext works
       String fileName = "./"+i+"/repository/"+guid;
+      File f = new File(aPath);
+      if(f.createNewFile()){
+        System.out.println("File Created");
+      }else{
+        System.out.println("File was not created");
+      }
       // read-up on fileoutputstream
       FileOutputStream output = new FileOutputStream(fileName);
       while (stream.available() > 0) {
@@ -77,40 +83,47 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     // if the md5, and number passed in don't exist, neither does the fiel.
     // else return what it found.
     // Find file, return, if not found print not found
-    String aPath = "./"+i+"/repository/"+guid;
-
-    FileStream file = null;
-    // String thingOfaKey = Integer.toString(guid);
-    // MessageDigest md = MessageDigest.getInstance("MD5");
-    // byte[] messageDigest = md.digest(thingOfaKey.getBytes());
-    // BigInteger number = new BigInteger(1, messageDigest);
-    // String hashtext = number.toString(16);
-    // while(hashtext.length()< 32){
-    //   hashtext = "0" + hashtext;
-    // }
-    // System.out.println("The result of the Hash: "+hashtext);
-    // aPath = "./"+i+"/repository"+"/"+guid;
-    // File aFile = new File(aPath);
-    return file;
-  //   Path p = Path.get(aPath);
-  // //  FileStream file = new FileStream(p);
-  //   if(!p.exists()){
-  //     System.out.println("The input file does not exist!");
-  //   }else {
-  //     return file;
-  //     // return the file.
-  //   }
-    //TODO get  the file ./port/repository/guid
-
+    //   Path p = Path.get(aPath);
+    //   FileStream file = new FileStream(p);
+    //   if(!p.exists()){
+    //     System.out.println("The input file does not exist!");
+    //   }else {
+    //     return file;
+    //     // return the file.
+    //   }
+    // TODO get  the file ./port/repository/guid
+    try{
+      String thingOfaKey = Integer.toString(guid);// equal to token[1]
+      MessageDigest md = MessageDigest.getInstance("MD5");
+      byte[] messageDigest = md.digest(thingOfaKey.getBytes());
+      BigInteger bigNumber = new BigInteger(1, messageDigest);
+      BigInteger aMod = new BigInteger("2768");
+      int smallerNumber = bigNumber.mod(aMod).intValue();
+      String hashtext = Integer.toString(smallerNumber);
+      String aPath = "./"+i+"/repository/"+guid;
+      if(!f.exists()){
+        System.out.println("The input file does not exists!");
+      } else {
+        FileStream file = null;
+        return file;
+      }
+    } catch (Exception e) {
+      System.out.println(e);
+    }
   }
   public void delete(int guid) throws RemoteException {
     // find file path.
-    // might need to write hash here too.\
-
+    // might need to write hash here too.
     // convert guid into a hash before hand.
+    String thingOfaKey = Integer.toString(guid);// equal to token[1]
+    MessageDigest md = MessageDigest.getInstance("MD5");
+    byte[] messageDigest = md.digest(thingOfaKey.getBytes());
+    BigInteger bigNumber = new BigInteger(1, messageDigest);
+    BigInteger aMod = new BigInteger("2768");
+    int smallerNumber = bigNumber.mod(aMod).intValue();
+    String hashtext = Integer.toString(smallerNumber);
     String aPath = "./"+i+"/repository/"+guid;
     File f = new File(aPath);
-    
     if(f.exists()){
       deleteFile(new File(aPath));
     }else{
