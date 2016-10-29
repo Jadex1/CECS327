@@ -95,7 +95,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       int smallerNumber = bigNumber.mod(aMod).intValue();
       String hashtext = Integer.toString(smallerNumber);
       String aPath = "./"+i+"/repository/"+smallerNumber;
-      File aFile = new File(aPath);
+      FileStream aFile = new FileStream(aPath);
       if(!aFile.exists()){
         System.out.println("The input file does not exists!");
       }

@@ -42,8 +42,6 @@ public class ChordUser{
                 String path;
                 int guid = Integer.parseInt(tokens[1]);// name of a file.
                 path = "./"+port+"/"+guid; // path to file
-                // STuck here
-                FileStream file = new FileStream(path);
                 ChordMessageInterface peer = chord.locateSuccessor(guid);
                 peer.put(guid, file); // put file into ring
                 //file is just an object,
