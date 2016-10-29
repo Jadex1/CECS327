@@ -45,6 +45,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       return (key > key1 || key < key2);
     }
   }
+<<<<<<< HEAD
   public void put(int guid, String data) throws RemoteException{
     //TODO Store the file at "./" port/repository/guid
     // "./port/repository/guid-hash"
@@ -52,15 +53,23 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     // create a new path to save off of that.,
     // save thhe has
     // Doesn't look like it's getiing here.
+=======
+  public void put(int guid) throws RemoteException{
+>>>>>>> origin/JamesBranchMaster
     System.out.println("Got here");
+    File file;
     try {
+<<<<<<< HEAD
        //convert the byte to hex format method 1
+=======
+>>>>>>> origin/JamesBranchMaster
       String thingOfaKey = Integer.toString(guid);// equal to token[1]
       MessageDigest md = MessageDigest.getInstance("MD5");
       byte[] messageDigest = md.digest(thingOfaKey.getBytes());
       BigInteger bigNumber = new BigInteger(1, messageDigest);
       BigInteger aMod = new BigInteger("32768");
       int smallerNumber = bigNumber.mod(aMod).intValue();
+<<<<<<< HEAD
       String aPath = "./"+smallerNumber;
       // read-up on fileoutputstream
       File file = new File(aPath);
@@ -83,16 +92,23 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+=======
+      
+      String aPath = "./"+i+"/"+guid;// guid <-- which is a hashtext
+      // we need to save the
+      // read-up on fileoutputstream
+      File somethingFile = new File(aPath);
+      FileOutputStream output = new FileOutputStream(somethingFile);
+      output.write();
+      output.flush();
+      output.close();
+      System.out.println("File was created");
+>>>>>>> origin/JamesBranchMaster
     } catch (Exception e) {
       System.out.println(e+ "!");
     }
   }
-  // this returns a file given a guid
   public InputStream get(int guid) throws RemoteException {
-    // any arbitray number, with the md5,
-    // I'm given a number
-    // if the md5, and number passed in don't exist, neither does the fiel.
-    // else return what it found.
     // Find file, return, if not found print not found
     //Path p = Path.get(aPath);
     FileStream file = null; // new FileStream(p);
@@ -111,8 +127,13 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       BigInteger aMod = new BigInteger("32768");
       int smallerNumber = bigNumber.mod(aMod).intValue();
       String hashtext = Integer.toString(smallerNumber);
+<<<<<<< HEAD
       String aPath = "./"+smallerNumber;
       File aFile = new File(aPath);
+=======
+      String aPath = "./"+i+"/repository/"+smallerNumber;
+      FileStream aFile = new FileStream(aPath);
+>>>>>>> origin/JamesBranchMaster
       if(!aFile.exists()){
         System.out.println("The input file does not exists!");
       }
@@ -125,13 +146,6 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     return file;
   }
   public void delete(int guid) throws RemoteException {
-    // Fires after file has been found.
-    //TODO: delete the file ./port/repository/guid
-    // Find file, delete, if not found print not found
-    //FileStream file = new FileStream(path);
-    // find file path.
-    // might need to write hash here too.
-    // convert guid into a hash before hand.
     try{
       String thingOfaKey = Integer.toString(guid);// equal to token[1]
       MessageDigest md = MessageDigest.getInstance("MD5");
