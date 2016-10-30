@@ -45,6 +45,11 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       return (key > key1 || key < key2);
     }
   }
+  /*! \fn void put(int guid)
+      \brief Stores the file for given guid
+      \param guid unique hash of file name
+      \param stream input stream of file
+  */
   public void put(int guid, String data) throws RemoteException{
     File aFile;
     String thingOfaKey = Integer.toString(guid);// equal to token[1]
@@ -73,9 +78,14 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       System.out.println(e+ "!");
     }
   }
-  public InputStream get(int guid) throws RemoteException {
+  /*! \fn String get(int guid)
+      \brief String of a given guid
+      \brief Connects to the dtp server
+      \param guid unique hash of file name
+  */
+  public void get(int guid) throws RemoteException {
     // Find file, return, if not found print not found
-    FileStream file = null; // new FileStream(p);
+    String results = null;
     // TODO get  the file ./port/repository/guid
     try{
       String thingOfaKey = Integer.toString(guid);// equal to token[1]
@@ -87,20 +97,25 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       String hashtext = Integer.toString(smallerNumber);
       String aPath = "./"+smallerNumber;
       File aFile = new File(aPath);
-      // String aString = new String(contentInBytes);
-      // System.out.println(aString);
 
       if(!aFile.exists()){
         System.out.println("The input file does not exists!");
       } else {
-        System.out.println("File at path:"+aPath+" exists!");
+        FileInputStream fis = new FileInputStream(aFile);
+        byte[] data = new byte[(int) aFile.length()];
+        fis.read(data);
+        fis.close();
+        results = new String(data, "UTF-8");
+        System.out.println(results);
       }
     } catch (Exception e) {
       System.out.println(e);
     }
-    // return a string of whatever is saved.
-    return file; // make it return a string of the data.
   }
+  /*! \fn void delete(int guid)
+      \brief Fires after file has been found.
+      \param guid unique hash of file name
+  */
   public void delete(int guid) throws RemoteException {
     try{
       String thingOfaKey = Integer.toString(guid);// equal to token[1]
