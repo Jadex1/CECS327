@@ -1,3 +1,4 @@
+
 import java.rmi.*;
 import java.rmi.registry.*;
 import java.rmi.server.*;
@@ -54,11 +55,9 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     File aFile;
     String thingOfaKey = Integer.toString(guid);// equal to token[1]
     try {
-      MessageDigest md = MessageDigest.getInstance("MD5");
-      byte[] messageDigest = md.digest(thingOfaKey.getBytes());
-      BigInteger bigNumber = new BigInteger(1, messageDigest);
-      BigInteger aMod = new BigInteger("32768");
-      int smallerNumber = bigNumber.mod(aMod).intValue();
+
+      
+
       String aPath = "./"+smallerNumber;
       aFile = new File(aPath);
       FileOutputStream fop = new FileOutputStream(aFile);
@@ -97,7 +96,6 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       String hashtext = Integer.toString(smallerNumber);
       String aPath = "./"+smallerNumber;
       File aFile = new File(aPath);
-
       if(!aFile.exists()){
         System.out.println("The input file does not exists!");
       } else {

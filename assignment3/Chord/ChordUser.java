@@ -1,3 +1,6 @@
+// CECS 327
+// Lab 3
+// James Hall and Brendan Mcmahon
 import java.rmi.*;
 import java.net.*;
 import java.util.*;
@@ -40,9 +43,12 @@ public class ChordUser{
             if (tokens[0].equals("write") && tokens.length == 3) {
               try{
                 String path;
-                int guid = Integer.parseInt(tokens[1]);// name of a file.
-                String data = tokens[2];
+              //  int guid = Integer.parseInt(tokens[1]);// name of a file.
+
+                String data = tokens[1];
+
                 ChordMessageInterface peer = chord.locateSuccessor(guid);
+
                 peer.put(guid,data); // put file into ring
                 //file is just an object,
               }catch(FileNotFoundException e1){
