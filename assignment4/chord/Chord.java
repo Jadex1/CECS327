@@ -153,88 +153,79 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
 	 }
    public void fixFingers() {
      int id= i;
-        try {
-	    int nextId;
-	    if (nextFinger == 0) // && successor != null)
-	      nextId = (this.getId() + (1 << nextFinger));
-	    else
-	      nextId = finger[nextFinger -1].getId();
-	    finger[nextFinger] = locateSuccessor(nextId);
-
-	    if (finger[nextFinger].getId() == i)
-   	      finger[nextFinger] = null;
-	    else
-	      nextFinger = (nextFinger + 1) % M;
-       } catch(RemoteException | NullPointerException e){
-	  finger[nextFinger] = null;
- 	  e.printStackTrace();
+     try {
+       int nextId;
+	    if (nextFinger == 0){// && successor != null)
+        nextId = (this.getId() + (1 << nextFinger));
+      }else{
+        nextId = finger[nextFinger -1].getId();
       }
+      finger[nextFinger] = locateSuccessor(nextId);
+	    if (finger[nextFinger].getId() == i){
+        finger[nextFinger] = null;
+      }else{
+        nextFinger = (nextFinger + 1) % M;
+      }
+    } catch(RemoteException | NullPointerException e){
+      finger[nextFinger] = null;
+      e.printStackTrace();
     }
-
-    public void checkPredecessor() {
-      try {
-	if (predecessor != null && !predecessor.isAlive())
-	      predecessor = null;
-      }
-      catch(RemoteException e)
-      {
-	  predecessor = null;
-//           e.printStackTrace();
-      }
-    }
-
-    public Chord(int port) throws RemoteException {
-        int j;
-	finger = new ChordMessageInterface[M];
-        for (j=0;j<M; j++){
-	    finger[j] = null;
-	}
-        i = port;
-
+  }
+  public void checkPredecessor() {
+    try {
+      if (predecessor != null && !predecessor.isAlive()){
         predecessor = null;
-	successor = this;
-	Timer timer = new Timer();
-	timer.scheduleAtFixedRate(new TimerTask() {
-	    @Override
-	    public void run() {
-	      stabilize();
+      }
+    }catch(RemoteException e){
+      predecessor = null;
+    }//e.printStackTrace();
+  }
+  public Chord(int port) throws RemoteException {
+    int j;
+    finger = new ChordMessageInterface[M];
+    for(j=0;j<M; j++){
+      finger[j] = null;
+    }
+    i = port;
+    predecessor = null;
+    successor = this;
+    Timer timer = new Timer();
+    timer.scheduleAtFixedRate(new TimerTask() {
+      @Override
+      public void run() {
+        stabilize();
 	      fixFingers();
 	      checkPredecessor();
-	    }
-	}, 500, 500);
-	try{
-	// create the registry and bind the name and object.
-	    System.out.println("Starting RMI at port="+port);
+      }
+    }, 500, 500);
+    try{
+      // create the registry and bind the name and object.
+      System.out.println("Starting RMI at port="+port);
 	    registry = LocateRegistry.createRegistry( port );
-	  registry.rebind("Chord", this);
-	}
-	catch(RemoteException e){
-	       throw e;
-        }
+      registry.rebind("Chord", this);
+    } catch(RemoteException e){
+      throw e;
     }
-
-    void Print()
-    {
-	int i;
-	try {
-	  if (successor != null)
-	      System.out.println("successor "+ successor.getId());
-	  if (predecessor != null)
-	      System.out.println("predecessor "+ predecessor.getId());
-	  for (i=0; i<M; i++)
-	  {
-	    try {
-	  	if (finger != null)
-		  System.out.println("Finger "+ i + " " + finger[i].getId());
-	    } catch(NullPointerException e)
-	    {
-	      finger[i] = null;
-	   }
-	  }
-       }
-        catch(RemoteException e){
-	       System.out.println("Cannot retrive id");
+  }
+  void Print() {
+    int i;
+    try {
+      if (successor != null){
+        System.out.println("successor "+ successor.getId());
+      }
+      if (predecessor != null){
+        System.out.println("predecessor "+ predecessor.getId());
+      }
+      for (i=0; i<M; i++){
+        try {
+          if (finger != null){
+            System.out.println("Finger "+ i + " " + finger[i].getId());
+          } catch(NullPointerException e) {
+            finger[i] = null;
+          }
         }
+      } catch(RemoteException e){
+        System.out.println("Cannot retrive id");
+      }
     }
-
-}
+  }
