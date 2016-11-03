@@ -1,64 +1,56 @@
+// CECS 327
+// Lab 3
+// James Hall and Brendan Mcmahon
 import java.rmi.*;
 import java.net.*;
 import java.util.*;
 import java.io.*;
+import java.math.*;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
+import java.security.MessageDigest;
 public class ChordUser{
-
   int port;
-
   public ChordUser(int p){
-
     port = p;
     Timer timer1 = new Timer();
     timer1.scheduleAtFixedRate(new TimerTask(){
-
       @Override
-
       public void run(){
-
         System.out.println("Usage: \n\tjoin <port>\n\twrite <file> (the file must be an integer stored in the working directory, i.e, ./port/file");
         System.out.println("\tread <file>\n\tdelete <file>\n\tprint");
         System.out.println("Enter: ");
-
         try{
-
           Chord chord = new Chord(port);//The errors are coming from here.
           Scanner scan= new Scanner(System.in);
           String delims = "[ ]+";
           String command = "";
-
           while (true) {
-
             String text = scan.nextLine();
             String[] tokens = text.split(delims);
-
             if (tokens[0].equals("join") && tokens.length == 2) {
-
-              System.out.println("Join Mutha Fucka");
               try {
                 chord.joinRing("localhost", Integer.parseInt(tokens[1]));
-              }catch(IOException e) {
+              } catch (IOException e) {
                 System.out.println("Error joining the ring!");
               }
             }
             if (tokens[0].equals("print")){
-                System.out.println("Print shit mutha fucka");
-                 chord.Print();
-              }
-            if (tokens[0].equals("write") && tokens.length == 2) {
-              System.out.println("Write shit muthafcuka");
+              chord.Print();
+            }
+            if (tokens[0].equals("write") && tokens.length == 3) {
               try{
                 String path;
-                int guid = Integer.parseInt(tokens[1]);
-                // If you are using windows you have to use
-               path = ".\\"+  port +"\\"+Integer.parseInt(tokens[1]); // path to file
-  			        path = "./"+  port +"/"+guid; // path to file
-  			        FileStream file = new FileStream(path);
-  		          ChordMessageInterface peer = chord.locateSuccessor(guid);
-                peer.put(guid, file); // put file into ring
+              //  int guid = Integer.parseInt(tokens[1]);// name of a file.
+
+                String data = tokens[1];
+
+                ChordMessageInterface peer = chord.locateSuccessor(guid);
+
+                peer.put(guid,data); // put file into ring
                 //file is just an object,
-                //NOTE: I'm not sure where to get the file or find it.
               }catch(FileNotFoundException e1){
                 e1.printStackTrace();
                 System.out.println("File was not found!");
@@ -71,15 +63,13 @@ public class ChordUser{
               }
             }
             if (tokens[0].equals("read") && tokens.length == 2) {
-              System.out.println("read shit mutha fucka");
-              try {//
+              try {
                 chord.get(Integer.parseInt(tokens[1]));
               }catch (IOException e) {
                 System.out.println("Could not get file!");
               }
             }
             if (tokens[0].equals("delete") && tokens.length == 2) {
-              System.out.println("whatever! Detele mother fucker!");
               try {
                 chord.delete(Integer.parseInt(tokens[1]));
               } catch (IOException e) {
@@ -97,8 +87,8 @@ public class ChordUser{
       throw new IllegalArgumentException("Parameter: <port>");
     }
     try {
-      ChordUser chordUser=new ChordUser( Integer.parseInt(args[0]));
-    }catch(Exception e) {
+      ChordUser chordUser = new ChordUser(Integer.parseInt(args[0]));
+    } catch (Exception e) {
       e.printStackTrace();
       System.exit(0);
     }

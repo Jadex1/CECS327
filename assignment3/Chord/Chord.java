@@ -1,10 +1,16 @@
+
 import java.rmi.*;
 import java.rmi.registry.*;
 import java.rmi.server.*;
 import java.net.*;
 import java.util.*;
 import java.io.*;
-
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordMessageInterface {
   public static final int M = 2;
   Registry registry;    // rmi registry for lookup the remote objects.
@@ -40,32 +46,94 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       return (key > key1 || key < key2);
     }
   }
-  public void put(int guid, InputStream stream) throws RemoteException{
-
-    //TODO Store the file at "./" port/repository/guid
+  /*! \fn void put(int guid)
+      \brief Stores the file for given guid
+      \param guid unique hash of file name
+      \param stream input stream of file
+  */
+  public void put(int guid, String data) throws RemoteException{
+    File aFile;
+    String thingOfaKey = Integer.toString(guid);// equal to token[1]
     try {
 
-      String fileName = "./"+i+"/repository/" + guid;
-      // read-up on fileoutputstream
-      FileOutputStream output = new FileOutputStream(fileName);
+      
 
-      while (stream.available() > 0){
-        output.write(stream.read());
-        output.flush();
-        output.close();
+      String aPath = "./"+smallerNumber;
+      aFile = new File(aPath);
+      FileOutputStream fop = new FileOutputStream(aFile);
+      if (!aFile.exists()) {
+				aFile.createNewFile();
+        System.out.println("File Created");
+			}
+      byte[] contentInBytes = data.getBytes();
+			// get the content in bytes
+			fop.write(contentInBytes);
+			fop.flush();
+			fop.close();
+			System.out.println("Done");
+    } catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+      System.out.println(e+ "!");
+    }
+  }
+  /*! \fn String get(int guid)
+      \brief String of a given guid
+      \brief Connects to the dtp server
+      \param guid unique hash of file name
+  */
+  public void get(int guid) throws RemoteException {
+    // Find file, return, if not found print not found
+    String results = null;
+    // TODO get  the file ./port/repository/guid
+    try{
+      String thingOfaKey = Integer.toString(guid);// equal to token[1]
+      MessageDigest md = MessageDigest.getInstance("MD5");
+      byte[] messageDigest = md.digest(thingOfaKey.getBytes());
+      BigInteger bigNumber = new BigInteger(1, messageDigest);
+      BigInteger aMod = new BigInteger("32768");
+      int smallerNumber = bigNumber.mod(aMod).intValue();
+      String hashtext = Integer.toString(smallerNumber);
+      String aPath = "./"+smallerNumber;
+      File aFile = new File(aPath);
+      if(!aFile.exists()){
+        System.out.println("The input file does not exists!");
+      } else {
+        FileInputStream fis = new FileInputStream(aFile);
+        byte[] data = new byte[(int) aFile.length()];
+        fis.read(data);
+        fis.close();
+        results = new String(data, "UTF-8");
+        System.out.println(results);
       }
-
-     } catch (IOException e) {
-       System.out.println(e);
-     }
+    } catch (Exception e) {
+      System.out.println(e);
+    }
   }
-  public InputStream get(int guid) throws RemoteException {
-    FileStream file = null;
-    //TODO get  the file ./port/repository/guid
-    return file;
-  }
+  /*! \fn void delete(int guid)
+      \brief Fires after file has been found.
+      \param guid unique hash of file name
+  */
   public void delete(int guid) throws RemoteException {
-        //TODO delet the file ./port/repository/guid
+    try{
+      String thingOfaKey = Integer.toString(guid);// equal to token[1]
+      MessageDigest md = MessageDigest.getInstance("MD5");
+      byte[] messageDigest = md.digest(thingOfaKey.getBytes());
+      BigInteger bigNumber = new BigInteger(1, messageDigest);
+      BigInteger aMod = new BigInteger("32768");
+
+      int smallerNumber = bigNumber.mod(aMod).intValue();
+      String aPath = "./"+smallerNumber;
+      File f = new File(aPath);
+      if (f.delete()) {
+        System.out.println("File Deleted.");
+      } else{
+        System.out.println("The input file does not exist");
+      }
+    } catch (Exception e) {
+      System.out.println(e);
+      System.out.println("The input file does not exist");
+    }
   }
   public int getId() throws RemoteException {
       return i;
@@ -76,16 +144,16 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   public ChordMessageInterface getPredecessor() throws RemoteException{
     return predecessor;
   }
-  public ChordMessageInterface locateSuccessor(int key) throws RemoteException {
+  public ChordMessageInterface locateSuccessor(int key) throws RemoteException{
     if (key == i){
       throw new IllegalArgumentException("Key must be distinct that  " + i);
     }
-    if (successor.getId() != i) {
+    if (successor.getId() != i){
       if (isKeyInSemiCloseInterval(key, i, successor.getId())){
         return successor;
       }
       ChordMessageInterface j = closestPrecedingNode(key);
-      if (j == null) {
+      if (j == null){
         return null;
       }
       return j.locateSuccessor(key);
@@ -93,24 +161,23 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     return successor;
   }
   public ChordMessageInterface closestPrecedingNode(int key) throws RemoteException {
-      // TODO:
-       return successor;
+    // look for the nodes that have me this port number as a preceeding node, or who is related to me as a note. Other nodes will have records of other nodes.
+    // TODO:
+    return successor;
    }
-
   public void joinRing(String ip, int port)  throws RemoteException {
     try{
       System.out.println("Get Registry to joining ring");
       Registry registry = LocateRegistry.getRegistry(ip, port);
-      // error here.
       ChordMessageInterface chord = (ChordMessageInterface)(registry.lookup("Chord"));
       predecessor = null;
       successor = chord.locateSuccessor(this.getId());
-       System.out.println("Joining ring");
+      System.out.println("Joining ring");
      } catch(RemoteException | NotBoundException e){
        successor = this;
      }
    }
-   public void findingNextSuccessor() {
+  public void findingNextSuccessor() {
      int i;
      successor = this;
      for (i = 0;  i< M; i++) {
@@ -123,7 +190,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
        }
      }
    }
-   public void stabilize() {
+  public void stabilize() {
      boolean error = false;
      try {
        if (successor != null) {
@@ -141,10 +208,10 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
      if (error){
        findingNextSuccessor();
      }
-  }
+   }
   public void notify(ChordMessageInterface j) throws RemoteException {
     if (predecessor == null || (predecessor != null && isKeyInOpenInterval(j.getId(), predecessor.getId(), i))){
-      // TODO
+      // TODO:
       // //transfer keys in the range [j,i) to j;
       predecessor = j;
     }
@@ -186,6 +253,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     for (j=0;j<M; j++){
       finger[j] = null;
     }
+    // do we turn it into a guid here? no
     i = port;
     predecessor = null;
     successor = this;
