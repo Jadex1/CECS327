@@ -220,7 +220,8 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
         try {
           if (finger != null){
             System.out.println("Finger "+ i + " " + finger[i].getId());
-          } catch(NullPointerException e) {
+          }
+        } catch(NullPointerException e) {
             finger[i] = null;
           }
         }
