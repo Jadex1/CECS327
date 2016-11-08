@@ -33,7 +33,7 @@ public class ChordUser {
 						if (tokens[0].equals("print")) {
 							chord.Print();
 						}
-						if  (tokens[0].equals("write") && tokens.length == 2) {
+						if (tokens[0].equals("write") && tokens.length == 2) {
 							try {
 								int guid = MD5(tokens[1]);
 								// If you are using windows you have to use
@@ -45,13 +45,14 @@ public class ChordUser {
 								e.printStackTrace();
 							}
 						}
-						if  (tokens[0].equals("read") && tokens.length == 2) {
+						if (tokens[0].equals("read") && tokens.length == 2) {
 							try {
 								int guid = MD5(tokens[1]);
 								// If you are using windows you have to use
 								// 			path = ".\\"+  port +"\\"+Integer.parseInt(tokens[1]); // path to file
 			  				String path = "./"+  port +"/"+token[1]; // path to file
 			  				ChordMessageInterface peer = chord.locateSuccessor(guid);
+								// Error here.
 			  				FileStream stream = peer.get(guid); // put file into ring
 								try {
 									FileOutputStream output = new FileOutputStream(path);
