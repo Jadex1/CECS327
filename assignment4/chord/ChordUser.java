@@ -62,42 +62,39 @@ public class ChordUser {
 								} catch (IOException e) {
 									System.out.println(e);
 								}
+							} catch (Exception e) {
+								e.printStackTrace();
 							}
-						} catch (Exception e) {
-							e.printStackTrace();
+						}
+						if (tokens[0].equals("delete") && tokens.length == 2) {
+							try {
+								int guid = MD5(tokens[1]);
+								ChordMessageInterface peer = chord.locateSuccessor(guid);
+								peer.delete(guid);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 						}
 					}
-					if  (tokens[0].equals("delete") && tokens.length == 2) {
-						try {
-							int guid = MD5(tokens[1]);
-							ChordMessageInterface peer = chord.locateSuccessor(guid);
-							peer.delete(guid);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			} catch(RemoteException e) {}
+				} catch(RemoteException e){}}
+			}, 1000, 1000);}
+		public int MD5(String aStringtoHash){
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			byte[] messageDigest = md.digest(thingOfaKey.getBytes());
+			BigInteger bigNumber = new BigInteger(1, messageDigest);
+			BigInteger aMod = new BigInteger("32768");
+			int smallerNumber = bigNumber.mod(aMod).intValue();
+			return smallNumber;
+		}
+		static public void main(String args[]){
+			if (args.length < 1 ) {
+				throw new IllegalArgumentException("Parameter: <port>");
 			}
-		}, 1000, 1000);
-	}
-	public int MD5(String aStringtoHash){
-		MessageDigest md = MessageDigest.getInstance("MD5");
-		byte[] messageDigest = md.digest(thingOfaKey.getBytes());
-		BigInteger bigNumber = new BigInteger(1, messageDigest);
-		BigInteger aMod = new BigInteger("32768");
-		int smallerNumber = bigNumber.mod(aMod).intValue();
-		return smallNumber;
-	}
-	static public void main(String args[]){
-		if (args.length < 1 ) {
-			throw new IllegalArgumentException("Parameter: <port>");
+			try{
+				ChordUser chordUser=new ChordUser( Integer.parseInt(args[0]));
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
 		}
-		try{
-			ChordUser chordUser=new ChordUser( Integer.parseInt(args[0]));
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-	}
 }
