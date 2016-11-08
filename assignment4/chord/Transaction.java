@@ -3,16 +3,16 @@ import java.io.*;
 
 public class Transaction implements Serializable  {
   public enum Operation { WRITE, DELETE}
-
+  public enum Vote {YES, NO}
   BigInteger TransactionId;
   Integer guid;
   Operation op;
   byte vote;
-  FileStream fileStream;   
+  FileStream fileStream;
   public Transaction(Operation op)
   {
   	//id = md5(date + ip+port);
   	this.op = op;
-  }  
+  }
 
 }
