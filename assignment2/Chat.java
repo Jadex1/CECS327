@@ -1,3 +1,5 @@
+// James Hall,
+// Brendan McMahon
 import java.net.*;
 import java.io.*;
 import java.util.*;
@@ -46,7 +48,11 @@ public class Chat implements Serializable {
       if(succPort == port) {
         System.out.println("Already, connected, can not connect to self again.");
       } else{
+<<<<<<< HEAD
         succPort = port;//next
+=======
+        succPort = port;//next
+>>>>>>> BrendanAssignment3
       }
     }
     /*****************************//**
@@ -101,6 +107,7 @@ public class Chat implements Serializable {
             //LEAVE
             if(m.msgid == enum_MSG.LEAVE){
               if(m.fromInput == true){
+<<<<<<< HEAD
                 m.succ = succPort;
                 m.pred = predPort;
                 m.fromInput = false;
@@ -115,6 +122,24 @@ public class Chat implements Serializable {
                   succPort = m.succ;//my succ == leaving node's succ
                 }
                 if(m.succ == intialPort){//if im succ
+=======
+                m.text = predPort+ " " + succPort;
+                m.fromInput = false;
+                System.out.println("Node:"+intialPort+" exiting");
+                System.exit(0);
+              } else {
+                System.out.println("[Leave msg]: " + m.text);
+                List<Integer> list = new ArrayList<Integer>();
+                for (String s : m.text.split("\\s"))
+                {
+                  list.add(Integer.parseInt(s));
+                }
+                list.toArray();
+                if(list.get(0) == intialPort){//if im pred
+                  succPort = list.get(1);//my succ == leaving node's succ
+                }
+                if(list.get(1) == intialPort){//if im succ
+>>>>>>> BrendanAssignment3
                   predPort = intialPort;
                 }
               }
@@ -162,8 +187,11 @@ public class Chat implements Serializable {
           System.out.println("[Client] Just connected to " + socket.getRemoteSocketAddress());
           ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
           ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+<<<<<<< HEAD
           //TODO: in the prompt create a list of commands to enter, instead of the generic,
           // print ln
+=======
+>>>>>>> BrendanAssignment3
           System.out.println("Please enter a the following option,\n 1)join <port>\n 2)put <destination port> <message>\n 3)Leave\n Note: press ENTER to see nodes predessor and successor\n");
           String input = System.console().readLine();
           //split input by spaces

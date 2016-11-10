@@ -1,7 +1,12 @@
-java Chat localhost <port>
-<port to client should connect to>
+Steps & notes to run program
+1). Run javac Chat.java
+2). Open up three seperate terminal windows
+3). In each window type, "java Chat localhost 4200", for each window it's 4200...4202; "java Chat <id> <port> -> java Chat localhost 4200"
+4). In the first window, type "join 4201"
+5). In the second window, type "join 4202"
+6). In the third window, type "join 4200"
+At this point all the servers are connected in a loop.
+7). In any terminal window type, "<put port message>" to send a message.
+8). Go to terminal two and use "Leave" command.
 
-[in another terminal tab]
-
-java Chat localhost <port>+1
-<port>
+Remarks: We hit some road-bumps along the way, our code compiles fine, but we had issues, correctly implementing "leave" and "accept". We would actually like to discuss our project with you at this point.
