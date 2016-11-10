@@ -2,7 +2,8 @@ import java.rmi.*;
 import java.net.*;
 import java.util.*;
 import java.io.*;;
-
+import java.math.BigInteger;
+import java.security.MessageDigest;
 //TODO: Write a Method for MD5, that takes the string and returns a string.
 
 public class ChordUser {
@@ -14,7 +15,7 @@ public class ChordUser {
 			@Override
 			public void run() {
 				try {
-					Chord    chord = new Chord(port);
+					Chord chord = new Chord(port);
 					System.out.println("Usage: \n\tjoin <port>\n\twrite <file> (the file must be an integer stored in the working directory, i.e, ./port/file");
 					System.out.println("\tread <file>\n\tdelete <file>\n\tprint");
 					Scanner scan= new Scanner(System.in);
@@ -37,7 +38,7 @@ public class ChordUser {
 							try {
 								int guid = MD5(tokens[1]);
 								// If you are using windows you have to use
-								String path = "./"+  port +"/"+token[1]; // path to file
+								String path = "./"+  port +"/"+tokens[1]; // path to file
 								FileStream file = new FileStream(path);
 								ChordMessageInterface peer = chord.locateSuccessor(guid);
 								peer.put(guid, file); // put file into ring
@@ -50,10 +51,9 @@ public class ChordUser {
 								int guid = MD5(tokens[1]);
 								// If you are using windows you have to use
 								// 			path = ".\\"+  port +"\\"+Integer.parseInt(tokens[1]); // path to file
-			  				String path = "./"+  port +"/"+token[1]; // path to file
+			  				String path = "./"+  port +"/"+tokens[1]; // path to file
 			  				ChordMessageInterface peer = chord.locateSuccessor(guid);
-								// Error here.
-			  				FileStream stream = peer.get(guid); // put file into ring
+			  				InputStream stream = peer.get(guid); // put file into ring
 								try {
 									FileOutputStream output = new FileOutputStream(path);
 									while (stream.available() > 0){
@@ -63,38 +63,40 @@ public class ChordUser {
 									System.out.println(e);
 								}
 							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-						if (tokens[0].equals("delete") && tokens.length == 2) {
-							try {
-								int guid = MD5(tokens[1]);
-								ChordMessageInterface peer = chord.locateSuccessor(guid);
-								peer.delete(guid);
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
+							e.printStackTrace();
 						}
 					}
-				} catch(RemoteException e){}}
-			}, 1000, 1000);}
-		public int MD5(String aStringtoHash){
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			byte[] messageDigest = md.digest(thingOfaKey.getBytes());
-			BigInteger bigNumber = new BigInteger(1, messageDigest);
-			BigInteger aMod = new BigInteger("32768");
-			int smallerNumber = bigNumber.mod(aMod).intValue();
-			return smallNumber;
-		}
-		static public void main(String args[]){
-			if (args.length < 1 ) {
-				throw new IllegalArgumentException("Parameter: <port>");
+					if  (tokens[0].equals("delete") && tokens.length == 2) {
+						try {
+							int guid = MD5(tokens[1]);
+							ChordMessageInterface peer = chord.locateSuccessor(guid);
+							peer.delete(guid);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			} catch(RemoteException e) {}
 			}
-			try{
-				ChordUser chordUser=new ChordUser( Integer.parseInt(args[0]));
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.exit(1);
-			}
+		}, 1000, 1000);
+	}
+	public int MD5(String aStringtoHash){
+		MessageDigest md = MessageDigest.getInstance("MD5");
+		byte[] messageDigest = md.digest(aStringtoHash.getBytes());
+		BigInteger bigNumber = new BigInteger(1, messageDigest);
+		BigInteger aMod = new BigInteger("32768");
+		int smallerNumber = bigNumber.mod(aMod).intValue();
+		return smallerNumber;
+	}
+	static public void main(String args[]){
+		if (args.length < 1 ) {
+			throw new IllegalArgumentException("Parameter: <port>");
 		}
+		try{
+			ChordUser chordUser=new ChordUser( Integer.parseInt(args[0]));
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
 }
