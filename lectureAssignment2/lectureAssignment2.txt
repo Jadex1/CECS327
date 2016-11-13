@@ -1,7 +1,13 @@
 James Hall
 CECS 327
-Lecture Assignment 2
-Notes: Type your answer in a text editor and submit your document on beachboard.
+Lecture Assignment
+NOTES: Chapter 10(peer-to-peer systems),
+       Chapter 14(time and global states),
+       Chapter 15(coordination and agreement),
+       Chapter 16(transaction and concurrency control),
+       Chapter 17(Distributed Transactions).
+
+NOTES: Type your answer in a text editor and submit your document on beachboard.
 
 1. Early file-sharing applications such as Napster were restricted in their scalability by the need to maintain a central index of resources and the hosts that hold them. What other solutions to the indexing problem can you identify?
 
@@ -46,15 +52,15 @@ Response:
 
 Response:
 
-9. A server manages the objects a1, a2, ..., an. The server provides two operations for its clients: read(i) returns the value of ai; write(i, V alue) assigns V alue to ai.
+9. A server manages the objects a1, a2, ..., an. The server provides two operations for its clients: read(i) returns the value of ai; write(i, Value) assigns Value to ai.
 The transactions T and U are defined as follows:
 T : x = read(j); y = read(i); write(j, 44); write(i, 33);
 U : x = read(k); write(i, 55); y = read(j); write(k, 66).
-Give three serially equivalent interleavings of the transactions T and U.
+Give three serially equivalent inter leavings of the transactions T and U.
 
-Response:
+Response:(Need to come back to this one.)
 
-10. Give serially equivalent interleaving of T and U in the previous problem with the following properties:
+10. Give serially equivalent interleaving of T and U in the previous problem with the following properties:(Come Back to.)
 
 • that is strict;
 • that is not strict but could not produce cascading aborts;
@@ -62,14 +68,15 @@ Response:
 
 Response:
 
-11. Describe how a non-recoverable situation could arise if write locks are released after the last operation of a transaction but before its commit- ment.
+11. Describe how a non-recoverable situation could arise if write locks are released after the last operation of a transaction but before its commitment.
 
-Response:
+Response:(Read up on this one, and then think about the answer doesn't sound to hard.)
 
-12. In a decentralized variant of the two-phase commit protocol the par- ticipants communicate directly with one another instead of indirectly via the coordinator. In Phase 1, the coordinator sends its vote to all the participants. In Phase 2, if the coordinator’s vote is No, the par- ticipants just abort the transaction; if it is Yes, each participant sends its vote to the coordinator and the other participants, each of which decides on the outcome according to the vote and carries it out. Calcu- late the number of messages and the number of rounds it takes. What are its advantages or disadvantages in comparison with the centralized variant?
+12. In a decentralized variant of the two-phase commit protocol the participants communicate directly with one another instead of indirectly via the coordinator. In Phase 1, the coordinator sends its vote to all the participants. In Phase 2, if the coordinator’s vote is No, the participants just abort the transaction; if it is Yes, each participant sends its vote to the coordinator and the other participants, each of which decides on the outcome according to the vote and carries it out. Calculate the number of messages and the number of rounds it takes. What are its advantages or disadvantages in comparison with the centralized variant?
+
 Response:
 
 
 13. A server uses timestamp ordering for local concurrency control. What changes must be made to adapt it for use with distributed transactions? Under what conditions could it be argued that the two-phase commit protocol is redundant with timestamp ordering?
 
-Response:
+Response:(Read up on this one.)
