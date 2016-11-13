@@ -7,6 +7,8 @@ Notes: Type your answer in a text editor and submit your document on beachboard.
 
 Response:
 
+
+
 2. In unstructured peer-to-peer systems, significant improvements on search results can be provided by the adoption of particular search strategies. Compare and contrast expanded ring search and random walk strategies, highlighting when each approach is likely to be effective.
 
 Response:
@@ -16,18 +18,23 @@ Response:
 
 Response:
 
-4. A scheme for implementing at-most-once reliable message delivery uses synchronized clocks to reject duplicate messages. Processes place their local clock value (a “timestamp”) in the messages they send. Each receiver keeps a table giving, for each sending process, the largest mes- sage timestamp it has seen. Assume that clocks are synchronized to within 100 ms, and that messages can arrive at most 50 ms after trans- mission.
-(i)When may a process ignore a message bearing a timestamp T, if it has recorded the last message received from that process as having timestamp T0?
-(ii)When may a receiver remove a timestamp 175,000 (ms) from its table? (Hint: use the receivers local clock value.)
-(iii)Should the clocks be internally synchronized or externally synchro- nized?
+4. A scheme for implementing at-most-once reliable message delivery uses synchronized clocks to reject duplicate messages. Processes place their local clock value (a “timestamp”) in the messages they send. Each receiver keeps a table giving, for each sending process, the largest message timestamp it has seen. Assume that clocks are synchronized to within 100 ms, and that messages can arrive at most 50 ms after trans- mission.
+
+(i) When may a process ignore a message bearing a timestamp T, if it has recorded the last message received from that process as having timestamp T0?
+
+(ii) When may a receiver remove a timestamp 175,000 (ms) from its table? (Hint: use the receivers local clock value.)
+
+(iii) Should the clocks be internally synchronized or externally synchronized?
 
 Response:
 
-5. By considering a chain of zero or more messages connecting events e and e and using induction, show that e ! e0 ) L(e) < L(e0).
+5. By considering a chain of zero or more messages connecting events e and e` and using induction, show that e ! e0 ) L(e) < L(e0). <-(I have no fucking idea what this means.)-james
 
 Resposne:
+  -NOPE
+  //TODO: Research question 5 at least memorize the answer.
 
-6. Two processes P and Q are connected in a ring using two channels, and they constantly rotate a message m. At any one time, there is only one copy of m in the system. Each processs state consists of the number of times it has received m, and P sends m first. At a certain point, P has the message and its state is 101. Immediately after sending m, P initiates the snapshot algorithm. Explain the operation of the algorithm in this case, giving the possible global state(s) reported by it.
+6. Two processes P and Q are connected in a ring using two channels, and they constantly rotate a message m. At any one time, there is only one copy of m in the system. Each processs state consists of the number of times it has received m, and P sends m first. At a certain point, P has the message and its state is 101. Immediately after sending m, P initiates the snapshot algorithm. Explain the operation of the algorithm in this case, giving the possible global state(s) reported by it.// Look up Snap-Shot Algorith, this sounds like atomic stuff.
 
 Response:
 
@@ -35,7 +42,7 @@ Response:
 
 Response:
 
-8. In the Bully algorithm, a recovering process starts an election and will become the new coordinator if it has a higher identifier than the current incumbent. Is this a necessary feature of the algorithm?
+8. In the Bully algorithm, a recovering process starts an election and will become the new coordinator if it has a higher identifier than the current incumbent. Is this a necessary feature of the algorithm? (This is an interesting one. I don't know what this is about.)
 
 Response:
 
