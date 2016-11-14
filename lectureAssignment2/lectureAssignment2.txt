@@ -12,19 +12,30 @@ NOTES: Type your answer in a text editor and submit your document on beachboard.
 1. Early file-sharing applications such as Napster were restricted in their scalability by the need to maintain a central index of resources and the hosts that hold them. What other solutions to the indexing problem can you identify?
 
 Response:
-
+  (i) -
+  (ii) -
+  (iii) -
 
 
 2. In unstructured peer-to-peer systems, significant improvements on search results can be provided by the adoption of particular search strategies. Compare and contrast expanded ring search and random walk strategies, highlighting when each approach is likely to be effective.
 
 Response:
 
+3. Why is computer clock synchronization necessary? Describe the design requirements for a system to synchronize the clocks in a distributed system(Chapter 14).
 
-3. Why is computer clock synchronization necessary? Describe the design requirements for a system to synchronize the clocks in a distributed system.
+Response(Chapter 10, Easy to remember):
+Major design requirements:
 
-Response:
+i) there should be a limit on deviation between clocks or between any clock and UTC;
+  response: If T <= T' then the message must be a repeat.
+ii) clocks should only ever advance;
+  response: The earliest message timestamp that could still arrive when the receiver's clock is r is 175,150.
+iii) only authorized principals may reset clocks (See Section 7.6.2 on Kerberos)
+  response: Internal synchroisation will suffice, since only time differences are relevant.
 
-4. A scheme for implementing at-most-once reliable message delivery uses synchronized clocks to reject duplicate messages. Processes place their local clock value (a “timestamp”) in the messages they send. Each receiver keeps a table giving, for each sending process, the largest message timestamp it has seen. Assume that clocks are synchronized to within 100 ms, and that messages can arrive at most 50 ms after trans- mission.
+In practice (i) cannot be achieved unless only benign failures are assumed to occur and the system is synchronous.
+
+4. A scheme for implementing at-most-once reliable message delivery uses synchronized clocks to reject duplicate messages. Processes place their local clock value (a “timestamp”) in the messages they send. Each receiver keeps a table giving, for each sending process, the largest message timestamp it has seen. Assume that clocks are synchronized to within 100 ms, and that messages can arrive at most 50 ms after transmission.(Chapter 14)
 
 (i) When may a process ignore a message bearing a timestamp T, if it has recorded the last message received from that process as having timestamp T0?
 
@@ -37,20 +48,39 @@ Response:
 5. By considering a chain of zero or more messages connecting events e and e` and using induction, show that e ! e0 ) L(e) < L(e0). <-(I have no fucking idea what this means.)-james
 
 Resposne:
-  -NOPE
-  //TODO: Research question 5 at least memorize the answer.
+if e and e' are successive envents occurring at the same process, or if there is a message m such that e = send(m) and e' = rcv(m), then teh result is immediate from LC1 and LC2. Assume that the result to be proved is true for all pairs of events connected in a sequence of events (in which either HB1 or HB2 applies between each neighbouring pair) of length N or less (N >= 2). Now assume that e and e' are connected in a series of events e1, e2, e3,... en+1 occurring at one or more processes such that e = e1 and e' = eN+1. then e -> eN and so C(e) < C(eN) by induction hypothesis. But by LC1 and LC2, C(eN) < C(e'). Therefore C(e) < C(e')(that made no sense)
 
-6. Two processes P and Q are connected in a ring using two channels, and they constantly rotate a message m. At any one time, there is only one copy of m in the system. Each processs state consists of the number of times it has received m, and P sends m first. At a certain point, P has the message and its state is 101. Immediately after sending m, P initiates the snapshot algorithm. Explain the operation of the algorithm in this case, giving the possible global state(s) reported by it.// Look up Snap-Shot Algorith, this sounds like atomic stuff.
+6. Two processes P and Q are connected in a ring using two channels, and they constantly
+rotate a message m. At any one time, there is only one copy of m in the system. Each process
+state consists of the number of times it has received m, and P sends m first. At a certain
+point, P has the message and its state is 101. Immediately after sending m, P initiates the
+snapshot algorithm. Explain the operation of the algorithm in this case, giving the possible
+global state(s) reported by it.// Look up Snap-Shot Algorithm, this sounds like atomic stuff.
 
-Response:
+Response(do again):
+P sends msg m
+P records state (101)
+P sends marker
+Q receives m, making its state 102
+Q receives the marker and by marker-receiving rule, records its state (102) and the state of the channel from P to Q as {}
+Q sends marker (marker-sending rule)
+(Q sends m again at some point later)
+P receives marker
+P records the state of the channel from Q to P as a set of messages received since it saved its state = {} (marker receiving rule).
 
 7. Adapt the central server algorithm for mutual exclusion to handle the crash failure of any client (in any state), assuming that the server is correct and given a reliable failure detector. Comment on whether the resultant system is fault tolerant. What would happen if a client that possesses the token is wrongly suspected to have failed?
 
-Response:
+Response(come back too):
+  The server uses the reliable failure detector to determine whether any client has crashed. If the client has been granted the token then the server acts as if the client had returned the token. In case it subsequently receives the token from the client (which may have sent it before crashing), it ignores it.
+  The resultant system is not fault-tolerant. If a token-holding client crashed then the application-specific data protected by the critical section (whose consistency is at stake) may be in an unknown state at the point when another client starts to access it.
+  If a client that possesses the token is wrongly suspected to have failed then there is a danger that two processes will be allowed to execute in the critical section concurrently
 
-8. In the Bully algorithm, a recovering process starts an election and will become the new coordinator if it has a higher identifier than the current incumbent. Is this a necessary feature of the algorithm? (This is an interesting one. I don't know what this is about.)
+8. In the Bully algorithm, a recovering process starts an election and will become the new coordinator if it has a higher identifier than the current incumbent. Is this a necessary feature of the algorithm? (This is an interesting one. I don't know what this is about.)(chapter 15)
 
 Response:
+First note that this an undesirable feature if there is no advantage to using a higher-numbered process: the re-election is wasteful. However, the numbering of prcesses may reflect their relative advantage (for example, with higher-numbered processes executing atfaster machines). In this case, the advantage may be worth the re-election costs. Re-election costs include the message rounds needed to implement the election; they also may include application-specific state transfer from teh old coordinator to the enw coordinator.
+
+To avoid a re-election, a recovering process could merely send a requestStatus message to successive lower numbered processes to discover whether another process is already eleected, and elect itsself only if it receives a negative response. Thereafter, the algorithm can operate as before: if the newly-recovered process discovers the cordinator to have failed, or if it receives an election message, it sends a coordinator message to the remaining processes.
 
 9. A server manages the objects a1, a2, ..., an. The server provides two operations for its clients: read(i) returns the value of ai; write(i, Value) assigns Value to ai.
 The transactions T and U are defined as follows:
@@ -61,7 +91,6 @@ Give three serially equivalent inter leavings of the transactions T and U.
 Response:(Need to come back to this one.)
 
 10. Give serially equivalent interleaving of T and U in the previous problem with the following properties:(Come Back to.)
-
 • that is strict;
 • that is not strict but could not produce cascading aborts;
 • that could produce cascading aborts.
@@ -71,12 +100,48 @@ Response:
 11. Describe how a non-recoverable situation could arise if write locks are released after the last operation of a transaction but before its commitment.
 
 Response:(Read up on this one, and then think about the answer doesn't sound to hard.)
+  An earlier transaction may release its locks but not commit, meanwhile a later transaction uses the objects and commits. Then the earlier transaction may abort. The later transaction has done a dirty read and cannot be recovered because it has already committed.
 
-12. In a decentralized variant of the two-phase commit protocol the participants communicate directly with one another instead of indirectly via the coordinator. In Phase 1, the coordinator sends its vote to all the participants. In Phase 2, if the coordinator’s vote is No, the participants just abort the transaction; if it is Yes, each participant sends its vote to the coordinator and the other participants, each of which decides on the outcome according to the vote and carries it out. Calculate the number of messages and the number of rounds it takes. What are its advantages or disadvantages in comparison with the centralized variant?
+12. In a decentralized variant of the two-phase commit protocol the participants communicate
+directly with one another instead of indirectly via the coordinator. In Phase 1, the
+coordinator sends its vote to all the participants. In Phase 2, if the coordinator’s vote is
+No, the participants just abort the transaction; if it is Yes, each participant sends its vote
+to the coordinator and the other participants, each of which decides on the outcome according
+to the vote and carries it out. Calculate the number of messages and the number of rounds it
+takes. What are its advantages or disadvantages in comparison with the centralized variant?
+
+Response(chapter 17):
+ In both cases, we consider the normal case with no time outs.
+ In the decentralised version of the two-phase commit protocol:
+    No. of messages:
+      Phase 1: coordinator sends its vote to N workers = N
+      Phase 2: each of N workers sends its vote to (N-1) other workers + coordinator = N*(N-1).
+      Total = N*N
+    No. of rounds:
+      coordinator to workers + workers to others = 2 round.
+Advantages: the number of rounds is less than the normal two-phase commit protocol which
+requires 3.
+Disadvantages: the number of messages is far more: N*N instead of 3N.
+
+13(Read up on this one). A server uses timestamp ordering for local concurrency control. What
+changes must be made to adapt it for use with distributed transactions? Under what conditions
+could it be argued that the two-phase commit protocol is redundant with timestamp ordering?
 
 Response:
 
+Timestamps for local concurrency control are just local counters. But for distributed
+transactions, timestamps at different servers must have an agreed global ordering. For
+example, they can be generated as (local timestamp, server-id) to make them different. The
+local timestamps must be roughly synchronized between servers.
 
-13. A server uses timestamp ordering for local concurrency control. What changes must be made to adapt it for use with distributed transactions? Under what conditions could it be argued that the two-phase commit protocol is redundant with timestamp ordering?
+With timestamp ordering, a transaction may be aborted early at one of the servers by the read
+or write rule, in which case the abort result is returned to the client. If a server crashes
+before the client has done all its actions at that server, the client will realise that the
+transaction has failed. In both of these cases the client should the send an abortTransaction
+to the coordinator.
 
-Response:(Read up on this one.)
+When the client request to commit arrives, the servers should all be able to commit, provided
+they have not crashed after their last operation in the transaction.
+The two-phase commit protocol can be considered redundant under the conditions that
+  (i) servers are assumed to make their changes persistent before replying to the client after each successful action and
+  (ii) the client does not attempt to commit transactions that have failed.
