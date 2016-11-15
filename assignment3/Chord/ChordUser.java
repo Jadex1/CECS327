@@ -1,9 +1,21 @@
+// CECS 327
+// Lab 3
+// James Hall and Brendan Mcmahon
 import java.rmi.*;
 import java.net.*;
 import java.util.*;
 import java.io.*;
+<<<<<<< HEAD
 
 >>>>>>> JamesBranchMaster
+=======
+import java.math.*;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import java.security.MessageDigest;
+>>>>>>> jamesBranch2
 public class ChordUser{
   int port;
   public ChordUser(int p){
@@ -16,12 +28,10 @@ public class ChordUser{
         System.out.println("\tread <file>\n\tdelete <file>\n\tprint");
         System.out.println("Enter: ");
         try{
-
           Chord chord = new Chord(port);//The errors are coming from here.
           Scanner scan= new Scanner(System.in);
           String delims = "[ ]+";
           String command = "";
-
           while (true) {
             String text = scan.nextLine();
             String[] tokens = text.split(delims);
@@ -30,11 +40,12 @@ public class ChordUser{
 >>>>>>> JamesBranchMaster
               try {
                 chord.joinRing("localhost", Integer.parseInt(tokens[1]));
-              }catch(IOException e) {
+              } catch (IOException e) {
                 System.out.println("Error joining the ring!");
               }
             }
             if (tokens[0].equals("print")){
+<<<<<<< HEAD
 
                  chord.Print();
               }
@@ -51,8 +62,21 @@ public class ChordUser{
   			        FileStream file = new FileStream(path);
   		          ChordMessageInterface peer = chord.locateSuccessor(guid);
                 peer.put(guid, file); // put file into ring
+=======
+              chord.Print();
+            }
+            if (tokens[0].equals("write") && tokens.length == 3) {
+              try{
+                String path;
+              //  int guid = Integer.parseInt(tokens[1]);// name of a file.
+
+                String data = tokens[1];
+
+                ChordMessageInterface peer = chord.locateSuccessor(guid);
+
+                peer.put(guid,data); // put file into ring
+>>>>>>> jamesBranch2
                 //file is just an object,
-                //NOTE: I'm not sure where to get the file or find it.
               }catch(FileNotFoundException e1){
                 e1.printStackTrace();
                 System.out.println("File was not found!");
@@ -65,9 +89,13 @@ public class ChordUser{
               }
             }
             if (tokens[0].equals("read") && tokens.length == 2) {
+<<<<<<< HEAD
 
 >>>>>>> JamesBranchMaster
               try {//
+=======
+              try {
+>>>>>>> jamesBranch2
                 chord.get(Integer.parseInt(tokens[1]));
               }catch (IOException e) {
                 System.out.println("Could not get file!");
@@ -93,8 +121,8 @@ public class ChordUser{
       throw new IllegalArgumentException("Parameter: <port>");
     }
     try {
-      ChordUser chordUser=new ChordUser( Integer.parseInt(args[0]));
-    }catch(Exception e) {
+      ChordUser chordUser = new ChordUser(Integer.parseInt(args[0]));
+    } catch (Exception e) {
       e.printStackTrace();
       System.exit(0);
     }
