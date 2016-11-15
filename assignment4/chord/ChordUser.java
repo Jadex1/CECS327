@@ -51,8 +51,6 @@ public class ChordUser {
 						if (tokens[0].equals("read") && tokens.length == 2) {
 							try {
 								int guid = MD5(tokens[1]);
-								// If you are using windows you have to use
-								// 			path = ".\\"+  port +"\\"+Integer.parseInt(tokens[1]); // path to file
 			  				String path = "./"+  port +"/"+tokens[1]; // path to file
 			  				ChordMessageInterface peer = chord.locateSuccessor(guid);
 			  				InputStream stream = peer.get(guid); // put file into ring
@@ -64,11 +62,11 @@ public class ChordUser {
 								} catch (IOException e) {
 									System.out.println(e);
 								}
-							} catch (Exception e) {
-							e.printStackTrace();
+							} catch(Exception e) {
+								e.printStackTrace();
+							}
 						}
-					}
-					if  (tokens[0].equals("delete") && tokens.length == 2) {
+					  if (tokens[0].equals("delete") && tokens.length == 2) {
 						try {
 							int guid = MD5(tokens[1]);
 							ChordMessageInterface peer = chord.locateSuccessor(guid);
@@ -77,7 +75,7 @@ public class ChordUser {
 							e.printStackTrace();
 						}
 					}
-				}
+			  }
 			} catch(RemoteException e) {}
 			}
 		}, 1000, 1000);

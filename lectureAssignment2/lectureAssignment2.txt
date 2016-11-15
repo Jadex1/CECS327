@@ -21,7 +21,6 @@ The choice becomes application-dependent. It's what you want to provide to the u
   or can access. This would offer quick response with a subset of the available resources and
   possibly more resources with a slower response.
 
-
 2. In unstructured peer-to-peer systems, significant improvements on search results can be provided by the adoption of particular search strategies. Compare and contrast expanded ring search and random walk strategies, highlighting when each approach is likely to be effective.
 
 Response:
