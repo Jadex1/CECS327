@@ -42,11 +42,11 @@ public class ChordUser {
 								int[] guids = {3000,4000,5000};
 								for(int i =0;i<guids.length;i++){
 									int guid = MD5(tokens[1]+guids[i]);
-									String path = "./"+guids[i]+"/repository/"+guid;
+									String path = "./"+guids[i]+"/"+guid;
 									System.out.println("putting to path:"+path);
 									FileStream file = new FileStream(path);
 									ChordMessageInterface peer = chord.locateSuccessor(guid);
-									//peer.put(guid, file); // put file into ring
+									peer.put(guid, file); // put file into ring
 								}
 							} catch (Exception e) {
 								e.printStackTrace();
