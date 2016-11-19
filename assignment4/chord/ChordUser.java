@@ -6,8 +6,6 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-//TODO: Write a Method for MD5, that takes the string and returns a string.
-
 public class ChordUser {
 	int port;
 	public ChordUser(int p) {
@@ -37,12 +35,16 @@ public class ChordUser {
 							chord.Print();
 						}
 						if (tokens[0].equals("write") && tokens.length == 2) {
+							// "write_<fileName>, <fileName> = token[1]"
 							try {
-								int guid = MD5(tokens[1]);
-								String path = "./"+  port +"/"+tokens[1]; // path to file
+								String path = "./"+port+"/"+tokens[1]; // path to file
+								System.out.println("Open path to file: "+path);
 								FileStream file = new FileStream(path);
-								ChordMessageInterface peer = chord.locateSuccessor(guid);
-								peer.put(guid, file); // put file into ring
+								for (int i = 0; i < 3; i++ ) {
+									int guid = MD5(tokens[1]+i);
+									ChordMessageInterface peer = chord.locateSuccessor(guid);
+									peer.put(guid, file); // put file into ring
+								}
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
