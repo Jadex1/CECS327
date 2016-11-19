@@ -50,7 +50,7 @@ public class ChordUser {
 						if (tokens[0].equals("read") && tokens.length == 2) {
 							try {
 								int guid = MD5(tokens[1]);
-			  				String path = "./"+  port +"/"+tokens[1]; // path to file
+			  				String path= "./"+  port +"/"+tokens[1]; // path to file
 			  				ChordMessageInterface peer = chord.locateSuccessor(guid);
 			  				InputStream stream = peer.get(guid); // put file into ring
 								try {
