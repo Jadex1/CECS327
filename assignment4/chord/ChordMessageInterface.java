@@ -10,8 +10,10 @@ public interface ChordMessageInterface extends Remote
     public void notify(ChordMessageInterface j) throws RemoteException;
     public boolean isAlive() throws RemoteException;
     public int getId() throws RemoteException;
-    
-    
+    public boolean canCommit();
+    public void doCommit();
+    public void doAbort();
+    public 
     public void put(int guid, InputStream file) throws IOException, RemoteException;
     public InputStream get(int id) throws IOException, RemoteException;
     public void delete(int id) throws IOException, RemoteException;

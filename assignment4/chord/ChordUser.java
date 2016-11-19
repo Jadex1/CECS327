@@ -39,7 +39,6 @@ public class ChordUser {
 						if (tokens[0].equals("write") && tokens.length == 2) {
 							try {
 								int guid = MD5(tokens[1]);
-								// If you are using windows you have to use
 								String path = "./"+  port +"/"+tokens[1]; // path to file
 								FileStream file = new FileStream(path);
 								ChordMessageInterface peer = chord.locateSuccessor(guid);
@@ -67,16 +66,16 @@ public class ChordUser {
 							}
 						}
 					  if (tokens[0].equals("delete") && tokens.length == 2) {
-						try {
-							int guid = MD5(tokens[1]);
-							ChordMessageInterface peer = chord.locateSuccessor(guid);
-							peer.delete(guid);
-						} catch (Exception e) {
-							e.printStackTrace();
+							try {
+								int guid = MD5(tokens[1]);
+								ChordMessageInterface peer = chord.locateSuccessor(guid);
+								peer.delete(guid);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 						}
 					}
-			  }
-			} catch(RemoteException e) {}
+				} catch(RemoteException e) {}
 			}
 		}, 1000, 1000);
 	}

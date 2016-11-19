@@ -56,11 +56,11 @@ receivers local clock value.)
     response: Internal synchronisation will suffice, since only time differences are relevant.
 Response:
 
-5. By considering a chain of zero or more messages connecting events e and e` and using induction, show that e ! e0 ) L(e) < L(e0). <-(I have no fucking idea what this means.)-james
+5. By considering a chain of zero or more messages connecting events e and e` and using induction, show that e ! e0 ) L(e) < L(e0). 
 
 Resposne:
-if e and e' are successive envents occurring at the same process, or if there is a message m
-such that e = send(m) and e' = rcv(m), then teh result is immediate from LC1 and LC2. Assume
+if e and e' are successive events occurring at the same process, or if there is a message m
+such that e = send(m) and e' = rcv(m), then the result is immediate from LC1 and LC2. Assume
 that the result to be proved is true for all pairs of events connected in a sequence of events
 (in which either HB1 or HB2 applies between each neighbouring pair) of length N or less (N >=
 2). Now assume that e and e' are connected in a series of events e1, e2, e3,... en+1 occurring
@@ -73,7 +73,7 @@ rotate a message m. At any one time, there is only one copy of m in the system. 
 state consists of the number of times it has received m, and P sends m first. At a certain
 point, P has the message and its state is 101. Immediately after sending m, P initiates the
 snapshot algorithm. Explain the operation of the algorithm in this case, giving the possible
-global state(s) reported by it.// Look up Snap-Shot Algorithm, this sounds like atomic stuff.
+global state(s) reported by it.//NOTE: Look up Snap-Shot Algorithm, this sounds like atomic stuff.
 
 Response(do again):
 P sends msg m
@@ -109,7 +109,7 @@ Response:
 First note that this an undesirable feature if there is no advantage to using a
 higher-numbered process: the re-election is wasteful. However, the numbering of processes may
 reflect their relative advantage (for example, with higher-numbered processes executing
-atfaster machines). In this case, the advantage may be worth the re-election costs.
+at faster machines). In this case, the advantage may be worth the re-election costs.
 Re-election costs include the message rounds needed to implement the election; they also may
 include application-specific state transfer from the old coordinator to the new coordinator.
 
