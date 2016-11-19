@@ -39,14 +39,15 @@ public class ChordUser {
 						if (tokens[0].equals("write") && tokens.length == 2) {
 							try {
 								//copy file to 3 peers
-								int[] guids = {3000,4000,5000};
-								for(int i =0;i<guids.length;i++){
-									int guid = MD5(tokens[1]+guids[i]);
-									String path = "./"+guids[i]+"/"+guid;
-									System.out.println("putting to path:"+path);
-									FileStream file = new FileStream(path);
-									ChordMessageInterface peer = chord.locateSuccessor(guid);
-									peer.put(guid, file); // put file into ring
+                  int[] ports = {3000,4000,5000};
+									String filePath = "./"+port+"/"+tokens[1];
+									System.out.println("Open path to file:"+filePath);
+                  FileStream file = new FileStream(filePath);
+
+  								for(int i =0;i<ports.length;i++){
+  									int guid = MD5(tokens[1]+ports[i]);
+									  ChordMessageInterface peer = chord.locateSuccessor(guid);
+									  peer.put(guid, file); // put file into ring
 								}
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -92,7 +93,7 @@ public class ChordUser {
 			MessageDigest md = MessageDigest.getInstance("MD5");
 			byte[] messageDigest = md.digest(aStringtoHash.getBytes());
 			BigInteger bigNumber = new BigInteger(1, messageDigest);
-			BigInteger aMod = new BigInteger("2768");
+			BigInteger aMod = new BigInteger("32768");
 			smallerNumber = bigNumber.mod(aMod).intValue();
 		} catch(Exception e){
 			e.printStackTrace();
