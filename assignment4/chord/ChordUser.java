@@ -40,7 +40,7 @@ public class ChordUser {
 								String path = "./"+port+"/"+tokens[1]; // path to file
 								System.out.println("Open path to file: "+path);
 								FileStream file = new FileStream(path);
-								for (int i = 0; i < 3; i++ ) {
+								for (int i = 0; i < 2; i++ ) {
 									int guid = MD5(tokens[1]+i);
 									ChordMessageInterface peer = chord.locateSuccessor(guid);
 									peer.put(guid, file); // put file into ring
@@ -51,17 +51,19 @@ public class ChordUser {
 						}
 						if (tokens[0].equals("read") && tokens.length == 2) {
 							try {
-								int guid = MD5(tokens[1]);
-			  				String path= "./"+  port +"/"+tokens[1]; // path to file
-			  				ChordMessageInterface peer = chord.locateSuccessor(guid);
-			  				InputStream stream = peer.get(guid); // put file into ring
-								try {
-									FileOutputStream output = new FileOutputStream(path);
-									while (stream.available() > 0){
-										output.write(stream.read());
+								for (int i = 0; i < 2; i++) {
+									int guid = MD5(tokens[1]+i);
+									ChordMessageInterface peer = chord.locateSuccessor(guid);
+									String path ="./"+ port +"/"+tokens[1]; // path to file
+									InputStream stream = peer.get(guid); // put file into ring
+									try {
+										FileOutputStream output = new FileOutputStream(path);
+										while (stream.available() > 0){
+											output.write(stream.read());
+										}
+									} catch (IOException e) {
+										System.out.println(e);
 									}
-								} catch (IOException e) {
-									System.out.println(e);
 								}
 							} catch(Exception e) {
 								e.printStackTrace();
