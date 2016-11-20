@@ -37,19 +37,39 @@ public class ChordUser {
 						if (tokens[0].equals("print")) {
 							chord.Print();
 						}
-						if (tokens[0].equals("write") && tokens.length == 2) {
+						if (tokens[0].equals("write")) {
+							if(tokens.length == 2){
 							try {
-								//copy file to 3 peers
   								for(int i =0;i<ports.length;i++){
 										String inputFilePath = "./"+port+"/"+tokens[1];
 										System.out.println("Open path to file:"+inputFilePath);
 	                  FileStream file = new FileStream(inputFilePath);
-  									int guid = MD5(tokens[1]+ports[i]);
+	  								int guid = MD5(tokens[1]+ports[i]);
 									  ChordMessageInterface peer = chord.locateSuccessor(guid);
 									  peer.put(guid, file); // put file into ring
-								}
-							} catch (Exception e) {
+									}
+								} catch (Exception e) {
 								e.printStackTrace();
+								}
+							}
+							else if(tokens.length == 1) {
+								File[] files = new File("./"+port).listFiles();
+								try {
+									for(final File fileEntry: files){//for all files in directory
+										if(fileEntry.isFile()){//if its a file
+											String inputFilePath = "./"+port+"/"+fileEntry.getName();
+											System.out.println("Open path to file:"+inputFilePath);
+											for(int i =0;i<ports.length;i++){
+												FileStream file = new FileStream(inputFilePath);
+												int guid = MD5(fileEntry.getName()+ports[i]);
+												ChordMessageInterface peer = chord.locateSuccessor(guid);
+												peer.put(guid, file); // put file into ring
+											}
+										}
+									}
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
 							}
 						}
 						if (tokens[0].equals("read") && tokens.length == 2) {
