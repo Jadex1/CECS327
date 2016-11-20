@@ -55,8 +55,8 @@ public class ChordUser {
 										if(fileEntry.isFile()){//if its a file
 											String inputFilePath = "./"+port+"/"+fileEntry.getName();
 											System.out.println("Open path to file:"+inputFilePath);
+											FileStream file = new FileStream(inputFilePath);
 											for(int i =0;i<ports.length;i++){
-												FileStream file = new FileStream(inputFilePath);
 												int guid = MD5(fileEntry.getName()+ports[i]);
 												ChordMessageInterface peer = chord.locateSuccessor(guid);
 												peer.put(guid, file); // put file into ring
