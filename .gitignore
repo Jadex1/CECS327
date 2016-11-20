@@ -5,9 +5,9 @@ latex/
 3000/
 3000/repository/
 3000/repository/*
-4000/
-4000/repository/
-4000/repository/*
+**/4000/
+**/4000/repository/
+**/4000/repository/*
 5000/
 5000/repository/
 5000/repository/*
