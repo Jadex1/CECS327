@@ -51,6 +51,7 @@ public class ChordUser {
 						}
 						if (tokens[0].equals("read") && tokens.length == 2) {
 							try {
+								// Just before or around here we begin the protocol
 								for (int i = 0; i < 2; i++) {
 									int guid = MD5(tokens[1]+i);
 									ChordMessageInterface peer = chord.locateSuccessor(guid);

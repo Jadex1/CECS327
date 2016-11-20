@@ -13,7 +13,8 @@ public interface ChordMessageInterface extends Remote
     // public boolean canCommit();
     // public void doCommit();
     // public void doAbort();
-    // public 
+    // public void haveCommitted(trans, participant);
+    // public boolean getDecision(trans);
     public void put(int guid, InputStream file) throws IOException, RemoteException;
     public InputStream get(int id) throws IOException, RemoteException;
     public void delete(int id) throws IOException, RemoteException;
