@@ -54,7 +54,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   }
   public InputStream get(int guid) throws RemoteException {
     String fileName = "./"+i+"/repository/" + guid;
-          System.out.println("Opening Filstream for file @"+fileName);
+    System.out.println("Opening inputstream for:"+fileName);
 	  FileStream file= null;
     //TODO: create print statement for success or failur of read.
     try{
@@ -66,6 +66,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   }
   public void delete(int guid) throws RemoteException {
     String fileName = "./"+i+"/repository/" + guid;
+    System.out.println("Deleting file:"+fileName);
     File file = new File(fileName);
     file.delete();
   }
