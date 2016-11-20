@@ -34,20 +34,40 @@ public class ChordUser {
 						if (tokens[0].equals("print")) {
 							chord.Print();
 						}
-						if (tokens[0].equals("write") && tokens.length == 2) {
-							// "write_<fileName>, <fileName> = token[1]"
-							try {
-								String path = "./"+port+"/"+tokens[1]; // path to file
-								System.out.println("Open path to file: "+path);
-								FileStream file = new FileStream(path);
-								for (int i = 0; i < 2; i++ ) {
-									int guid = MD5(tokens[1]+i);
-									ChordMessageInterface peer = chord.locateSuccessor(guid);
-									peer.put(guid, file); // put file into ring
+						if (tokens[0].equals("write")) {
+							if(tokens.length == 2){
+								try {
+									String path = "./"+port+"/"+tokens[1]; // path to file
+									System.out.println("Open path to file: "+path);
+									FileStream file = new FileStream(path);
+									for (int i = 0; i < 2; i++ ) {
+										int guid = MD5(tokens[1]+i);
+										ChordMessageInterface peer = chord.locateSuccessor(guid);
+										peer.put(guid, file); // put file into ring
+									}
+								} catch (Exception e) {
+									e.printStackTrace();
 								}
-							} catch (Exception e) {
-								e.printStackTrace();
+							} else if(tokens.length == 1) {
+								File[] files = new File("./"+port).listFiles();
+								try {
+									for(final File fileEntry: files){//for all files in directory
+										if(fileEntry.isFile()){//if its a file
+											String inputFilePath = "./"+port+"/"+fileEntry.getName();
+											System.out.println("Open path to file:"+inputFilePath);
+											for(int i =0;i<ports.length;i++){
+												FileStream file = new FileStream(inputFilePath);
+												int guid = MD5(fileEntry.getName()+ports[i]);
+												ChordMessageInterface peer = chord.locateSuccessor(guid);
+												peer.put(guid, file); // put file into ring
+											}
+										}
+									}
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
 							}
+							// "write_<fileName>, <fileName> = token[1]"
 						}
 						if (tokens[0].equals("read") && tokens.length == 2) {
 							try {
