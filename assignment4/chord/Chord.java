@@ -11,8 +11,39 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   ChordMessageInterface successor;
   ChordMessageInterface predecessor;
   ChordMessageInterface[] finger;
+  ChordMessageInterface leader = null;
+  ChordMessageInterface holderChord = null;
+  boolean participated = false;
   int nextFinger;
   int i;   		// GUID
+  public void beginElection() throws RemoteException{
+    try{
+      successor.selectLeader(this);
+      holderChord = this;
+      participated = true;
+    } catch (RemoteException e){
+      e.printStackTrace();
+    }
+  }
+  public void electLeader(ChordMessageInterface anotherChord) throws RemoteException {
+    if(anotherChord.getId() > holderChord.getId()){
+      successor.electLeader(anotherChord);
+      anotherChord = holderChord;
+      participated = true;
+    } else if(anotherChord.getId() == this.getId()){
+      leader = this;
+      successor.selectLeader(this);
+    } else if( (anotherChord.getId() < holderChord.getId()) && (!(participated))){
+      successor.electLeader(this);
+      participated = true;
+    }
+  }
+  public void setALeader(ChordMessageInterface anotherChord) throws RemoteException{
+    if (anotherChord.getId() != this.getId()) {
+      successor.setALeader(anotherChord);
+      leader = w;
+    }
+  }
   public ChordMessageInterface rmiChord(String ip, int port) {
     ChordMessageInterface chord = null;
     try{
@@ -41,6 +72,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     }
   }
   public void put(int guid, InputStream stream) throws RemoteException {
+    // so the atomic commit should be called from the put i think.
     try {
       String fileName = "./"+i+"/repository/" + guid;
 	    FileOutputStream output = new FileOutputStream(fileName);
