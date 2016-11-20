@@ -1,7 +1,7 @@
 import java.rmi.*;
 import java.net.*;
 import java.util.*;
-import java.io.*;;
+import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -10,7 +10,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class ChordUser {
 	int port;
-	int[] ports = {1,2,3};
+	int[] ports = {3000,4000,5000};
 	public ChordUser(int p) {
 		port = p;
 		Timer timer1 = new Timer();
@@ -19,7 +19,7 @@ public class ChordUser {
 			public void run() {
 				try {
 					Chord chord = new Chord(port);
-					System.out.println("Usage: \n\tjoin <port>\n\twrite <file> (the file must be an integer stored in the working directory, i.e, ./port/file");
+					System.out.println("Usage: \n\tjoin <port>\n\twrite (uploads all local files for the peer in ./port/)\n\twrite <file> (the file must be an integer stored in the working directory, i.e, ./port/file");
 					System.out.println("\tread <file>\n\tdelete <file>\n\tprint");
 					Scanner scan= new Scanner(System.in);
 					String delims = "[ ]+";
@@ -113,7 +113,7 @@ public class ChordUser {
 			MessageDigest md = MessageDigest.getInstance("MD5");
 			byte[] messageDigest = md.digest(aStringtoHash.getBytes());
 			BigInteger bigNumber = new BigInteger(1, messageDigest);
-			BigInteger aMod = new BigInteger("2768");
+			BigInteger aMod = new BigInteger("32768");
 			smallerNumber = bigNumber.mod(aMod).intValue();
 		} catch(Exception e){
 			e.printStackTrace();
