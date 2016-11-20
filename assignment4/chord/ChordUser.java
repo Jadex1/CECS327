@@ -72,9 +72,11 @@ public class ChordUser {
 						}
 					  if (tokens[0].equals("delete") && tokens.length == 2) {
 							try {
-								int guid = MD5(tokens[1]);
-								ChordMessageInterface peer = chord.locateSuccessor(guid);
-								peer.delete(guid);
+								for(int i = 0; i < 2; i++){
+									int guid = MD5(tokens[1]+i);// translate file we want into HASH (3 times)
+									ChordMessageInterface peer = chord.locateSuccessor(guid);
+									peer.delete(guid);
+								}
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
