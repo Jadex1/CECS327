@@ -31,9 +31,6 @@ public class ChordUser {
 								System.out.println("Error joining the ring!");
 							}
 						}
-            /*! \fn Print()
-                \brief print status of ring
-            */
 						if (tokens[0].equals("print")) {
 							chord.Print();
 						}
