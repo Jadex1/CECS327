@@ -31,81 +31,30 @@ public class ChordUser {
 								System.out.println("Error joining the ring!");
 							}
 						}
+            /*! \fn Print()
+                \brief print status of ring
+            */
 						if (tokens[0].equals("print")) {
 							chord.Print();
 						}
 						if (tokens[0].equals("write")) {
-							if(tokens.length == 2){
-								try {
-									String path = "./"+port+"/"+tokens[1]; // path to file
-									System.out.println("Open path to file: "+path);
-									FileStream file = new FileStream(path);
-									for (int i = 0; i < 2; i++ ) {
-										int guid = MD5(tokens[1]+i);
-										ChordMessageInterface peer = chord.locateSuccessor(guid);
-										peer.put(guid, file); // put file into ring
-									}
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-							} else if(tokens.length == 1) {
-								File[] files = new File("./"+port).listFiles();
-								try {
-									for(final File fileEntry: files){//for all files in directory
-										if(fileEntry.isFile()){//if its a file
-											String inputFilePath = "./"+port+"/"+fileEntry.getName();
-											System.out.println("Open path to file:"+inputFilePath);
-											for(int i =0;i<ports.length;i++){
-												FileStream file = new FileStream(inputFilePath);
-												int guid = MD5(fileEntry.getName()+ports[i]);
-												ChordMessageInterface peer = chord.locateSuccessor(guid);
-												peer.put(guid, file); // put file into ring
-											}
-										}
-									}
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-							}
-							// "write_<fileName>, <fileName> = token[1]"
+               write(tokens,chord);
 						}
 						if (tokens[0].equals("read") && tokens.length == 2) {
-							try {
-								// Just before or around here we begin the protocol
-								for (int i = 0; i < 2; i++) {
-									int guid = MD5(tokens[1]+i);
-									ChordMessageInterface peer = chord.locateSuccessor(guid);
-									String path ="./"+ port +"/"+tokens[1]; // path to file
-									InputStream stream = peer.get(guid); // put file into ring
-									try {
-										FileOutputStream output = new FileOutputStream(path);
-										while (stream.available() > 0){
-											output.write(stream.read());
-										}
-									} catch (IOException e) {
-										System.out.println(e);
-									}
-								}
-							} catch(Exception e) {
-								e.printStackTrace();
-							}
+							read(tokens,chord);
 						}
 					  if (tokens[0].equals("delete") && tokens.length == 2) {
-							try {
-								for(int i = 0; i < 2; i++){
-									int guid = MD5(tokens[1]+i);// translate file we want into HASH (3 times)
-									ChordMessageInterface peer = chord.locateSuccessor(guid);
-									peer.delete(guid);
-								}
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
+							delete(tokens,chord);
 						}
 					}
 				} catch(RemoteException e) {}
 			}
 		}, 1000, 1000);
 	}
+  /*! \fn MD5
+      \brief if user specifies a filename the file will be hashed and copyed onto the corresponding peer.
+      \param aStringtoHash
+  */
 	public int MD5(String aStringtoHash){
 		int smallerNumber = 0;
 		try{
@@ -120,6 +69,88 @@ public class ChordUser {
 		}
 		return smallerNumber;
 	}
+  /*! \fn write
+      \brief if user specifies a filename the file will be hashed and copied onto the corresponding peer.
+      \breif if user types 'write' the current directoy of the ChordUser will be uploaded and distributed accordingly to DFSS.
+			\param tokens[] user entered info
+			\param Chord ChordUser
+  */
+  public void write(String[] tokens,Chord chord){
+      if(tokens.length == 2){
+        try {
+          String path = "./"+port+"/"+tokens[1]; // path to file
+          System.out.println("Open path to file: "+path);
+          FileStream file = new FileStream(path);
+          for (int i = 0; i < 2; i++ ) {
+            int guid = MD5(tokens[1]+i);
+            ChordMessageInterface peer = chord.locateSuccessor(guid);
+            peer.put(guid, file); // put file into ring
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      } else if(tokens.length == 1) {
+        File[] files = new File("./"+port).listFiles();
+        try {
+          for(final File fileEntry: files){//for all files in directory
+            if(fileEntry.isFile()){//if its a file
+              String inputFilePath = "./"+port+"/"+fileEntry.getName();
+              System.out.println("Open path to file:"+inputFilePath);
+              for(int i =0;i<2;i++){
+                FileStream file = new FileStream(inputFilePath);
+                int guid = MD5(fileEntry.getName()+i);
+                ChordMessageInterface peer = chord.locateSuccessor(guid);
+                peer.put(guid, file); // put file into ring
+              }
+            }
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+  }
+  /*! \fn read
+      \brief Hashes file name and attempts to read the file contained at succ of guid
+      \param tokens[] user entered info
+			\param Chord ChordUser
+  */
+  public void read(String[] tokens,Chord chord){
+    try {
+      // Just before or around here we begin the protocol
+      for (int i = 0; i < 2; i++) {
+        int guid = MD5(tokens[1]+i);
+        ChordMessageInterface peer = chord.locateSuccessor(guid);
+        String path ="./"+ port +"/"+tokens[1]; // path to file
+        InputStream stream = peer.get(guid); // put file into ring
+        try {
+          FileOutputStream output = new FileOutputStream(path);
+          while (stream.available() > 0){
+            output.write(stream.read());
+          }
+        } catch (IOException e) {
+          System.out.println(e);
+        }
+      }
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
+  }
+	/*! \fn delete
+      \brief Hases <filename> and deletes files at guid1,guid2...
+			\param tokens[] user entered info
+			\param Chord ChordUser
+  */
+  public void delete(String[] tokens,Chord chord){
+    try {
+      for(int i = 0; i < 2; i++){
+        int guid = MD5(tokens[1]+i);// translate file we want into HASH (3 times)
+        ChordMessageInterface peer = chord.locateSuccessor(guid);
+        peer.delete(guid);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 	static public void main(String args[]){
 		if (args.length < 1 ) {
 			throw new IllegalArgumentException("Parameter: <port>");
