@@ -3,8 +3,8 @@ import java.io.*;
 
 public interface ChordMessageInterface extends Remote
 {
-    public ChordMessageInterface getPredecessor()  throws RemoteException;
-    ChordMessageInterface locateSuccessor(int key) throws RemoteException;
+    public ChordMessageInterface getleftNode()  throws RemoteException;
+    ChordMessageInterface locaterightNode(int key) throws RemoteException;
     ChordMessageInterface closestPrecedingNode(int key) throws RemoteException;
     public void joinRing(String Ip, int port)  throws RemoteException;
     public void notify(ChordMessageInterface j) throws RemoteException;

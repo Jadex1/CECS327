@@ -45,7 +45,7 @@ public class ChordUser {
 										System.out.println("Open path to file:"+inputFilePath);
 	                  FileStream file = new FileStream(inputFilePath);
 	  								int guid = MD5(tokens[1]+ports[i]);
-									  ChordMessageInterface peer = chord.locateSuccessor(guid);
+									  ChordMessageInterface peer = chord.locaterightNode(guid);
 									  peer.put(guid, file); // put file into ring
 									}
 								} catch (Exception e) {
@@ -62,7 +62,7 @@ public class ChordUser {
 											for(int i =0;i<ports.length;i++){
 												FileStream file = new FileStream(inputFilePath);
 												int guid = MD5(fileEntry.getName()+ports[i]);
-												ChordMessageInterface peer = chord.locateSuccessor(guid);
+												ChordMessageInterface peer = chord.locaterightNode(guid);
 												peer.put(guid, file); // put file into ring
 											}
 										}
@@ -75,7 +75,7 @@ public class ChordUser {
 						if (tokens[0].equals("read") && tokens.length == 2) {
                 for(int i =0;i<ports.length;i++){
                   int guid = MD5(tokens[1]+ports[i]);// translate file we want into HASH (3 times)
-                  ChordMessageInterface peer = chord.locateSuccessor(guid);//get the peer where that file is
+                  ChordMessageInterface peer = chord.locaterightNode(guid);//get the peer where that file is
   								try {
 										if(peer.get(guid) != null){//if we can locate file by its guid
 											InputStream stream = peer.get(guid);
@@ -95,7 +95,7 @@ public class ChordUser {
 						try {
 							for(int i =0;i<ports.length;i++){
 								int guid = MD5(tokens[1]+ports[i]);// translate file we want into HASH (3 times)
-								ChordMessageInterface peer = chord.locateSuccessor(guid);
+								ChordMessageInterface peer = chord.locaterightNode(guid);
 								peer.delete(guid);
 							}
 						} catch (Exception e) {

@@ -14,8 +14,8 @@ import java.io.IOException;
 public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordMessageInterface {
   public static final int M = 2;
   Registry registry;    // rmi registry for lookup the remote objects.
-  ChordMessageInterface successor;
-  ChordMessageInterface predecessor;
+  ChordMessageInterface rightNode;
+  ChordMessageInterface leftNode;
   ChordMessageInterface[] finger;
   int nextFinger;
   int i;   		// GUID
@@ -141,49 +141,49 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   public boolean isAlive() throws RemoteException {
     return true;
   }
-  public ChordMessageInterface getPredecessor() throws RemoteException{
-    return predecessor;
+  public ChordMessageInterface getleftNode() throws RemoteException{
+    return leftNode;
   }
-  public ChordMessageInterface locateSuccessor(int key) throws RemoteException{
+  public ChordMessageInterface locaterightNode(int key) throws RemoteException{
     if (key == i){
       throw new IllegalArgumentException("Key must be distinct that  " + i);
     }
-    if (successor.getId() != i){
-      if (isKeyInSemiCloseInterval(key, i, successor.getId())){
-        return successor;
+    if (rightNode.getId() != i){
+      if (isKeyInSemiCloseInterval(key, i, rightNode.getId())){
+        return rightNode;
       }
       ChordMessageInterface j = closestPrecedingNode(key);
       if (j == null){
         return null;
       }
-      return j.locateSuccessor(key);
+      return j.locaterightNode(key);
     }
-    return successor;
+    return rightNode;
   }
   public ChordMessageInterface closestPrecedingNode(int key) throws RemoteException {
     // look for the nodes that have me this port number as a preceeding node, or who is related to me as a note. Other nodes will have records of other nodes.
     // TODO:
-    return successor;
+    return rightNode;
    }
   public void joinRing(String ip, int port)  throws RemoteException {
     try{
       System.out.println("Get Registry to joining ring");
       Registry registry = LocateRegistry.getRegistry(ip, port);
       ChordMessageInterface chord = (ChordMessageInterface)(registry.lookup("Chord"));
-      predecessor = null;
-      successor = chord.locateSuccessor(this.getId());
+      leftNode = null;
+      rightNode = chord.locaterightNode(this.getId());
       System.out.println("Joining ring");
      } catch(RemoteException | NotBoundException e){
-       successor = this;
+       rightNode = this;
      }
    }
-  public void findingNextSuccessor() {
+  public void findingNextrightNode() {
      int i;
-     successor = this;
+     rightNode = this;
      for (i = 0;  i< M; i++) {
        try {
          if (finger[i].isAlive()) {
-           successor = finger[i];
+           rightNode = finger[i];
          }
        } catch(RemoteException | NullPointerException e) {
          finger[i] = null;
@@ -193,39 +193,39 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   public void stabilize() {
      boolean error = false;
      try {
-       if (successor != null) {
-         ChordMessageInterface x = successor.getPredecessor();
-         if (x != null && x.getId() != this.getId() && isKeyInOpenInterval(x.getId(), this.getId(), successor.getId())) {
-           successor = x;
+       if (rightNode != null) {
+         ChordMessageInterface x = rightNode.getleftNode();
+         if (x != null && x.getId() != this.getId() && isKeyInOpenInterval(x.getId(), this.getId(), rightNode.getId())) {
+           rightNode = x;
          }
-         if (successor.getId() != getId()) {
-           successor.notify(this);
+         if (rightNode.getId() != getId()) {
+           rightNode.notify(this);
          }
        }
      } catch(RemoteException | NullPointerException e1) {
        error = true;
      }
      if (error){
-       findingNextSuccessor();
+       findingNextrightNode();
      }
    }
   public void notify(ChordMessageInterface j) throws RemoteException {
-    if (predecessor == null || (predecessor != null && isKeyInOpenInterval(j.getId(), predecessor.getId(), i))){
+    if (leftNode == null || (leftNode != null && isKeyInOpenInterval(j.getId(), leftNode.getId(), i))){
       // TODO:
       // //transfer keys in the range [j,i) to j;
-      predecessor = j;
+      leftNode = j;
     }
   }
   public void fixFingers() {
     int id = i;
     try {
       int nextId;
-      if (nextFinger == 0){ // && successor != null)
+      if (nextFinger == 0){ // && rightNode != null)
         nextId = (this.getId() + (1 << nextFinger));
       } else{
         nextId = finger[nextFinger -1].getId();
       }
-      finger[nextFinger] = locateSuccessor(nextId);
+      finger[nextFinger] = locaterightNode(nextId);
 
       if (finger[nextFinger].getId() == i){
         finger[nextFinger] = null;
@@ -237,13 +237,13 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
          e.printStackTrace();
      }
     }
-  public void checkPredecessor() {
+  public void checkleftNode() {
     try {
-      if (predecessor != null && !predecessor.isAlive()){
-        predecessor = null;
+      if (leftNode != null && !leftNode.isAlive()){
+        leftNode = null;
       }
     } catch(RemoteException e) {
-      predecessor = null;
+      leftNode = null;
       e.printStackTrace();
     }
   }
@@ -255,15 +255,15 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     }
     // do we turn it into a guid here? no
     i = port;
-    predecessor = null;
-    successor = this;
+    leftNode = null;
+    rightNode = this;
     Timer timer = new Timer();
     timer.scheduleAtFixedRate(new TimerTask() {
         @Override
         public void run() {
             stabilize();
             fixFingers();
-            checkPredecessor();
+            checkleftNode();
         }
     }, 500, 500);
     try{
@@ -278,11 +278,11 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   void Print(){
       int i;
       try {
-        if (successor != null){
-          System.out.println("successor "+ successor.getId());
+        if (rightNode != null){
+          System.out.println("rightNode "+ rightNode.getId());
         }
-        if (predecessor != null){
-          System.out.println("predecessor "+ predecessor.getId());
+        if (leftNode != null){
+          System.out.println("leftNode "+ leftNode.getId());
         }
         for (i=0; i<M; i++) {
           try {

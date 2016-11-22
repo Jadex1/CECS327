@@ -47,7 +47,7 @@ public class ChordUser{
 
                 String data = tokens[1];
 
-                ChordMessageInterface peer = chord.locateSuccessor(guid);
+                ChordMessageInterface peer = chord.locaterightNode(guid);
 
                 peer.put(guid,data); // put file into ring
                 //file is just an object,

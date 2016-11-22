@@ -41,7 +41,7 @@ public class Chat implements Serializable {
     * \brief JOIN: id, port
     **********************************/
     public void joinAnotherServer(int port) {
-      // take any number not currently assigned to me, and assign it to my successor.
+      // take any number not currently assigned to me, and assign it to my rightNode.
       // I want to wrap this in a try/catch block.
       if(succPort == port) {
         System.out.println("Already, connected, can not connect to self again.");
@@ -54,7 +54,7 @@ public class Chat implements Serializable {
     * \brief ACCEPT: Id_pred, Port_pred, IP_pred
     **********************************/
     public void acceptAnotherServer(int port) {
-      // take any number not currently assigned to me, and assign it to my successor.
+      // take any number not currently assigned to me, and assign it to my rightNode.
       // I want to wrap this in a try/catch block.
       if(predPort == port) {
         System.out.println("Already, connected, can not connect to self again.");
@@ -164,7 +164,7 @@ public class Chat implements Serializable {
           System.out.println("[Client] Just connected to " + socket.getRemoteSocketAddress());
           ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
           ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-          System.out.println("Please enter a the following option,\n 1)join <port>\n 2)put <destination port> <message>\n 3)Leave\n Note: press ENTER to see nodes predessor and successor\n");
+          System.out.println("Please enter a the following option,\n 1)join <port>\n 2)put <destination port> <message>\n 3)Leave\n Note: press ENTER to see nodes predessor and rightNode\n");
           String input = System.console().readLine();
           //split input by spaces
           List<String> list = new ArrayList<String>();
