@@ -16,34 +16,34 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   boolean participated = false;
   int nextFinger;
   int i;   		// GUID
-  // public void beginElection() throws RemoteException{
-  //   try{
-  //     rightNode.selectLeader(this);
-  //     holderChord = this;
-  //     participated = true;
-  //   } catch (RemoteException e){
-  //     e.printStackTrace();
-  //   }
-  // }
-  // public void electLeader(ChordMessageInterface anotherChord) throws RemoteException {
-  //   if(anotherChord.getId() > holderChord.getId()){
-  //     rightNode.electLeader(anotherChord);
-  //     anotherChord = holderChord;
-  //     participated = true;
-  //   } else if(anotherChord.getId() == this.getId()){
-  //     leader = this;
-  //     rightNode.selectLeader(this);
-  //   } else if( (anotherChord.getId() < holderChord.getId()) && (!(participated))){
-  //     rightNode.electLeader(this);
-  //     participated = true;
-  //   }
-  // }
-  // public void setALeader(ChordMessageInterface anotherChord) throws RemoteException{
-  //   if (anotherChord.getId() != this.getId()) {
-  //     rightNode.setALeader(anotherChord);
-  //     leader = w;
-  //   }
-  // }
+  public void beginElection() throws RemoteException{
+    try{
+      rightNode.selectLeader(this);
+      holderChord = this;
+      participated = true;
+    } catch (RemoteException e){
+      e.printStackTrace();
+    }
+  }
+  public void electLeader(ChordMessageInterface anotherChord) throws RemoteException {
+    if(anotherChord.getId() > holderChord.getId()){
+      rightNode.electLeader(anotherChord);
+      anotherChord = holderChord;
+      participated = true;
+    } else if(anotherChord.getId() == this.getId()){
+      leader = this;
+      rightNode.selectLeader(this);
+    } else if( (anotherChord.getId() < holderChord.getId()) && (!(participated))){
+      rightNode.electLeader(this);
+      participated = true;
+    }
+  }
+  public void setALeader(ChordMessageInterface anotherChord) throws RemoteException{
+    if (anotherChord.getId() != this.getId()) {
+      rightNode.setALeader(anotherChord);
+      leader = w;
+    }
+  }
   public ChordMessageInterface rmiChord(String ip, int port) {
     ChordMessageInterface chord = null;
     try{
