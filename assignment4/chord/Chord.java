@@ -18,7 +18,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   int i;   		// GUID
   public void beginElection() throws RemoteException{
     try{
-      rightNode.selectLeader(this);
+      rightNode.electLeader(this);
       holderChord = this;
       participated = true;
     } catch (RemoteException e){
@@ -32,7 +32,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       participated = true;
     } else if(anotherChord.getId() == this.getId()){
       leader = this;
-      rightNode.selectLeader(this);
+      rightNode.electLeader(this);
     } else if( (anotherChord.getId() < holderChord.getId()) && (!(participated))){
       rightNode.electLeader(this);
       participated = true;
@@ -41,7 +41,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   public void setALeader(ChordMessageInterface anotherChord) throws RemoteException{
     if (anotherChord.getId() != this.getId()) {
       rightNode.setALeader(anotherChord);
-      leader = w;
+      leader = anotherChord;
     }
   }
   public ChordMessageInterface rmiChord(String ip, int port) {

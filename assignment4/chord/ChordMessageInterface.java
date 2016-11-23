@@ -8,6 +8,9 @@ public interface ChordMessageInterface extends Remote
     ChordMessageInterface closestPrecedingNode(int key) throws RemoteException;
     public void joinRing(String Ip, int port)  throws RemoteException;
     public void notify(ChordMessageInterface j) throws RemoteException;
+    public void beginElection() throws RemoteException;
+    public void electLeader(ChordMessageInterface anotherChord) throws RemoteException;
+    public void setALeader(ChordMessageInterface anotherChord) throws RemoteException;
     public boolean isAlive() throws RemoteException;
     public int getId() throws RemoteException;
     // public boolean canCommit();
