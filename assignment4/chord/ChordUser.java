@@ -43,6 +43,7 @@ public class ChordUser {
 					  if (tokens[0].equals("delete") && tokens.length == 2) {
 							delete(tokens,chord);
 						}
+						//TODO: add a begin election method
 					}
 				} catch(RemoteException e) {}
 			}

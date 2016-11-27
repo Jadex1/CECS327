@@ -184,26 +184,26 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
 	 // TODO
 	 //transfer keys in the range [j,i) to j;
 	 }
-   public void fixFingers() {
+  public void fixFingers() {// && rightNode != null)
      int id= i;
      try {
        int nextId;
-	    if (nextFinger == 0){// && rightNode != null)
-        nextId = (this.getId() + (1 << nextFinger));
-      }else{
-        nextId = finger[nextFinger -1].getId();
-      }
-      finger[nextFinger] = locaterightNode(nextId);
-	    if (finger[nextFinger].getId() == i){
-        finger[nextFinger] = null;
-      }else{
-        nextFinger = (nextFinger + 1) % M;
-      }
-    } catch(RemoteException | NullPointerException e){
-      finger[nextFinger] = null;
-      e.printStackTrace();
-    }
-  }
+       if(nextFinger == 0){
+         nextId = (this.getId() + (1 << nextFinger));
+       }else{
+         nextId = finger[nextFinger -1].getId();
+       }
+       finger[nextFinger] = locaterightNode(nextId);
+       if (finger[nextFinger].getId() == i){
+         finger[nextFinger] = null;
+       }else{
+         nextFinger = (nextFinger + 1) % M;
+       }
+     } catch(RemoteException | NullPointerException e){
+       finger[nextFinger] = null;
+       e.printStackTrace();
+     }
+   }
   public void checkleftNode() {
     try {
       if (leftNode != null && !leftNode.isAlive()){
