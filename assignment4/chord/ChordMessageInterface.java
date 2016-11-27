@@ -4,7 +4,7 @@ import java.io.*;
 public interface ChordMessageInterface extends Remote
 {
     public ChordMessageInterface getleftNode()  throws RemoteException;
-    ChordMessageInterface locaterightNode(int key) throws RemoteException;
+    ChordMessageInterface locateRightNode(int key) throws RemoteException;
     ChordMessageInterface closestPrecedingNode(int key) throws RemoteException;
     public void joinRing(String Ip, int port)  throws RemoteException;
     public void notify(ChordMessageInterface j) throws RemoteException;

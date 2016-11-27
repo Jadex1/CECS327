@@ -108,7 +108,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   public ChordMessageInterface getleftNode() throws RemoteException {
     return leftNode;
   }
-  public ChordMessageInterface locaterightNode(int key) throws RemoteException {
+  public ChordMessageInterface locateRightNode(int key) throws RemoteException {
     if (key == i){
       throw new IllegalArgumentException("Key must be distinct that  " + i);
     }
@@ -120,7 +120,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       if(j == null){
         return null;
       }
-      return j.locaterightNode(key);
+      return j.locateRightNode(key);
     }
     return rightNode;
   }
@@ -137,15 +137,16 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     try{
       System.out.println("Get Registry to joining ring");
       Registry registry = LocateRegistry.getRegistry(ip, port);
-      ChordMessageInterface chord = (ChordMessageInterface)(registry.lookup("Chord"));
+      ChordMessageInterface chord = (ChordMessageInterface)(registry.lookup("Chord"));//NOTE: Stopping right here.
+      System.out.println("Found Chord");
       leftNode = null;
-      rightNode = chord.locaterightNode(this.getId());
+      rightNode = chord.locateRightNode(this.getId());
 	    System.out.println("Joining ring");
     } catch(RemoteException | NotBoundException e){
       rightNode = this;
     }
   }
-  public void findingNextrightNode(){
+  public void findingNextRightNode(){
     int i;
     rightNode = this;
     for (i = 0;  i< M; i++) {
@@ -174,12 +175,12 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       error = true;
     }
     if (error){
-      findingNextrightNode();
+      findingNextRightNode();
     }
   }
   public void notify(ChordMessageInterface j) throws RemoteException {
     if (leftNode == null || (leftNode != null && isKeyInOpenInterval(j.getId(), leftNode.getId(), i))){
-      findingNextrightNode();
+      findingNextRightNode();
     }
 	 // TODO
 	 //transfer keys in the range [j,i) to j;
@@ -193,7 +194,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
        }else{
          nextId = finger[nextFinger -1].getId();
        }
-       finger[nextFinger] = locaterightNode(nextId);
+       finger[nextFinger] = locateRightNode(nextId);
        if (finger[nextFinger].getId() == i){
          finger[nextFinger] = null;
        }else{
@@ -213,7 +214,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       leftNode = null;
     }//e.printStackTrace();
   }
-  public Chord(int port) throws RemoteException {
+  public Chord(final int port) throws RemoteException {
     int j;
     finger = new ChordMessageInterface[M];
     for(j=0;j<M; j++){

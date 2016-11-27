@@ -35,10 +35,10 @@ public class ChordUser {
 							chord.Print();
 						}
 						if (tokens[0].equals("write")) {
-               write(tokens,chord);
+               write(tokens, chord);
 						}
 						if (tokens[0].equals("read") && tokens.length == 2) {
-							read(tokens,chord);
+							read(tokens, chord);
 						}
 					  if (tokens[0].equals("delete") && tokens.length == 2) {
 							delete(tokens,chord);
