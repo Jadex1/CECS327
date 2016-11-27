@@ -17,7 +17,7 @@ public class ChordUser {
 				try {
 					Chord chord = new Chord(port);
 					System.out.println("Usage: \n\tjoin <port>\n\twrite <file> (the file must be an integer stored in the working directory, i.e, ./port/file");
-					System.out.println("\tread <file>\n\tdelete <file>\n\tprint");
+					System.out.println("\tread <file>\n\tdelete <file>\n\tprint\n\telect");
 					Scanner scan= new Scanner(System.in);
 					String delims = "[ ]+";
 					String command = "";
@@ -43,7 +43,14 @@ public class ChordUser {
 					  if (tokens[0].equals("delete") && tokens.length == 2) {
 							delete(tokens,chord);
 						}
-						//TODO: add a begin election method
+						if (tokens[0].equals("elect")){
+							try {
+								System.out.println("Starting elect");
+								chord.beginElection();
+							} catch(IOException e) {
+								System.out.println("Error electing the leader!");
+							}
+						}
 					}
 				} catch(RemoteException e) {}
 			}
