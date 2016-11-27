@@ -26,23 +26,21 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     }
   }
   public void electLeader(ChordMessageInterface anotherChord) throws RemoteException {
-    if(anotherChord.getId() > holderChord.getId()){
+    if(anotherChord.getId() < holderChord.getId()){
       rightNode.electLeader(anotherChord);
-      anotherChord = holderChord;
+      holderChord = anotherChord;
       participated = true;
-    } else if(anotherChord.getId() == this.getId()){
-      leader = this;
-      rightNode.setALeader(this);
-    } else if( (anotherChord.getId() < holderChord.getId()) && (!(participated))){
+    } else if (anotherChord.getId() > holderChord.getId() && !participated){
       rightNode.electLeader(this);
-      participated = true;
+    } else if (this.getId() == anotherChord.getId()){
+      rightNode.setALeader(this);
     }
   }
   public void setALeader(ChordMessageInterface anotherChord) throws RemoteException{
     if (anotherChord.getId() != this.getId()) {
       rightNode.setALeader(anotherChord);
-      leader = anotherChord;
     }
+    leader = anotherChord;
   }
   public ChordMessageInterface rmiChord(String ip, int port) {
     ChordMessageInterface chord = null;
@@ -140,7 +138,11 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       ChordMessageInterface chord = (ChordMessageInterface)(registry.lookup("Chord"));//NOTE: Stopping right here.
       System.out.println("Found Chord");
       leftNode = null;
+      System.out.println("locating the node to your right." + port);
       rightNode = chord.locateRightNode(this.getId());
+      if(rightNode != null){
+        System.out.println("Right Node"+rightNode.getId());
+      }
 	    System.out.println("Joining ring");
     } catch(RemoteException | NotBoundException e){
       rightNode = this;
