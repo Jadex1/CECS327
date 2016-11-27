@@ -32,7 +32,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       participated = true;
     } else if(anotherChord.getId() == this.getId()){
       leader = this;
-      rightNode.electLeader(this);
+      rightNode.setALeader(this);
     } else if( (anotherChord.getId() < holderChord.getId()) && (!(participated))){
       rightNode.electLeader(this);
       participated = true;
