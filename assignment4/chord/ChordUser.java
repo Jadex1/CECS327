@@ -86,9 +86,9 @@ public class ChordUser {
           String path = "./"+port+"/"+tokens[1]; // path to file
           System.out.println("Open path to file: "+path);
           FileStream file = new FileStream(path);
-          for (int i = 0; i < 2; i++ ) {
+          for (int i = 1; i < 3; i++ ) {
             int guid = MD5(tokens[1]+i);
-            ChordMessageInterface peer = chord.locaterightNode(guid);
+            ChordMessageInterface peer = chord.locateRightNode(guid);
             peer.put(guid, file); // put file into ring
           }
         } catch (Exception e) {
@@ -101,10 +101,10 @@ public class ChordUser {
             if(fileEntry.isFile()){//if its a file
               String inputFilePath = "./"+port+"/"+fileEntry.getName();
               System.out.println("Open path to file:"+inputFilePath);
-              for(int i =0;i<2;i++){
+              for(int i = 1; i < 3;i++){
                 FileStream file = new FileStream(inputFilePath);
                 int guid = MD5(fileEntry.getName()+i);
-                ChordMessageInterface peer = chord.locaterightNode(guid);
+                ChordMessageInterface peer = chord.locateRightNode(guid);
                 peer.put(guid, file); // put file into ring
               }
             }
@@ -124,7 +124,7 @@ public class ChordUser {
       // Just before or around here we begin the protocol
       for (int i = 0; i < 2; i++) {
         int guid = MD5(tokens[1]+i);
-        ChordMessageInterface peer = chord.locaterightNode(guid);
+        ChordMessageInterface peer = chord.locateRightNode(guid);
         String path ="./"+ port +"/"+tokens[1]; // path to file
         InputStream stream = peer.get(guid); // put file into ring
         try {
@@ -147,9 +147,9 @@ public class ChordUser {
   */
   public void delete(String[] tokens,Chord chord){
     try {
-      for(int i = 0; i < 2; i++){
+      for(int i = 1; i < 3; i++){
         int guid = MD5(tokens[1]+i);// translate file we want into HASH (3 times)
-        ChordMessageInterface peer = chord.locaterightNode(guid);
+        ChordMessageInterface peer = chord.locateRightNode(guid);
         peer.delete(guid);
       }
     } catch (Exception e) {
