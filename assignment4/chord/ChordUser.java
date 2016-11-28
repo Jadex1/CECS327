@@ -35,7 +35,15 @@ public class ChordUser {
 							chord.Print();
 						}
 						if (tokens[0].equals("write")) {
-               write(tokens, chord);
+							try {
+								try {
+	               chord.atomicWrite(tokens[1]);
+							 } catch(FileNotFoundException e) {
+								 System.out.println("Atomic write error!:"+e);
+							 }
+						 } catch(IOException e) {
+							 System.out.println(e);
+						 }
 						}
 						if (tokens[0].equals("read") && tokens.length == 2) {
 							read(tokens, chord);

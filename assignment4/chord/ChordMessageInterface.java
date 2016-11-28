@@ -13,11 +13,12 @@ public interface ChordMessageInterface extends Remote
     public void setALeader(ChordMessageInterface anotherChord) throws RemoteException;
     public boolean isAlive() throws RemoteException;
     public int getId() throws RemoteException;
-    // public boolean canCommit();
-    // public void doCommit();
-    // public void doAbort();
-    // public void haveCommitted(trans, participant);
-    // public boolean getDecision(trans);
+    public void atomicWrite(String fileName) throws RemoteException, FileNotFoundException, IOException;
+    public boolean canCommit(Transaction trans) throws RemoteException;
+    public void doCommit() throws RemoteException;
+    public void doAbort() throws RemoteException;
+    public void haveCommitted(Transaction trans, ChordMessageInterface participant) throws RemoteException;
+    // public boolean getDecision(trans) throws RemoteException;
     public void put(int guid, InputStream file) throws IOException, RemoteException;
     public InputStream get(int id) throws IOException, RemoteException;
     public void delete(int id) throws IOException, RemoteException;

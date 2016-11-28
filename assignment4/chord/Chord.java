@@ -4,6 +4,9 @@ import java.rmi.server.*;
 import java.net.*;
 import java.util.*;
 import java.io.*;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordMessageInterface {
   public static final int M = 2;
@@ -96,6 +99,48 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     String fileName = "./"+i+"/repository/" + guid;
     File file = new File(fileName);
     file.delete();
+  }
+  public void atomicWrite(String fileName) throws RemoteException, FileNotFoundException, IOException {
+    String path = "./"+i+"/"+fileName; // path to input file
+		FileStream file = new FileStream(path);
+
+    Integer id = MD5(fileName);
+    Integer guid1 = MD5(fileName +"1");
+    Integer guid2 = MD5(fileName +"2");
+    Integer guid3 = MD5(fileName +"3");
+    ChordMessageInterface peer1 = this.locateRightNode(guid1);
+    ChordMessageInterface peer2 = this.locateRightNode(guid2);
+    ChordMessageInterface peer3 = this.locateRightNode(guid3);
+
+    Transaction t = new Transaction(Transaction.Operation.WRITE,id,true,file);
+    Boolean p1 = peer1.canCommit(t);
+    Boolean p2 = peer2.canCommit(t);
+    Boolean p3 = peer3.canCommit(t);
+
+    if (p1 && p2 && p3){
+      System.out.println("we can commit!");
+      //doCommit(t);
+    } else {
+      System.out.println("we must abort");
+      //doAbort();
+    }
+
+  }
+  public boolean canCommit(Transaction trans) throws RemoteException {
+    //check local transaction to make sure it matches the one we wish to execute
+    return true;
+  }
+  public void doCommit() throws RemoteException {
+
+  }
+  public void doAbort() throws RemoteException {
+
+  }
+  public void haveCommitted(Transaction trans, ChordMessageInterface participant) throws RemoteException {
+
+  }
+  public boolean getDecision(Transaction trans) throws RemoteException {
+    return true;
   }
   public int getId() throws RemoteException {
     return i;
@@ -216,6 +261,20 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       leftNode = null;
     }//e.printStackTrace();
   }
+  public int MD5(String aStringtoHash){
+    int smallerNumber = 0;
+    try{
+      MessageDigest md = MessageDigest.getInstance("MD5");
+      byte[] messageDigest = md.digest(aStringtoHash.getBytes());
+      BigInteger bigNumber = new BigInteger(1, messageDigest);
+      BigInteger aMod = new BigInteger("32768");
+      smallerNumber = bigNumber.mod(aMod).intValue();
+    } catch(Exception e){
+      e.printStackTrace();
+      System.out.println("Could not put file!");
+    }
+    return smallerNumber;
+  }
   public Chord(final int port) throws RemoteException {
     int j;
     finger = new ChordMessageInterface[M];
@@ -250,6 +309,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
         System.out.println("rightNode "+ rightNode.getId());
       }
       if (leftNode != null){
+
         System.out.println("leftNode "+ leftNode.getId());
       }
       for (i=0; i<M; i++){
