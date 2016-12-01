@@ -15,7 +15,7 @@ public interface ChordMessageInterface extends Remote
     public int getId() throws RemoteException;
     public void atomicWrite(String fileName) throws RemoteException, FileNotFoundException, IOException;
     public boolean canCommit(Transaction trans) throws RemoteException;
-    public void doCommit() throws RemoteException;
+    public void doCommit(Transaction trans) throws RemoteException;
     public void doAbort() throws RemoteException;
     public void haveCommitted(Transaction trans, ChordMessageInterface participant) throws RemoteException;
     // public boolean getDecision(trans) throws RemoteException;

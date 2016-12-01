@@ -19,6 +19,11 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   boolean participated = false;
   int nextFinger;
   int i;   		// GUID
+
+  class FileTimes implements Serializable{
+   int lastTimeWritten;
+   int  lastTimeRead;
+  }
   public void beginElection() throws RemoteException{
     try{
       rightNode.electLeader(this);
@@ -100,10 +105,16 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     File file = new File(fileName);
     file.delete();
   }
+  public void atomicRead(String fileName) throws RemoteException, FileNotFoundException, IOException {
+
+  }
+  public void atomicDelete(String fileName) throws RemoteException, FileNotFoundException, IOException {
+
+  }
   public void atomicWrite(String fileName) throws RemoteException, FileNotFoundException, IOException {
     String path = "./"+i+"/"+fileName; // path to input file
 		FileStream file = new FileStream(path);
-
+    //figure out which of the peers will be invloved in transaction
     Integer id = MD5(fileName);
     Integer guid1 = MD5(fileName +"1");
     Integer guid2 = MD5(fileName +"2");
@@ -117,24 +128,51 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     Boolean p2 = peer2.canCommit(t);
     Boolean p3 = peer3.canCommit(t);
 
+    //write filecontrol
+
     if (p1 && p2 && p3){
       System.out.println("we can commit!");
-      //doCommit(t);
+      //peer1.doCommit(t,guid1);
+      //peer2.doCommit(t, guid2);
+      //peer3.doCommit(t, guid3);
     } else {
       System.out.println("we must abort");
-      //doAbort();
+      doAbort(t);
+      //delete the temp files;
     }
 
   }
   public boolean canCommit(Transaction trans) throws RemoteException {
+    //from class
+    //use dictionary 'filecontrol' guid:int,lastTimeWritten:timestamp,lastTimeRead:timestamp
+    //class FileTimes{
+    //  int lastTimeWritten
+    //  int  lastTimeRead
+    //}
+    // Time = getTime()
+    //if (T.Time > FileControl(T.id.lastTimeRead) && T.time > filecontrol(t.TransactionId.lastTimeWritten)) {
+
+    //  return true;
+    //  else {
+    //    return false;
+    //  }
+    //}
+    //store transaction in local .temp file
+
     //check local transaction to make sure it matches the one we wish to execute
+    //if YES, prepare the file in ./i/temp, return true
+    //if NO, return false
+    System.out.println(i+": can commit!");
     return true;
   }
-  public void doCommit() throws RemoteException {
-
+  public void doCommit(Transaction trans,int guid) throws RemoteException {
+    //calling .put() here?
+    // if trans.Operation == WRITE {
+    //   write T.filename(this is the input file) into the 3 peers;
+    // }
   }
   public void doAbort() throws RemoteException {
-
+    //delete here
   }
   public void haveCommitted(Transaction trans, ChordMessageInterface participant) throws RemoteException {
 
