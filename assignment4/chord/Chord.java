@@ -141,7 +141,8 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   public void doCommit(Transaction trans, int guid) throws RemoteException {
 
     // calling .put() here?
-    atomicMap = new Hashmap<Integer, String>();
+    
+    atomicMap = new HashMap<Integer, String>();
     atomicMap.put(guid, trans);
     FileControl control = new FileControl();
     Date date;
