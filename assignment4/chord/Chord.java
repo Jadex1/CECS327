@@ -20,10 +20,6 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   int nextFinger;
   int i;   		// GUID
 
-  class FileTimes implements Serializable{
-   int lastTimeWritten;
-   int lastTimeRead;
-  }
   public ChordMessageInterface rmiChord(String ip, int port) {
     ChordMessageInterface chord = null;
     try{
@@ -115,53 +111,62 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       //delete the temp files; what do we use the t, for? <- after i edited
     }
   }
-  public boolean canCommit(Transaction trans) throws RemoteException {// when does canCommit get called?
+  public boolean canCommit(Transaction trans) throws RemoteException {
+    MAP<Integer, FileTimes> log = decodeLog();
+    if(log == null){
+      return true;
+    }
+    // else log exits, get the times for our transaction id
+    Filetimes times = (Filetimes) log.get(trans.id);// get our file times
+    int lastTimeRead = times.lastTimeRead;
+    int lastTimeWritten = times.lastTimeWritten;
 
-    //from class
-    //use dictionary 'filecontrol' guid:int, lastTimeWritten:timestamp, lastTimeRead:timestammp
-    // if(transLogExists()) {
-    //   return true;
-    // }
-    // else if (T.Time > FileControl(T.id.lastTimeRead) && T.time > filecontrol(t.TransactionId.lastTimeWritten)) {
-    //  return true;
-    //  else {
-    //    return false;
-    //  }
-    //}
-    // store transaction in local .temp file
-    // check local transaction to make sure it matches the one we wish to execute
-    // if YES, prepare the file in ./i/temp, return true
-    // if NO, return false
-    //
+    if (trans.Time > lastTimeRead && trans.Time > lastTimeWritten) {
+      //save transaction to temp dir
+      String fileName = "./"+i+"/temp/"+trans.id;
+      FileStream stream = new FileStream(path);
+      try {
+  	    FileOutputStream output = new FileOutputStream(fileName);
+        while (stream.available() > 0){
+          output.write(stream.read());
+        }
+      } catch (IOException e){
+        System.out.println(e);
+      }
+      System.out.println(i+": can commit!");
+      return true;
+     else {
+       return false;
+     }
+    }
     System.out.println(i+": can commit!");
     return true;
   }
   public void doCommit(Transaction trans, int guid) throws RemoteException {
-
-    // calling .put() here?
-    MAP<Integer, FileControl> atomicMap = new HASHMAP<Integer, FileControl>();
-    FileControl control = new FileControl();
+    MAP<Integer, FileTimes> atomicMap = decodeLog();
+    FileTimes times = new FileTimes();
     Date date;
     if (trans.Operation == Transaction.Operation.READ){
       self.put(guid, trans.fileStream);
-      aDate = new Date();// convert 
-      control.lastTimeRead = aDate;
+      aDate = new Date();// convert
+      times.lastTimeRead = aDate;
     }
 
     if (trans.Operation == Transacton.Operation.WRITE) {
       self.get(guid);
       aDate = new Date();
-      control.lastTimeWritten = aDate;
+      times.lastTimeWritten = aDate;
     }
 
     if (trans.Operation == Transaction.Opertion.DELETE){
       self.delete(guid);
       atomicMap.delete(guid);
       aDate = new Date();
-      control.lastTimeWritten = aDate;
+      times.lastTimeWritten = aDate;
     }
-    // control.lastTimeRead
-    // atomicMap.put(trans.id, control);
+    //save to log
+    atomicMap.put(trans.id, times);
+    encodeLog(atomicMap);
   }
   public void doAbort() throws RemoteException {
     // In one of the methods we pass the t to the doAbort, we need to change that.
@@ -172,6 +177,39 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     String fileName = "./"+tmp+"/"+i;
     File file = new File(fileName);
     file.delete();
+  }
+  public void encodeLog(MAP<Integer, FileTimes> map) {
+    try{
+        FileOutputStream fos =
+        new FileOutputStream("transaction.log");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(map);
+        oos.close();
+        fos.close();
+        System.out.printf("Serialized HashMap data is saved in transaction.log");
+    } catch(IOException ioe) {
+       ioe.printStackTrace();
+     }
+  }
+  public MAP<Integer, FileTimes> decodeLog(){
+    HashMap<Integer, FileTimes> map = null;
+    try
+    {
+       FileInputStream fis = new FileInputStream("transaction.log");
+       ObjectInputStream ois = new ObjectInputStream(fis);
+       map = (HashMap) ois.readObject();
+       ois.close();
+       fis.close();
+    }catch(IOException ioe) {
+       ioe.printStackTrace();
+       return null;;
+    }catch(ClassNotFoundException c) {
+       System.out.println("Class not found");
+       c.printStackTrace();
+       return null;
+    }
+    System.out.println("Deserialized HashMap..");
+    return map;
   }
   public void haveCommitted(Transaction trans, ChordMessageInterface participant) throws RemoteException {
 
