@@ -163,14 +163,14 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
 
     if (trans.Operation == Transaction.Opertion.DELETE){
       this.delete(guid);
-      atomicMap.delete(guid);// don't know if you can do this.
+      atomicMap.remove(guid);// don't know if you can do this.
       aDate = (int)(new Date().getTime()/1000);
       times.lastTimeWritten = aDate;
     }
 
     //save to log
     atomicMap.put(trans.id, times);
-    encodeLog(atomicMap);
+    //encodeLog(atomicMap);
   }
   public void doAbort() throws RemoteException {
     // In one of the methods we pass the t to the doAbort, we need to change that.
@@ -178,7 +178,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     // delete tmp files if they exist
     // each process should have a tmp at ./tmp/i
     // do we need to resart any cycles or loops?
-    String fileName = "./"+tmp+"/"+i;
+    String fileName = "./tmp/"+i;
     File file = new File(fileName);
     file.delete();
   }
