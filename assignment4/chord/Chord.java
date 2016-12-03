@@ -110,6 +110,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
 		FileStream file = new FileStream(path);
     //figure out which of the peers will be invloved in transaction
     Integer id = MD5(fileName);
+    // add loop here.
     Integer guid1 = MD5(fileName +"1");
     Integer guid2 = MD5(fileName +"2");
     Integer guid3 = MD5(fileName +"3");
@@ -117,14 +118,15 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     ChordMessageInterface peer2 = this.locateRightNode(guid2);
     ChordMessageInterface peer3 = this.locateRightNode(guid3);
 
-    Transaction t = new Transaction(Transaction.Operation.WRITE,id,true,file);
+    Transaction t = new Transaction(Transaction.Operation.WRITE, id, true, file);
+
     Boolean p1 = peer1.canCommit(t);
     Boolean p2 = peer2.canCommit(t);
     Boolean p3 = peer3.canCommit(t);
-
+    // I feel like something is suppose to go here.
     if (p1 && p2 && p3){
       System.out.println("we can commit!");
-      // peer1.doCommit(t,guid1);
+      // peer1.doCommit(t, guid1);
       // peer2.doCommit(t, guid2);
       // peer3.doCommit(t, guid3);
     } else {
@@ -135,40 +137,50 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
 
   }
   public boolean canCommit(Transaction trans) throws RemoteException {
+
     //from class
-    //use dictionary 'filecontrol' guid:int,lastTimeWritten:timestamp,lastTimeRead:timestammp
+    //use dictionary 'filecontrol' guid:int, lastTimeWritten:timestamp, lastTimeRead:timestammp
     // if(transLogExists()) {
     //   return true;
     // }
-    // else
-    //if (T.Time > FileControl(T.id.lastTimeRead) && T.time > filecontrol(t.TransactionId.lastTimeWritten)) {
+    // else if (T.Time > FileControl(T.id.lastTimeRead) && T.time > filecontrol(t.TransactionId.lastTimeWritten)) {
     //  return true;
     //  else {
     //    return false;
     //  }
     //}
-    //store transaction in local .temp file
-    //check local transaction to make sure it matches the one we wish to execute
-    //if YES, prepare the file in ./i/temp, return true
-    //if NO, return false
+    // store transaction in local .temp file
+    // check local transaction to make sure it matches the one we wish to execute
+    // if YES, prepare the file in ./i/temp, return true
+    // if NO, return false
     System.out.println(i+": can commit!");
     return true;
   }
-  public void doCommit(Transaction trans,int guid) throws RemoteException {
+  public void doCommit(Transaction trans, int guid) throws RemoteException {
+
     // calling .put() here?
-    // MAP<Integer,FileControl> atomicMap = new HASHMAP<Integer,FileControl>();
+    //
+    // MAP<Integer, FileControl> atomicMap = new HASHMAP<Integer, FileControl>();
     // FileControl control = new FileControl();
     // if (trans.Operation == Transaction.Operation.READ){
+    //    self.put(guid, trans.fileStream);
     //   control.lastTimeRead = datetime.now
     // }
-    //if (trans.Operation == Transacton.Operation.WRITE) {
-    //
+    // if (trans.Operation == Transacton.Operation.WRITE) {
+    // self.get(guid);
+    //  control.lastTimeWritten = datetime.now
     // }
     // control.lastTimeRead
-    // atomicMap.put(trans.id,control);
+    // atomicMap.put(trans.id, control);
+
   }
   public void doAbort() throws RemoteException {
-    //delete here
+    // cleanUpTempFiles();
+    // delete tmp files if they exist
+    // each process should have a tmp at ./tmp/i
+    String fileName = "./"+tmp+"/"+i;
+    File file = new File(fileName);
+    file.delete();
   }
   public void haveCommitted(Transaction trans, ChordMessageInterface participant) throws RemoteException {
 
