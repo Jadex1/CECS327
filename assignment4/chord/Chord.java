@@ -19,7 +19,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   boolean participated = false;
   int nextFinger;
   int i;   		// GUID
-  Date aDate;
+  int aDate;
   Map<Integer, FileTimes> atomicMap;
 
 
@@ -141,29 +141,31 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   }
   public void doCommit(Transaction trans, int guid) throws RemoteException {
     // calling .put() here?
-    FileTimes times = new FileTimes();
+
     //Integer, FileTimes
     atomicMap = new HashMap<Integer, FileTimes>();
     //HashMap<Integer, FileTimes> atomicMap = decodeLog();
-    FileControl aControl = new FileControl();
+    FileTimes times = new FileTimes();
+
     atomicMap.put(guid, times);
+
     if (trans.Operation == Transaction.Operation.READ){
-      self.put(guid, trans.fileStream);
-      aDate = new Date();// convert
-      aControl.lastTimeRead = aDate;
+      this.put(guid, trans.fileStream);
+      aDate = (int)(new Date().getTime()/1000);// convert
+      times.lastTimeRead = aDate;
     }
 
     if (trans.Operation == Transacton.Operation.WRITE) {
-      self.get(guid);
-      aDate = new Date();
-      aControl.lastTimeWritten = aDate;
+      this.get(guid);
+      aDate = (int)(new Date().getTime()/1000);
+      times.lastTimeWritten = aDate;
     }
 
     if (trans.Operation == Transaction.Opertion.DELETE){
-      self.delete(guid);
+      this.delete(guid);
       atomicMap.delete(guid);// don't know if you can do this.
-      aDate = new Date();
-      aControl.lastTimeWritten = aDate;
+      aDate = (int)(new Date().getTime()/1000);
+      times.lastTimeWritten = aDate;
     }
 
     //save to log
