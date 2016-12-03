@@ -1,11 +1,7 @@
 import java.io.*;
 import java.util.HashMap;
-public class Details
+public class Encoder
 {
-  static class FileTimes implements Serializable{
-   int lastTimeWritten;
-   int lastTimeRead;
-  }
       public static void main(String [] args)
       {
 
@@ -15,15 +11,17 @@ public class Details
            times.lastTimeRead = 100;
            times.lastTimeWritten = 200;
            hmap.put(13513512, times);
+           hmap.put(1312, times);
+           hmap.put(89343, times);
            try
            {
                   FileOutputStream fos =
-                     new FileOutputStream("hashmap.ser");
+                     new FileOutputStream("transaction.log");
                   ObjectOutputStream oos = new ObjectOutputStream(fos);
                   oos.writeObject(hmap);
                   oos.close();
                   fos.close();
-                  System.out.printf("Serialized HashMap data is saved in hashmap.ser");
+                  System.out.printf("Serialized HashMap data is saved in transaction.log");
            }catch(IOException ioe)
             {
                   ioe.printStackTrace();
