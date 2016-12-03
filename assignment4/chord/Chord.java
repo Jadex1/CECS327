@@ -135,21 +135,24 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     // calling .put() here?
     MAP<Integer, FileControl> atomicMap = new HASHMAP<Integer, FileControl>();
     FileControl control = new FileControl();
-
+    Date date;
     if (trans.Operation == Transaction.Operation.READ){
       self.put(guid, trans.fileStream);
-      //control.lastTimeRead = datetime.now;
+      aDate = new Date();
+      control.lastTimeRead = aDate;
     }
 
     if (trans.Operation == Transacton.Operation.WRITE) {
       self.get(guid);
-      //control.lastTimeWritten = datetime.now;
+      aDate = new Date();
+      control.lastTimeWritten = aDate;
     }
 
     if (trans.Operation == Transaction.Opertion.DELETE){
       self.delete(guid);
       atomicMap.delete(guid);
-      //control.lastTimeWritten = datetime.now
+      aDate = new Date();
+      control.lastTimeWritten = aDate;
     }
     // control.lastTimeRead
     // atomicMap.put(trans.id, control);
