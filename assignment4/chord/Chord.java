@@ -7,6 +7,8 @@ import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordMessageInterface {
   public static final int M = 2;
@@ -112,7 +114,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     }
   }
   public boolean canCommit(Transaction trans) throws RemoteException {
-    MAP<Integer, FileTimes> log = decodeLog();
+    HashMap<Integer, FileTimes> log = decodeLog();
     if(log == null){
       return true;
     }
@@ -135,15 +137,16 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       }
       System.out.println(i+": can commit!");
       return true;
+    }
      else {
        return false;
      }
-    }
+
     System.out.println(i+": can commit!");
     return true;
   }
   public void doCommit(Transaction trans, int guid) throws RemoteException {
-    MAP<Integer, FileTimes> atomicMap = decodeLog();
+    HashMap<Integer, FileTimes> atomicMap = decodeLog();
     FileTimes times = new FileTimes();
     Date date;
     if (trans.Operation == Transaction.Operation.READ){
@@ -178,7 +181,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     File file = new File(fileName);
     file.delete();
   }
-  public void encodeLog(MAP<Integer, FileTimes> map) {
+  public void encodeLog(HashMap<Integer, FileTimes> map) {
     try{
         FileOutputStream fos =
         new FileOutputStream("transaction.log");
@@ -191,7 +194,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
        ioe.printStackTrace();
      }
   }
-  public MAP<Integer, FileTimes> decodeLog(){
+  public HashMap<Integer, FileTimes> decodeLog(){
     HashMap<Integer, FileTimes> map = null;
     try
     {
