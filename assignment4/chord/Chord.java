@@ -19,6 +19,8 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   boolean participated = false;
   int nextFinger;
   int i;   		// GUID
+  Date date;
+  Map<Integer, String> atomicMap;
 
   class FileTimes implements Serializable{
    int lastTimeWritten;
@@ -133,9 +135,10 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   public void doCommit(Transaction trans, int guid) throws RemoteException {
 
     // calling .put() here?
-    MAP<Integer, FileControl> atomicMap = new HASHMAP<Integer, FileControl>();
+    atomicMap = new Hashmap<Integer, String>();
+    atomicMap.put(guid, trans);
     FileControl control = new FileControl();
-    Date date;
+    
     if (trans.Operation == Transaction.Operation.READ){
       self.put(guid, trans.fileStream);
       aDate = new Date();
