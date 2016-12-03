@@ -51,14 +51,6 @@ public class ChordUser {
 					  if (tokens[0].equals("delete") && tokens.length == 2) {
 							delete(tokens,chord);
 						}
-						if (tokens[0].equals("elect")){
-							try {
-								System.out.println("Starting elect");
-								chord.beginElection();
-							} catch(IOException e) {
-								System.out.println("Error electing the leader!");
-							}
-						}
 					}
 				} catch(RemoteException e) {}
 			}
