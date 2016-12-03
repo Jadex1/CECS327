@@ -14,10 +14,10 @@ The objectives of this project are:
 3) Differentiate the role of server and client. 
 4) Integrate threads in network programming.
 
-The task is to develop a distributed chat without a central coordinators. The processors will form an overlay topology known as a ring. In other words, every processor i will keep only the rightNode succ(i) and pred(i) as shown in Figure 1.
-When a user i wants to talk with a friend j it sends a PUT message to the rightNode. PUT consists of the source id, the destination id as well as the text. We assume that each user knows the id of the friends.
-A user that wants to join the system sends a JOIN message to a current participant, say i (if there is any participant, it will act as the only partic- ipant). Let j be the process that send the JOIN to i and let i + 1 be the rightNode of i. When i receives the request, it updates its routing table by replacing its leftNode with j and response with an ACCEPT message that contains the ip and port of the previous node in the ring.
-When a user wants to leave the room, it sends a LEAV E message to the rightNode with the id, ip and port of the leftNode so that the nodes can reconstruct the ring.
+The task is to develop a distributed chat without a central coordinators. The processors will form an overlay topology known as a ring. In other words, every processor i will keep only the successor succ(i) and pred(i) as shown in Figure 1.
+When a user i wants to talk with a friend j it sends a PUT message to the successor. PUT consists of the source id, the destination id as well as the text. We assume that each user knows the id of the friends.
+A user that wants to join the system sends a JOIN message to a current participant, say i (if there is any participant, it will act as the only partic- ipant). Let j be the process that send the JOIN to i and let i + 1 be the successor of i. When i receives the request, it updates its routing table by replacing its predecessor with j and response with an ACCEPT message that contains the ip and port of the previous node in the ring.
+When a user wants to leave the room, it sends a LEAV E message to the successor with the id, ip and port of the predecessor so that the nodes can reconstruct the ring.
 
 ### MESSAGES 
 

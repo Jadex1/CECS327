@@ -108,10 +108,20 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     } else {
       System.out.println("we must abort");
       // is this process aborting?
+<<<<<<< HEAD
       self.doAbort();//delete the temp files; what do we use the t, for?
+=======
+      // Everyone abort.
+      peer1.doAbort();// needs to end the cycle.
+      peer2.doAbort();
+      peer3.doAbort();
+      // NOTE: the abort means someone said no, so we all reset, back to zero.
+      // everyone cleans up their tmp folders.
+      //delete the temp files; what do we use the t, for? <- after i edited
+>>>>>>> 0c5ca8f1ba549e8765fa15f169cb35846de6e3de
     }
   }
-  public boolean canCommit(Transaction trans) throws RemoteException {
+  public boolean canCommit(Transaction trans) throws RemoteException {// when does canCommit get called?
 
     //from class
     //use dictionary 'filecontrol' guid:int, lastTimeWritten:timestamp, lastTimeRead:timestammp
@@ -138,10 +148,17 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     atomicMap = new Hashmap<Integer, String>();
     atomicMap.put(guid, trans);
     FileControl control = new FileControl();
+<<<<<<< HEAD
     
     if (trans.Operation == Transaction.Operation.READ){
       self.put(guid, trans.fileStream);
       aDate = new Date();
+=======
+    Date date;
+    if (trans.Operation == Transaction.Operation.READ){
+      self.put(guid, trans.fileStream);
+      aDate = new Date();// convert 
+>>>>>>> 0c5ca8f1ba549e8765fa15f169cb35846de6e3de
       control.lastTimeRead = aDate;
     }
 
@@ -160,11 +177,16 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     // control.lastTimeRead
     // atomicMap.put(trans.id, control);
   }
+<<<<<<< HEAD
   public void doAbort(Transaction t) throws RemoteException {
+=======
+  public void doAbort() throws RemoteException {
+>>>>>>> 0c5ca8f1ba549e8765fa15f169cb35846de6e3de
     // In one of the methods we pass the t to the doAbort, we need to change that.
     // cleanUpTempFiles();
     // delete tmp files if they exist
     // each process should have a tmp at ./tmp/i
+    // do we need to resart any cycles or loops?
     String fileName = "./"+tmp+"/"+i;
     File file = new File(fileName);
     file.delete();

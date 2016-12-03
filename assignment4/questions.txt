@@ -1,0 +1,3 @@
+for each filename you have 3 unique guid's
+replica is is stored in guid1,guid2,guid3
+what is i?

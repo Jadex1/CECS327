@@ -1,0 +1,271 @@
+\hypertarget{class_chord}{}\section{Chord Class Reference}
+\label{class_chord}\index{Chord@{Chord}}
+Inheritance diagram for Chord\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_chord}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{interface_chord_message_interface}{Chord\+Message\+Interface} \hyperlink{class_chord_a2fd46745a549fb8447f2cb7e32e8b07b}{rmi\+Chord} (String ip, int port)
+\item 
+Boolean \hyperlink{class_chord_ad88edc3a01395c31dd0ae209195a2e08}{is\+Key\+In\+Semi\+Close\+Interval} (int key, int key1, int key2)
+\item 
+Boolean \hyperlink{class_chord_a711a8c4e621940da4c48c1ba60479bd7}{is\+Key\+In\+Open\+Interval} (int key, int key1, int key2)
+\item 
+void \hyperlink{class_chord_a1133387e1312ead8daf5c94c11ff3b78}{put} (int guid, Input\+Stream stream)  throws Remote\+Exception
+\begin{DoxyCompactList}\small\item\em Stores the file for given guid. \end{DoxyCompactList}\item 
+Input\+Stream \hyperlink{class_chord_a6fa6e161d33e337f53cc0f3e38e1791b}{get} (int guid)  throws Remote\+Exception 
+\begin{DoxyCompactList}\small\item\em returns the file of a given guid \end{DoxyCompactList}\item 
+void \hyperlink{class_chord_ab16ffb81226d722399a46d1acfd70e60}{delete} (int guid)  throws Remote\+Exception 
+\begin{DoxyCompactList}\small\item\em Fires after file has been found. \end{DoxyCompactList}\item 
+int \hyperlink{class_chord_a7c6a50aff653bafc040f923c93061bdb}{get\+Id} ()  throws Remote\+Exception 
+\item 
+boolean \hyperlink{class_chord_a0a677ced19cc0cb5afd2a695977aeb95}{is\+Alive} ()  throws Remote\+Exception 
+\item 
+\hyperlink{interface_chord_message_interface}{Chord\+Message\+Interface} \hyperlink{class_chord_a3f1aadce3820e808c80662bb61a58e34}{get\+Predecessor} ()  throws Remote\+Exception
+\item 
+\hyperlink{interface_chord_message_interface}{Chord\+Message\+Interface} \hyperlink{class_chord_aa53f4f7c97122395a33d064460538db0}{locate\+Successor} (int key)  throws Remote\+Exception
+\item 
+\hyperlink{interface_chord_message_interface}{Chord\+Message\+Interface} \hyperlink{class_chord_a77a9443c945cf5482f59edf685c1dc70}{closest\+Preceding\+Node} (int key)  throws Remote\+Exception 
+\item 
+void \hyperlink{class_chord_ace0b8d2768590d7527af155c6573cae7}{join\+Ring} (String ip, int port)  throws Remote\+Exception 
+\item 
+void \hyperlink{class_chord_a65c855dc1d8c6a82545899cb823dba2e}{finding\+Next\+Successor} ()
+\item 
+void \hyperlink{class_chord_a8a4b7a1cd88cb3f607ada0629f2ff2dd}{stabilize} ()
+\item 
+void \hyperlink{class_chord_a4de8b8464782dd96d88deeb35b2f27a2}{notify} (\hyperlink{interface_chord_message_interface}{Chord\+Message\+Interface} j)  throws Remote\+Exception 
+\item 
+void \hyperlink{class_chord_a02763f74bbd986baa7e6567bf9dc3c95}{fix\+Fingers} ()
+\item 
+void \hyperlink{class_chord_a530b2ab58c9f4026dadf4293c38c4450}{check\+Predecessor} ()
+\item 
+\hyperlink{class_chord_aed079e86ebb63da4af055ca324a74274}{Chord} (int port)  throws Remote\+Exception 
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static final int \hyperlink{class_chord_a864e0b4011dc157c78a06dd951c6d9ac}{M} = 2
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Chord@{Chord}!Chord@{Chord}}
+\index{Chord@{Chord}!Chord@{Chord}}
+\subsubsection[{\texorpdfstring{Chord(int port)}{Chord(int port)}}]{\setlength{\rightskip}{0pt plus 5cm}Chord.\+Chord (
+\begin{DoxyParamCaption}
+\item[{int}]{port}
+\end{DoxyParamCaption}
+) throws Remote\+Exception}\hypertarget{class_chord_aed079e86ebb63da4af055ca324a74274}{}\label{class_chord_aed079e86ebb63da4af055ca324a74274}
+
+
+\subsection{Member Function Documentation}
+\index{Chord@{Chord}!check\+Predecessor@{check\+Predecessor}}
+\index{check\+Predecessor@{check\+Predecessor}!Chord@{Chord}}
+\subsubsection[{\texorpdfstring{check\+Predecessor()}{checkPredecessor()}}]{\setlength{\rightskip}{0pt plus 5cm}void Chord.\+check\+Predecessor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{class_chord_a530b2ab58c9f4026dadf4293c38c4450}{}\label{class_chord_a530b2ab58c9f4026dadf4293c38c4450}
+\index{Chord@{Chord}!closest\+Preceding\+Node@{closest\+Preceding\+Node}}
+\index{closest\+Preceding\+Node@{closest\+Preceding\+Node}!Chord@{Chord}}
+\subsubsection[{\texorpdfstring{closest\+Preceding\+Node(int key)}{closestPrecedingNode(int key)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Chord\+Message\+Interface} Chord.\+closest\+Preceding\+Node (
+\begin{DoxyParamCaption}
+\item[{int}]{key}
+\end{DoxyParamCaption}
+) throws Remote\+Exception}\hypertarget{class_chord_a77a9443c945cf5482f59edf685c1dc70}{}\label{class_chord_a77a9443c945cf5482f59edf685c1dc70}
+
+
+Implements \hyperlink{interface_chord_message_interface_a7f47e9d5144a2af6904135bc05dfe8fd}{Chord\+Message\+Interface}.
+
+\index{Chord@{Chord}!delete@{delete}}
+\index{delete@{delete}!Chord@{Chord}}
+\subsubsection[{\texorpdfstring{delete(int guid)}{delete(int guid)}}]{\setlength{\rightskip}{0pt plus 5cm}void Chord.\+delete (
+\begin{DoxyParamCaption}
+\item[{int}]{guid}
+\end{DoxyParamCaption}
+) throws Remote\+Exception}\hypertarget{class_chord_ab16ffb81226d722399a46d1acfd70e60}{}\label{class_chord_ab16ffb81226d722399a46d1acfd70e60}
+
+
+Fires after file has been found. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em guid} & unique hash of file name \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{interface_chord_message_interface_ab4d46beae8cea347c827b5618ea16104}{Chord\+Message\+Interface}.
+
+\index{Chord@{Chord}!finding\+Next\+Successor@{finding\+Next\+Successor}}
+\index{finding\+Next\+Successor@{finding\+Next\+Successor}!Chord@{Chord}}
+\subsubsection[{\texorpdfstring{finding\+Next\+Successor()}{findingNextSuccessor()}}]{\setlength{\rightskip}{0pt plus 5cm}void Chord.\+finding\+Next\+Successor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{class_chord_a65c855dc1d8c6a82545899cb823dba2e}{}\label{class_chord_a65c855dc1d8c6a82545899cb823dba2e}
+\index{Chord@{Chord}!fix\+Fingers@{fix\+Fingers}}
+\index{fix\+Fingers@{fix\+Fingers}!Chord@{Chord}}
+\subsubsection[{\texorpdfstring{fix\+Fingers()}{fixFingers()}}]{\setlength{\rightskip}{0pt plus 5cm}void Chord.\+fix\+Fingers (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{class_chord_a02763f74bbd986baa7e6567bf9dc3c95}{}\label{class_chord_a02763f74bbd986baa7e6567bf9dc3c95}
+\index{Chord@{Chord}!get@{get}}
+\index{get@{get}!Chord@{Chord}}
+\subsubsection[{\texorpdfstring{get(int guid)}{get(int guid)}}]{\setlength{\rightskip}{0pt plus 5cm}Input\+Stream Chord.\+get (
+\begin{DoxyParamCaption}
+\item[{int}]{guid}
+\end{DoxyParamCaption}
+) throws Remote\+Exception}\hypertarget{class_chord_a6fa6e161d33e337f53cc0f3e38e1791b}{}\label{class_chord_a6fa6e161d33e337f53cc0f3e38e1791b}
+
+
+returns the file of a given guid 
+
+Connects to the dtp server 
+\begin{DoxyParams}{Parameters}
+{\em guid} & unique hash of file name \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{interface_chord_message_interface_a4cdb461c48fe643f4fb5fa420d017eb3}{Chord\+Message\+Interface}.
+
+\index{Chord@{Chord}!get\+Id@{get\+Id}}
+\index{get\+Id@{get\+Id}!Chord@{Chord}}
+\subsubsection[{\texorpdfstring{get\+Id()}{getId()}}]{\setlength{\rightskip}{0pt plus 5cm}int Chord.\+get\+Id (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) throws Remote\+Exception}\hypertarget{class_chord_a7c6a50aff653bafc040f923c93061bdb}{}\label{class_chord_a7c6a50aff653bafc040f923c93061bdb}
+
+
+Implements \hyperlink{interface_chord_message_interface_acead95d9a7196f05b656462ab78138eb}{Chord\+Message\+Interface}.
+
+\index{Chord@{Chord}!get\+Predecessor@{get\+Predecessor}}
+\index{get\+Predecessor@{get\+Predecessor}!Chord@{Chord}}
+\subsubsection[{\texorpdfstring{get\+Predecessor()}{getPredecessor()}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Chord\+Message\+Interface} Chord.\+get\+Predecessor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) throws Remote\+Exception}\hypertarget{class_chord_a3f1aadce3820e808c80662bb61a58e34}{}\label{class_chord_a3f1aadce3820e808c80662bb61a58e34}
+
+
+Implements \hyperlink{interface_chord_message_interface_ab07c08ba6088ef880eaf4ebae8281c51}{Chord\+Message\+Interface}.
+
+\index{Chord@{Chord}!is\+Alive@{is\+Alive}}
+\index{is\+Alive@{is\+Alive}!Chord@{Chord}}
+\subsubsection[{\texorpdfstring{is\+Alive()}{isAlive()}}]{\setlength{\rightskip}{0pt plus 5cm}boolean Chord.\+is\+Alive (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) throws Remote\+Exception}\hypertarget{class_chord_a0a677ced19cc0cb5afd2a695977aeb95}{}\label{class_chord_a0a677ced19cc0cb5afd2a695977aeb95}
+
+
+Implements \hyperlink{interface_chord_message_interface_a8165b3fb53905e657c70b66223197561}{Chord\+Message\+Interface}.
+
+\index{Chord@{Chord}!is\+Key\+In\+Open\+Interval@{is\+Key\+In\+Open\+Interval}}
+\index{is\+Key\+In\+Open\+Interval@{is\+Key\+In\+Open\+Interval}!Chord@{Chord}}
+\subsubsection[{\texorpdfstring{is\+Key\+In\+Open\+Interval(int key, int key1, int key2)}{isKeyInOpenInterval(int key, int key1, int key2)}}]{\setlength{\rightskip}{0pt plus 5cm}Boolean Chord.\+is\+Key\+In\+Open\+Interval (
+\begin{DoxyParamCaption}
+\item[{int}]{key, }
+\item[{int}]{key1, }
+\item[{int}]{key2}
+\end{DoxyParamCaption}
+)}\hypertarget{class_chord_a711a8c4e621940da4c48c1ba60479bd7}{}\label{class_chord_a711a8c4e621940da4c48c1ba60479bd7}
+\index{Chord@{Chord}!is\+Key\+In\+Semi\+Close\+Interval@{is\+Key\+In\+Semi\+Close\+Interval}}
+\index{is\+Key\+In\+Semi\+Close\+Interval@{is\+Key\+In\+Semi\+Close\+Interval}!Chord@{Chord}}
+\subsubsection[{\texorpdfstring{is\+Key\+In\+Semi\+Close\+Interval(int key, int key1, int key2)}{isKeyInSemiCloseInterval(int key, int key1, int key2)}}]{\setlength{\rightskip}{0pt plus 5cm}Boolean Chord.\+is\+Key\+In\+Semi\+Close\+Interval (
+\begin{DoxyParamCaption}
+\item[{int}]{key, }
+\item[{int}]{key1, }
+\item[{int}]{key2}
+\end{DoxyParamCaption}
+)}\hypertarget{class_chord_ad88edc3a01395c31dd0ae209195a2e08}{}\label{class_chord_ad88edc3a01395c31dd0ae209195a2e08}
+\index{Chord@{Chord}!join\+Ring@{join\+Ring}}
+\index{join\+Ring@{join\+Ring}!Chord@{Chord}}
+\subsubsection[{\texorpdfstring{join\+Ring(\+String ip, int port)}{joinRing(String ip, int port)}}]{\setlength{\rightskip}{0pt plus 5cm}void Chord.\+join\+Ring (
+\begin{DoxyParamCaption}
+\item[{String}]{ip, }
+\item[{int}]{port}
+\end{DoxyParamCaption}
+) throws Remote\+Exception}\hypertarget{class_chord_ace0b8d2768590d7527af155c6573cae7}{}\label{class_chord_ace0b8d2768590d7527af155c6573cae7}
+
+
+Implements \hyperlink{interface_chord_message_interface_abc5a9483416a6b8ae7330b324869e236}{Chord\+Message\+Interface}.
+
+\index{Chord@{Chord}!locate\+Successor@{locate\+Successor}}
+\index{locate\+Successor@{locate\+Successor}!Chord@{Chord}}
+\subsubsection[{\texorpdfstring{locate\+Successor(int key)}{locateSuccessor(int key)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Chord\+Message\+Interface} Chord.\+locate\+Successor (
+\begin{DoxyParamCaption}
+\item[{int}]{key}
+\end{DoxyParamCaption}
+) throws Remote\+Exception}\hypertarget{class_chord_aa53f4f7c97122395a33d064460538db0}{}\label{class_chord_aa53f4f7c97122395a33d064460538db0}
+
+
+Implements \hyperlink{interface_chord_message_interface_a4e299d4b05537a4a07965dfe9f261fd0}{Chord\+Message\+Interface}.
+
+\index{Chord@{Chord}!notify@{notify}}
+\index{notify@{notify}!Chord@{Chord}}
+\subsubsection[{\texorpdfstring{notify(\+Chord\+Message\+Interface j)}{notify(ChordMessageInterface j)}}]{\setlength{\rightskip}{0pt plus 5cm}void Chord.\+notify (
+\begin{DoxyParamCaption}
+\item[{{\bf Chord\+Message\+Interface}}]{j}
+\end{DoxyParamCaption}
+) throws Remote\+Exception}\hypertarget{class_chord_a4de8b8464782dd96d88deeb35b2f27a2}{}\label{class_chord_a4de8b8464782dd96d88deeb35b2f27a2}
+
+
+Implements \hyperlink{interface_chord_message_interface_abbb77f94541073d79284d35f970e0eb4}{Chord\+Message\+Interface}.
+
+\index{Chord@{Chord}!put@{put}}
+\index{put@{put}!Chord@{Chord}}
+\subsubsection[{\texorpdfstring{put(int guid, Input\+Stream stream)}{put(int guid, InputStream stream)}}]{\setlength{\rightskip}{0pt plus 5cm}void Chord.\+put (
+\begin{DoxyParamCaption}
+\item[{int}]{guid, }
+\item[{Input\+Stream}]{stream}
+\end{DoxyParamCaption}
+) throws Remote\+Exception}\hypertarget{class_chord_a1133387e1312ead8daf5c94c11ff3b78}{}\label{class_chord_a1133387e1312ead8daf5c94c11ff3b78}
+
+
+Stores the file for given guid. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em guid} & unique hash of file name \\
+\hline
+{\em stream} & input stream of file \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{interface_chord_message_interface_a59a01f2e913b6b2e4b60ba0b77c90eba}{Chord\+Message\+Interface}.
+
+\index{Chord@{Chord}!rmi\+Chord@{rmi\+Chord}}
+\index{rmi\+Chord@{rmi\+Chord}!Chord@{Chord}}
+\subsubsection[{\texorpdfstring{rmi\+Chord(\+String ip, int port)}{rmiChord(String ip, int port)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Chord\+Message\+Interface} Chord.\+rmi\+Chord (
+\begin{DoxyParamCaption}
+\item[{String}]{ip, }
+\item[{int}]{port}
+\end{DoxyParamCaption}
+)}\hypertarget{class_chord_a2fd46745a549fb8447f2cb7e32e8b07b}{}\label{class_chord_a2fd46745a549fb8447f2cb7e32e8b07b}
+\index{Chord@{Chord}!stabilize@{stabilize}}
+\index{stabilize@{stabilize}!Chord@{Chord}}
+\subsubsection[{\texorpdfstring{stabilize()}{stabilize()}}]{\setlength{\rightskip}{0pt plus 5cm}void Chord.\+stabilize (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{class_chord_a8a4b7a1cd88cb3f607ada0629f2ff2dd}{}\label{class_chord_a8a4b7a1cd88cb3f607ada0629f2ff2dd}
+
+
+\subsection{Member Data Documentation}
+\index{Chord@{Chord}!M@{M}}
+\index{M@{M}!Chord@{Chord}}
+\subsubsection[{\texorpdfstring{M}{M}}]{\setlength{\rightskip}{0pt plus 5cm}final int Chord.\+M = 2\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{class_chord_a864e0b4011dc157c78a06dd951c6d9ac}{}\label{class_chord_a864e0b4011dc157c78a06dd951c6d9ac}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{_chord_8java}{Chord.\+java}\end{DoxyCompactItemize}
