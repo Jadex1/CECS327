@@ -105,12 +105,6 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     File file = new File(fileName);
     file.delete();
   }
-  public void atomicRead(String fileName) throws RemoteException, FileNotFoundException, IOException {
-
-  }
-  public void atomicDelete(String fileName) throws RemoteException, FileNotFoundException, IOException {
-
-  }
   public void atomicWrite(String fileName) throws RemoteException, FileNotFoundException, IOException {
     String path = "./"+i+"/"+fileName; // path to input file
 		FileStream file = new FileStream(path);
@@ -128,13 +122,11 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     Boolean p2 = peer2.canCommit(t);
     Boolean p3 = peer3.canCommit(t);
 
-    //write filecontrol
-
     if (p1 && p2 && p3){
       System.out.println("we can commit!");
-      //peer1.doCommit(t,guid1);
-      //peer2.doCommit(t, guid2);
-      //peer3.doCommit(t, guid3);
+      // peer1.doCommit(t,guid1);
+      // peer2.doCommit(t, guid2);
+      // peer3.doCommit(t, guid3);
     } else {
       System.out.println("we must abort");
       doAbort(t);
@@ -144,21 +136,18 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   }
   public boolean canCommit(Transaction trans) throws RemoteException {
     //from class
-    //use dictionary 'filecontrol' guid:int,lastTimeWritten:timestamp,lastTimeRead:timestamp
-    //class FileTimes{
-    //  int lastTimeWritten
-    //  int  lastTimeRead
-    //}
-    // Time = getTime()
+    //use dictionary 'filecontrol' guid:int,lastTimeWritten:timestamp,lastTimeRead:timestammp
+    // if(transLogExists()) {
+    //   return true;
+    // }
+    // else
     //if (T.Time > FileControl(T.id.lastTimeRead) && T.time > filecontrol(t.TransactionId.lastTimeWritten)) {
-
     //  return true;
     //  else {
     //    return false;
     //  }
     //}
     //store transaction in local .temp file
-
     //check local transaction to make sure it matches the one we wish to execute
     //if YES, prepare the file in ./i/temp, return true
     //if NO, return false
@@ -166,10 +155,17 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     return true;
   }
   public void doCommit(Transaction trans,int guid) throws RemoteException {
-    //calling .put() here?
-    // if trans.Operation == WRITE {
-    //   write T.filename(this is the input file) into the 3 peers;
+    // calling .put() here?
+    // MAP<Integer,FileControl> atomicMap = new HASHMAP<Integer,FileControl>();
+    // FileControl control = new FileControl();
+    // if (trans.Operation == Transaction.Operation.READ){
+    //   control.lastTimeRead = datetime.now
     // }
+    //if (trans.Operation == Transacton.Operation.WRITE) {
+    //
+    // }
+    // control.lastTimeRead
+    // atomicMap.put(trans.id,control);
   }
   public void doAbort() throws RemoteException {
     //delete here
