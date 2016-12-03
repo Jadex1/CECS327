@@ -13,9 +13,8 @@ public class Encoder
            hmap.put(13513512, times);
            hmap.put(1312, times);
            hmap.put(89343, times);
-           try
-           {
-                  FileOutputStream fos =
+           try{
+             FileOutputStream fos =
                      new FileOutputStream("transaction.log");
                   ObjectOutputStream oos = new ObjectOutputStream(fos);
                   oos.writeObject(hmap);
