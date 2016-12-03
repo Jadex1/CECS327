@@ -22,7 +22,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
 
   class FileTimes implements Serializable{
    int lastTimeWritten;
-   int  lastTimeRead;
+   int lastTimeRead;
   }
   public void beginElection() throws RemoteException{
     try{
@@ -126,13 +126,12 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     // I feel like something is suppose to go here.
     if (p1 && p2 && p3){
       System.out.println("we can commit!");
-      // peer1.doCommit(t, guid1);
-      // peer2.doCommit(t, guid2);
-      // peer3.doCommit(t, guid3);
+      peer1.doCommit(t, guid1);
+      peer2.doCommit(t, guid2);
+      peer3.doCommit(t, guid3);
     } else {
       System.out.println("we must abort");
-      doAbort(t);
-      //delete the temp files;
+      doAbort(t);//delete the temp files;
     }
 
   }
@@ -153,26 +152,33 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     // check local transaction to make sure it matches the one we wish to execute
     // if YES, prepare the file in ./i/temp, return true
     // if NO, return false
+    //
     System.out.println(i+": can commit!");
     return true;
   }
   public void doCommit(Transaction trans, int guid) throws RemoteException {
 
     // calling .put() here?
-    //
-    // MAP<Integer, FileControl> atomicMap = new HASHMAP<Integer, FileControl>();
-    // FileControl control = new FileControl();
-    // if (trans.Operation == Transaction.Operation.READ){
-    //    self.put(guid, trans.fileStream);
-    //   control.lastTimeRead = datetime.now
-    // }
-    // if (trans.Operation == Transacton.Operation.WRITE) {
-    // self.get(guid);
-    //  control.lastTimeWritten = datetime.now
-    // }
+    MAP<Integer, FileControl> atomicMap = new HASHMAP<Integer, FileControl>();
+    FileControl control = new FileControl();
+
+    if (trans.Operation == Transaction.Operation.READ){
+      self.put(guid, trans.fileStream);
+      //control.lastTimeRead = datetime.now;
+    }
+
+    if (trans.Operation == Transacton.Operation.WRITE) {
+      self.get(guid);
+      //control.lastTimeWritten = datetime.now;
+    }
+
+    if (trans.Operation == Transaction.Opertion.DELETE){
+      self.delete(guid);
+      atomicMap.delete(guid);
+      //control.lastTimeWritten = datetime.now
+    }
     // control.lastTimeRead
     // atomicMap.put(trans.id, control);
-
   }
   public void doAbort() throws RemoteException {
     // cleanUpTempFiles();
