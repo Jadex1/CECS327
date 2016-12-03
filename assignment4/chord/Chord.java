@@ -83,7 +83,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     String path = "./"+i+"/"+fileName; // path to input file
 		FileStream file = new FileStream(path);
     //figure out which of the peers will be invloved in transaction
-    Integer id = MD5(fileName);
+    Integer fileHashed = MD5(fileName);
     // add loop here.
     Integer guid1 = MD5(fileName +"1");
     Integer guid2 = MD5(fileName +"2");
@@ -92,7 +92,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     ChordMessageInterface peer2 = this.locateRightNode(guid2);
     ChordMessageInterface peer3 = this.locateRightNode(guid3);
 
-    Transaction t = new Transaction(Transaction.Operation.WRITE, id, true, file);
+    Transaction t = new Transaction(Transaction.Operation.WRITE, fileHashed, true, file);
 
     Boolean p1 = peer1.canCommit(t);
     Boolean p2 = peer2.canCommit(t);
@@ -105,9 +105,9 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       peer3.doCommit(t, guid3);
     } else {
       System.out.println("we must abort");
-      doAbort(t);//delete the temp files;
+      // is this process aborting?
+      self.doAbort();//delete the temp files; what do we use the t, for?
     }
-
   }
   public boolean canCommit(Transaction trans) throws RemoteException {
 
@@ -154,7 +154,8 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     // control.lastTimeRead
     // atomicMap.put(trans.id, control);
   }
-  public void doAbort() throws RemoteException {
+  public void doAbort(Transaction t) throws RemoteException {
+    // In one of the methods we pass the t to the doAbort, we need to change that.
     // cleanUpTempFiles();
     // delete tmp files if they exist
     // each process should have a tmp at ./tmp/i

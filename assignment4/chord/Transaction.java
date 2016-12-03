@@ -9,7 +9,7 @@ public class Transaction implements Serializable  {
   Operation op;
   Boolean vote;
   FileStream fileStream;
-  public Transaction(Operation op,Integer id,Boolean vote,FileStream stream)
+  public Transaction(Operation op, Integer id, Boolean vote, FileStream stream)
   {
     this.op = op;
     this.TransactionId = id;
