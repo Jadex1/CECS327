@@ -19,8 +19,9 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   boolean participated = false;
   int nextFinger;
   int i;   		// GUID
-  Date date;
-  Map<Integer, String> atomicMap;
+  Date aDate;
+  Map<Integer, FileTimes> atomicMap;
+
 
   class FileTimes implements Serializable{
    int lastTimeWritten;
@@ -139,33 +140,35 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     return true;
   }
   public void doCommit(Transaction trans, int guid) throws RemoteException {
-
     // calling .put() here?
-    
-    atomicMap = new HashMap<Integer, String>();
-    atomicMap.put(guid, trans);
-    FileControl control = new FileControl();
-    Date date;
+    FileTimes times = new FileTimes();
+    //Integer, FileTimes
+    atomicMap = new HashMap<Integer, FileTimes>();
+    //HashMap<Integer, FileTimes> atomicMap = decodeLog();
+    FileControl aControl = new FileControl();
+    atomicMap.put(guid, times);
     if (trans.Operation == Transaction.Operation.READ){
       self.put(guid, trans.fileStream);
       aDate = new Date();// convert
-      control.lastTimeRead = aDate;
+      aControl.lastTimeRead = aDate;
     }
 
     if (trans.Operation == Transacton.Operation.WRITE) {
       self.get(guid);
       aDate = new Date();
-      control.lastTimeWritten = aDate;
+      aControl.lastTimeWritten = aDate;
     }
 
     if (trans.Operation == Transaction.Opertion.DELETE){
       self.delete(guid);
-      atomicMap.delete(guid);
+      atomicMap.delete(guid);// don't know if you can do this.
       aDate = new Date();
-      control.lastTimeWritten = aDate;
+      aControl.lastTimeWritten = aDate;
     }
-    // control.lastTimeRead
-    // atomicMap.put(trans.id, control);
+
+    //save to log
+    atomicMap.put(trans.id, times);
+    encodeLog(atomicMap);
   }
   public void doAbort() throws RemoteException {
     // In one of the methods we pass the t to the doAbort, we need to change that.
