@@ -71,6 +71,15 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     } catch (Exception e) {
       e.printStackTrace();
     }
+    try {
+      System.out.println("reading file at path:"+fileName);
+      FileOutputStream outstream = new FileOutputStream("./"+i+"/"+guid);
+      while (file.available() > 0) {
+        outstream.write(file.read());
+      }
+    } catch (IOException e) {
+      System.out.println(e);
+    }
     return file;
   }
   public void delete(int guid) throws RemoteException {
