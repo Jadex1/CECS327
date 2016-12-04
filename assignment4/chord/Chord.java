@@ -149,19 +149,19 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
 
     atomicMap.put(guid, times);
 
-    if (trans.Operation == Transaction.Operation.READ){
+    if (trans.Operation.READ == "READ"){
       this.put(guid, trans.fileStream);
       aDate = (int)(new Date().getTime()/1000);// convert
       times.lastTimeRead = aDate;
     }
 
-    if (trans.Operation == Transacton.Operation.WRITE) {
+    if (trans.Operation.WRITE == "WRITE") {
       this.get(guid);
       aDate = (int)(new Date().getTime()/1000);
       times.lastTimeWritten = aDate;
     }
 
-    if (trans.Operation == Transaction.Opertion.DELETE){
+    if (trans.Operation.DELETE == "DELETE"){
       this.delete(guid);
       atomicMap.remove(guid);// don't know if you can do this.
       aDate = (int)(new Date().getTime()/1000);
@@ -238,6 +238,39 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     } catch(RemoteException | NotBoundException e){
       rightNode = this;
     }
+  }
+  public void encodeLog(HashMap<Integer, FileTimes> map) {
+    try{
+        FileOutputStream fos =
+        new FileOutputStream("transaction.log");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(map);
+        oos.close();
+        fos.close();
+        System.out.printf("Serialized HashMap data is saved in transaction.log");
+    } catch(IOException ioe) {
+       ioe.printStackTrace();
+     }
+  }
+  public HashMap<Integer, FileTimes> decodeLog(){
+    HashMap<Integer, FileTimes> map = null;
+    try
+    {
+       FileInputStream fis = new FileInputStream("transaction.log");
+       ObjectInputStream ois = new ObjectInputStream(fis);
+       map = (HashMap) ois.readObject();
+       ois.close();
+       fis.close();
+    }catch(IOException ioe) {
+       ioe.printStackTrace();
+       return null;;
+    }catch(ClassNotFoundException c) {
+       System.out.println("Class not found");
+       c.printStackTrace();
+       return null;
+    }
+    System.out.println("Deserialized HashMap..");
+    return map;
   }
   public void findingNextRightNode(){
     int i;
