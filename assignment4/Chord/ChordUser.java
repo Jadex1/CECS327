@@ -36,6 +36,9 @@ public class ChordUser {
 							chord.Print();
 						}
 						if (tokens[0].equals("write")) {
+							if (tokens.length == 1){
+								writeLots(tokens,chord);
+							}
 							try {
 								try {
 	               chord.atomicTransaction(tokens[1],Transaction.Operation.WRITE);
@@ -51,7 +54,7 @@ public class ChordUser {
 								try {
 	               chord.atomicTransaction(tokens[1],Transaction.Operation.READ);
 							 } catch(FileNotFoundException e) {
-								 System.out.println("Atomic write error!:"+e);
+								 System.out.println("Atomic write read!:"+e);
 							 }
 						 } catch(IOException e) {
 							 System.out.println(e);
@@ -97,35 +100,25 @@ public class ChordUser {
 			\param tokens[] user entered info
 			\param Chord ChordUser
   */
-  public void write(String[] tokens,Chord chord){
-      if(tokens.length == 2){
-        try {
-          String path = "./"+port+"/"+tokens[1]; // path to file
-          System.out.println("Open path to file: "+path);
-          FileStream file = new FileStream(path);
-          for (int i = 1; i < 3; i++ ) {
-            int guid = MD5(tokens[1]+i);
-            ChordMessageInterface peer = chord.locateRightNode(guid);
-            peer.put(guid, file); // put file into ring
-          }
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      } else if(tokens.length == 1) {
+  public void writeLots(String[] tokens,Chord chord){
+      if(tokens.length == 1) {
         File[] files = new File("./"+port).listFiles();
         try {
           for(final File fileEntry: files){//for all files in directory
             if(fileEntry.isFile()){//if its a file
-              String inputFilePath = "./"+port+"/"+fileEntry.getName();
-              System.out.println("Open path to file:"+inputFilePath);
-              for(int i = 1; i < 3;i++){
-                FileStream file = new FileStream(inputFilePath);
-                int guid = MD5(fileEntry.getName()+i);
-                ChordMessageInterface peer = chord.locateRightNode(guid);
-                peer.put(guid, file); // put file into ring
+              String fileName = fileEntry.getName();
+              System.out.println("Open path to file:"+fileName);
+							try {
+								try {
+	               chord.atomicTransaction(fileName,Transaction.Operation.WRITE);
+							 } catch(FileNotFoundException e) {
+								 System.out.println("Atomic write error!:"+e);
+							 }
+						 } catch(IOException e) {
+							 System.out.println(e);
+						 }
               }
             }
-          }
         } catch (Exception e) {
           e.printStackTrace();
         }

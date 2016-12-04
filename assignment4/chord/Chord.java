@@ -21,7 +21,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   int nextFinger;
   int i;   		// GUID
   int aDate;
-  Map<Integer, FileTimes> atomicMap;
+  HashMap<Integer, FileTimes> atomicMap;
 
   public ChordMessageInterface rmiChord(String ip, int port) {
     ChordMessageInterface chord = null;
@@ -91,8 +91,6 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     ChordMessageInterface peer2 = this.locateRightNode(guid2);
     ChordMessageInterface peer3 = this.locateRightNode(guid3);
 
-
-
     Transaction t = new Transaction(op, fileHashed, true, file);
 
     Boolean p1 = peer1.canCommit(t);
@@ -106,8 +104,6 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       peer3.doCommit(t, guid3);
     } else {
       System.out.println("we must abort");
-      // is this process aborting?
-      // Everyone abort.
       peer1.doAbort();// needs to end the cycle.
       peer2.doAbort();
       peer3.doAbort();
@@ -118,25 +114,31 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   }
   public boolean canCommit(Transaction trans) throws RemoteException, FileNotFoundException, IOException{
     HashMap<Integer, FileTimes> log = decodeLog();
+
     if(log == null){
+      System.out.println("log does not exist");
+      return true;
+    }
+    FileTimes times = (FileTimes) log.get(trans.id);// get our file times
+    if( times == null){
+      System.out.println("time is null!!!");
       return true;
     }
     // else log exits, get the times for our transaction id
-    FileTimes times = (FileTimes) log.get(trans.id);// get our file times
     int lastTimeRead = times.lastTimeRead;
     int lastTimeWritten = times.lastTimeWritten;
     if (trans.time > lastTimeRead && trans.time > lastTimeWritten) {
       //save transaction to temp dir
-      String fileName = "./"+i+"/temp/"+trans.id;
-      FileStream stream = new FileStream(fileName);
-      try {
-        FileOutputStream output = new FileOutputStream(fileName);
-        while (stream.available() > 0) {
-          output.write(stream.read());
-        }
-      } catch (IOException e) {
-        System.out.println(e);
-      }
+      // String fileName = "./"+i+"/temp/"+trans.id;
+      // FileStream stream = new FileStream(fileName);
+      // try {
+      //   FileOutputStream output = new FileOutputStream(fileName);
+      //   while (stream.available() > 0) {
+      //     output.write(stream.read());
+      //   }
+      // } catch (IOException e) {
+      //   System.out.println(e);
+      // }
       System.out.println(i+": can commit!");
       return true;
     } else {
@@ -144,37 +146,39 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     }
   }
   public void doCommit(Transaction trans, int guid) throws RemoteException {
-    // calling .put() here?
-
-    //Integer, FileTimes
-    atomicMap = new HashMap<Integer, FileTimes>();
-    HashMap<Integer, FileTimes> atomicMap = decodeLog();
+    atomicMap = decodeLog();
     FileTimes times = new FileTimes();
-
-    atomicMap.put(guid, times);
 
     if (trans.op == Transaction.Operation.READ){
       this.get(guid);
-      aDate = (int)(new Date().getTime()/1000);// convert
+      aDate = (int)(new Date().getTime()/100);// convert
       times.lastTimeRead = aDate;
     }
 
     if (trans.op == Transaction.Operation.WRITE) {
       this.put(guid, trans.fileStream);
-      aDate = (int)(new Date().getTime()/1000);
+      aDate = (int)(new Date().getTime()/100);
+      System.out.println("Writing guid:"+guid+" time:"+aDate);
       times.lastTimeWritten = aDate;
     }
 
     if (trans.op == Transaction.Operation.DELETE){
       this.delete(guid);
       atomicMap.remove(guid);// don't know if you can do this.
-      aDate = (int)(new Date().getTime()/1000);
+      aDate = (int)(new Date().getTime()/100);
       times.lastTimeWritten = aDate;
     }
 
     //save to log
-    atomicMap.put(trans.id, times);
-    encodeLog(atomicMap);
+    if(atomicMap != null) {
+      atomicMap.put(trans.id, times);
+      encodeLog(atomicMap);
+    }
+    else {
+      HashMap<Integer, FileTimes> atomicMap =  new HashMap<Integer, FileTimes>();
+      atomicMap.put(trans.id, times);
+      encodeLog(atomicMap);
+    }
   }
   public void doAbort() throws RemoteException {
     // In one of the methods we pass the t to the doAbort, we need to change that.
@@ -251,7 +255,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
         oos.writeObject(map);
         oos.close();
         fos.close();
-        System.out.printf("Serialized HashMap data is saved in transaction.log");
+        System.out.println("Serialized HashMap data is saved in transaction.log");
     } catch(IOException ioe) {
        ioe.printStackTrace();
      }
