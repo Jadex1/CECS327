@@ -3,7 +3,6 @@ import java.io.*;
 import java.util.*;
 
 public class Transaction implements Serializable  {
-
   public enum Operation {
     WRITE, READ, DELETE
   }

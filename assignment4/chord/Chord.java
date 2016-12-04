@@ -96,7 +96,6 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     Boolean p1 = peer1.canCommit(t);
     Boolean p2 = peer2.canCommit(t);
     Boolean p3 = peer3.canCommit(t);
-    // I feel like something is suppose to go here.
     if (p1 && p2 && p3){
       System.out.println("we can commit!");
       peer1.doCommit(t, guid1);
@@ -104,12 +103,9 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       peer3.doCommit(t, guid3);
     } else {
       System.out.println("we must abort");
-      peer1.doAbort();// needs to end the cycle.
-      peer2.doAbort();
-      peer3.doAbort();
-      // NOTE: the abort means someone said no, so we all reset, back to zero.
-      // everyone cleans up their tmp folders.
-      //delete the temp files; what do we use the t, for? <- after i edited
+      peer1.doAbort(t);// needs to end the cycle.
+      peer2.doAbort(t);
+      peer3.doAbort(t);
     }
   }
   public boolean canCommit(Transaction trans) throws RemoteException, FileNotFoundException, IOException{
@@ -129,17 +125,16 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     long lastTimeWritten = times.lastTimeWritten;
     System.out.println("trans time:"+trans.time);
     if (trans.time > lastTimeRead && trans.time > lastTimeWritten) {
-      // save transaction to temp dir
-      // String fileName = "./"+i+"/temp/"+trans.id;
-      // FileStream stream = new FileStream(fileName);
-      // try {
-      //   FileOutputStream output = new FileOutputStream(fileName);
-      //   while (stream.available() > 0) {
-      //     output.write(stream.read());
-      //   }
-      // } catch (IOException e) {
-      //   System.out.println(e);
-      // }
+      //save transaction to temp dir
+      String fileName = "./"+i+"/temp/"+trans.id;
+      try {
+        FileOutputStream output = new FileOutputStream(fileName);
+        while (trans.fileStream.available() > 0) {
+          output.write(trans.fileStream.read());
+        }
+      } catch (IOException e) {
+        System.out.println(e);
+      }
       System.out.println(i+": can commit!");
       return true;
     } else {
@@ -150,41 +145,36 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     atomicMap = decodeLog();
     FileTimes times = new FileTimes();
 
-    if (trans.op == Transaction.Operation.READ){
+    aDate = new Date().getTime();
+    switch(trans.op) {
+    case READ:
       this.get(guid);
-      aDate = new Date().getTime();// convert
       times.lastTimeRead = aDate;
-    }
-    if (trans.op == Transaction.Operation.WRITE) {
+      break;
+    case WRITE:
       this.put(guid, trans.fileStream);
-      aDate = new Date().getTime();
       System.out.println("Writing guid:"+guid+" time:"+aDate);
       times.lastTimeWritten = aDate;
-    }
-    if (trans.op == Transaction.Operation.DELETE){
+      break;
+    case DELETE:
       this.delete(guid);
-      atomicMap.remove(guid);// don't know if you can do this.
-      aDate = new Date().getTime();
+      atomicMap.remove(guid);
       times.lastTimeWritten = aDate;
+    default :
+      System.out.println("Not a proper transaction");
     }
-
-    //save to log
     if(atomicMap != null) {
       atomicMap.put(trans.id, times);
       encodeLog(atomicMap);
-    } else {
+    } else {// log does not exist
       HashMap<Integer, FileTimes> atomicMap =  new HashMap<Integer, FileTimes>();
       atomicMap.put(trans.id, times);
       encodeLog(atomicMap);
     }
+    this.doAbort(trans);//cleanup temp files
   }
-  public void doAbort() throws RemoteException {
-    // In one of the methods we pass the t to the doAbort, we need to change that.
-    // cleanUpTempFiles();
-    // delete tmp files if they exist
-    // each process should have a tmp at ./tmp/i
-    // do we need to resart any cycles or loops?
-    String fileName = "./tmp/"+i;
+  public void doAbort(Transaction trans) throws RemoteException {
+    String fileName = "./"+i+"/temp/"+trans.id;
     File file = new File(fileName);
     file.delete();
   }

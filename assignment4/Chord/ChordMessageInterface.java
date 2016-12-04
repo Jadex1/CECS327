@@ -13,7 +13,7 @@ public interface ChordMessageInterface extends Remote
     public void atomicTransaction(String fileName,Transaction.Operation op) throws RemoteException, FileNotFoundException, IOException;
     public boolean canCommit(Transaction trans) throws RemoteException, FileNotFoundException, IOException;
     public void doCommit(Transaction trans, int guid) throws RemoteException;
-    public void doAbort() throws RemoteException;
+    public void doAbort(Transaction trans) throws RemoteException;
     public void haveCommitted(Transaction trans, ChordMessageInterface participant) throws RemoteException;
     // public boolean getDecision(trans) throws RemoteException;
     public void put(int guid, InputStream file) throws IOException, RemoteException;
