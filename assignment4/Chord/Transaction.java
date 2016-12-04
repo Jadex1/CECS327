@@ -8,7 +8,7 @@ public class Transaction implements Serializable  {
     WRITE, READ, DELETE
   }
   Integer id;
-  Integer time;
+  long time;
   Integer guid;
   Operation op;
   Boolean vote;
@@ -18,7 +18,7 @@ public class Transaction implements Serializable  {
     this.op = op;
     this.id = id;
     this.vote = vote;
-    this.time = (int)(new Date().getTime()/1000);
+    this.time = new Date().getTime();
     this.fileStream = stream;
   }
 }
