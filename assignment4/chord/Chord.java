@@ -20,7 +20,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   boolean participated = false;
   int nextFinger;
   int i;   		// GUID
-  int aDate;
+  int aDate;// make a long int
   HashMap<Integer, FileTimes> atomicMap;
 
   public ChordMessageInterface rmiChord(String ip, int port) {
@@ -174,8 +174,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     if(atomicMap != null) {
       atomicMap.put(trans.id, times);
       encodeLog(atomicMap);
-    }
-    else {
+    } else {
       HashMap<Integer, FileTimes> atomicMap =  new HashMap<Integer, FileTimes>();
       atomicMap.put(trans.id, times);
       encodeLog(atomicMap);
