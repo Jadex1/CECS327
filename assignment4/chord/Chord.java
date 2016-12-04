@@ -20,7 +20,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   boolean participated = false;
   int nextFinger;
   int i;   		// GUID
-  int aDate;// make a long int
+  long aDate;
   HashMap<Integer, FileTimes> atomicMap;
 
   public ChordMessageInterface rmiChord(String ip, int port) {
@@ -125,11 +125,11 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       return true;
     }
     // else log exits, get the times for our transaction id
-    int lastTimeRead = times.lastTimeRead;
-    int lastTimeWritten = times.lastTimeWritten;
+    long lastTimeRead = times.lastTimeRead;
+    long lastTimeWritten = times.lastTimeWritten;
     System.out.println("trans time:"+trans.time);
     if (trans.time > lastTimeRead && trans.time > lastTimeWritten) {
-      //save transaction to temp dir
+      // save transaction to temp dir
       // String fileName = "./"+i+"/temp/"+trans.id;
       // FileStream stream = new FileStream(fileName);
       // try {
@@ -152,21 +152,19 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
 
     if (trans.op == Transaction.Operation.READ){
       this.get(guid);
-      aDate = (int)(new Date().getTime()/1000);// convert
+      aDate = new Date().getTime();// convert
       times.lastTimeRead = aDate;
     }
-
     if (trans.op == Transaction.Operation.WRITE) {
       this.put(guid, trans.fileStream);
-      aDate = (int)(new Date().getTime()/1000);
+      aDate = new Date().getTime();
       System.out.println("Writing guid:"+guid+" time:"+aDate);
       times.lastTimeWritten = aDate;
     }
-
     if (trans.op == Transaction.Operation.DELETE){
       this.delete(guid);
       atomicMap.remove(guid);// don't know if you can do this.
-      aDate = (int)(new Date().getTime()/1000);
+      aDate = new Date().getTime();
       times.lastTimeWritten = aDate;
     }
 
