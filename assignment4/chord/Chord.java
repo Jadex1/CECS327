@@ -118,24 +118,32 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       //delete the temp files; what do we use the t, for? <- after i edited
     }
   }
-  public boolean canCommit(Transaction trans) throws RemoteException {// when does canCommit get called?
-
-    //from class
-    //use dictionary 'filecontrol' guid:int, lastTimeWritten:timestamp, lastTimeRead:timestammp
-    // if(transLogExists()) {
-    //   return true;
-    // }
-    // else if (T.Time > FileControl(T.id.lastTimeRead) && T.time > filecontrol(t.TransactionId.lastTimeWritten)) {
-    //  return true;
-    //  else {
-    //    return false;
-    //  }
-    //}
-    // store transaction in local .temp file
-    // check local transaction to make sure it matches the one we wish to execute
-    // if YES, prepare the file in ./i/temp, return true
-    // if NO, return false
-    //
+  public boolean canCommit(Transaction trans) throws RemoteException {
+    // when HashMap<Integer, FileTimes> log = decodeLog();
+    if(log == null){
+      return true;
+    }
+    // else log exits, get the times for our transaction id
+    Filetimes times = (Filetimes) log.get(trans.id);// get our file times
+    int lastTimeRead = times.lastTimeRead;
+    int lastTimeWritten = times.lastTimeWritten;
+    if (trans.Time > lastTimeRead && trans.Time > lastTimeWritten) {
+      //save transaction to temp dir
+      String fileName = "./"+i+"/temp/"+trans.id;
+      FileStream stream = new FileStream(path);
+      try {
+        FileOutputStream output = new FileOutputStream(fileName);
+        while (stream.available() > 0) {
+          output.write(stream.read());
+        }
+      } catch (IOException e) {
+        System.out.println(e);
+      }
+      System.out.println(i+": can commit!");
+      return true;
+    } else {
+      return false;
+    }
     System.out.println(i+": can commit!");
     return true;
   }
