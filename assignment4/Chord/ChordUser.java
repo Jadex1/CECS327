@@ -38,16 +38,17 @@ public class ChordUser {
 						if (tokens[0].equals("write")) {
 							if (tokens.length == 1){
 								writeLots(tokens,chord);
-							}
-							try {
+							} else {
 								try {
-									chord.atomicTransaction(tokens[1],Transaction.Operation.WRITE);
-								} catch(FileNotFoundException e) {
-									System.out.println("Atomic write error!:"+e);
+									try {
+										chord.atomicTransaction(tokens[1], Transaction.Operation.WRITE);
+									} catch(FileNotFoundException e) {
+										System.out.println("Atomic write error!:"+e);
+								 }
+							 } catch(IOException e) {
+								 System.out.println(e);
 							 }
-						 } catch(IOException e) {
-							 System.out.println(e);
-						 }
+							}
 						}
 						if (tokens[0].equals("read") && tokens.length == 2) {
 							try {
