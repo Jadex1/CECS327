@@ -109,13 +109,10 @@ public class ChordUser {
 						String fileName = fileEntry.getName();
             System.out.println("Open path to file:"+fileName);
 						try {
-							try {
-								chord.atomicTransaction(fileName, Transaction.Operation.WRITE);
-							 } catch(FileNotFoundException e) {
-								 System.out.println("Atomic write error!:"+e);
-							 }
-						 } catch(IOException e) {
-							 System.out.println(e);
+							chord.atomicTransaction(fileName, Transaction.Operation.WRITE);
+						} catch(Exception e) {
+							System.out.println("Atomic write error!:"+e);
+							// System.out.println(e);
 						 }
 					 }
 				 }
