@@ -127,6 +127,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     // else log exits, get the times for our transaction id
     int lastTimeRead = times.lastTimeRead;
     int lastTimeWritten = times.lastTimeWritten;
+    System.out.println("trans time:"+trans.time);
     if (trans.time > lastTimeRead && trans.time > lastTimeWritten) {
       //save transaction to temp dir
       // String fileName = "./"+i+"/temp/"+trans.id;
@@ -151,13 +152,13 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
 
     if (trans.op == Transaction.Operation.READ){
       this.get(guid);
-      aDate = (int)(new Date().getTime()/100);// convert
+      aDate = (int)(new Date().getTime()/1000);// convert
       times.lastTimeRead = aDate;
     }
 
     if (trans.op == Transaction.Operation.WRITE) {
       this.put(guid, trans.fileStream);
-      aDate = (int)(new Date().getTime()/100);
+      aDate = (int)(new Date().getTime()/1000);
       System.out.println("Writing guid:"+guid+" time:"+aDate);
       times.lastTimeWritten = aDate;
     }
@@ -165,7 +166,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     if (trans.op == Transaction.Operation.DELETE){
       this.delete(guid);
       atomicMap.remove(guid);// don't know if you can do this.
-      aDate = (int)(new Date().getTime()/100);
+      aDate = (int)(new Date().getTime()/1000);
       times.lastTimeWritten = aDate;
     }
 
