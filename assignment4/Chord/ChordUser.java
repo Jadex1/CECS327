@@ -18,7 +18,7 @@ public class ChordUser {
 				try {
 					Chord chord = new Chord(port);
 					System.out.println("Usage: \n\tjoin <port>\n\twrite <file> (the file must be an integer stored in the working directory, i.e, ./port/file");
-					System.out.println("\tread <file>\n\tdelete <file>\n\tprint\n\telect");
+					System.out.println("\tread <file>\n\tdelete <file>\n\tprint\n\t");
 					Scanner scan= new Scanner(System.in);
 					String delims = "[ ]+";
 					String command = "";
@@ -41,9 +41,9 @@ public class ChordUser {
 							}
 							try {
 								try {
-	               chord.atomicTransaction(tokens[1],Transaction.Operation.WRITE);
-							 } catch(FileNotFoundException e) {
-								 System.out.println("Atomic write error!:"+e);
+									chord.atomicTransaction(tokens[1],Transaction.Operation.WRITE);
+								} catch(FileNotFoundException e) {
+									System.out.println("Atomic write error!:"+e);
 							 }
 						 } catch(IOException e) {
 							 System.out.println(e);
@@ -52,7 +52,7 @@ public class ChordUser {
 						if (tokens[0].equals("read") && tokens.length == 2) {
 							try {
 								try {
-	               chord.atomicTransaction(tokens[1],Transaction.Operation.READ);
+									chord.atomicTransaction(tokens[1],Transaction.Operation.READ);
 							 } catch(FileNotFoundException e) {
 								 System.out.println("Atomic write read!:"+e);
 							 }
@@ -100,30 +100,30 @@ public class ChordUser {
 			\param tokens[] user entered info
 			\param Chord ChordUser
   */
-  public void writeLots(String[] tokens,Chord chord){
-      if(tokens.length == 1) {
-        File[] files = new File("./"+port).listFiles();
-        try {
-          for(final File fileEntry: files){//for all files in directory
-            if(fileEntry.isFile()){//if its a file
-              String fileName = fileEntry.getName();
-              System.out.println("Open path to file:"+fileName);
+  public void writeLots(String[] tokens, Chord chord){
+		if(tokens.length == 1) {
+			File[] files = new File("./"+port).listFiles();
+			try {
+				for(final File fileEntry: files){//for all files in directory
+					if(fileEntry.isFile()){//if its a file
+						String fileName = fileEntry.getName();
+            System.out.println("Open path to file:"+fileName);
+						try {
 							try {
-								try {
-	               chord.atomicTransaction(fileName,Transaction.Operation.WRITE);
+								chord.atomicTransaction(fileName, Transaction.Operation.WRITE);
 							 } catch(FileNotFoundException e) {
 								 System.out.println("Atomic write error!:"+e);
 							 }
 						 } catch(IOException e) {
 							 System.out.println(e);
 						 }
-              }
-            }
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-  }
+					 }
+				 }
+			 } catch (Exception e) {
+				 e.printStackTrace();
+			 }
+		 }
+	}
   /*! \fn read
       \brief Hashes file name and attempts to read the file contained at succ of guid
       \param tokens[] user entered info
