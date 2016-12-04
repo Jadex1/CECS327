@@ -1,14 +1,14 @@
 import java.math.BigInteger;
 import java.io.*;
+import java.util.*;
 
 public class Transaction implements Serializable  {
 
   public enum Operation {
-    WRITE("WRITE"),
-    DELETE("DELETE"),
-    READ("READ")
+    WRITE, READ, DELETE
   }
-  Integer TransactionId;
+  Integer id;
+  Integer time;
   Integer guid;
   Operation op;
   Boolean vote;
@@ -16,8 +16,9 @@ public class Transaction implements Serializable  {
   public Transaction(Operation op, Integer id, Boolean vote, FileStream stream)
   {
     this.op = op;
-    this.TransactionId = id;
+    this.id = id;
     this.vote = vote;
+    this.time = (int)(new Date().getTime()/1000);
     this.fileStream = stream;
   }
 }

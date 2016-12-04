@@ -10,8 +10,8 @@ public interface ChordMessageInterface extends Remote
     public void notify(ChordMessageInterface j) throws RemoteException;
     public boolean isAlive() throws RemoteException;
     public int getId() throws RemoteException;
-    public void atomicWrite(String fileName) throws RemoteException, FileNotFoundException, IOException;
-    public boolean canCommit(Transaction trans) throws RemoteException;
+    public void atomicTransaction(String fileName,Transaction.Operation op) throws RemoteException, FileNotFoundException, IOException;
+    public boolean canCommit(Transaction trans) throws RemoteException, FileNotFoundException, IOException;
     public void doCommit(Transaction trans, int guid) throws RemoteException;
     public void doAbort() throws RemoteException;
     public void haveCommitted(Transaction trans, ChordMessageInterface participant) throws RemoteException;

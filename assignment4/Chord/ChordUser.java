@@ -7,6 +7,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class ChordUser {
+
 	int port;
 	public ChordUser(int p) {
 		port = p;
@@ -37,7 +38,7 @@ public class ChordUser {
 						if (tokens[0].equals("write")) {
 							try {
 								try {
-	               chord.atomicWrite(tokens[1]);
+	               chord.atomicTransaction(tokens[1],Transaction.Operation.WRITE);
 							 } catch(FileNotFoundException e) {
 								 System.out.println("Atomic write error!:"+e);
 							 }
@@ -46,10 +47,26 @@ public class ChordUser {
 						 }
 						}
 						if (tokens[0].equals("read") && tokens.length == 2) {
-							read(tokens, chord);
+							try {
+								try {
+	               chord.atomicTransaction(tokens[1],Transaction.Operation.READ);
+							 } catch(FileNotFoundException e) {
+								 System.out.println("Atomic write error!:"+e);
+							 }
+						 } catch(IOException e) {
+							 System.out.println(e);
+						 }
 						}
 					  if (tokens[0].equals("delete") && tokens.length == 2) {
-							delete(tokens,chord);
+							try {
+								try {
+	               chord.atomicTransaction(tokens[1],Transaction.Operation.DELETE);
+							 } catch(FileNotFoundException e) {
+								 System.out.println("Atomic write error!:"+e);
+							 }
+						 } catch(IOException e) {
+							 System.out.println(e);
+						 }
 						}
 					}
 				} catch(RemoteException e) {}

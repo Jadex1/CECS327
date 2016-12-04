@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+
 public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordMessageInterface {
   public static final int M = 2;
   Registry registry;    // rmi registry for lookup the remote objects.
@@ -22,11 +23,6 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
   int aDate;
   Map<Integer, FileTimes> atomicMap;
 
-
-  class FileTimes implements Serializable{
-   int lastTimeWritten;
-   int lastTimeRead;
-  }
   public ChordMessageInterface rmiChord(String ip, int port) {
     ChordMessageInterface chord = null;
     try{
@@ -82,7 +78,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     File file = new File(fileName);
     file.delete();
   }
-  public void atomicWrite(String fileName) throws RemoteException, FileNotFoundException, IOException {
+  public void atomicTransaction(String fileName,Transaction.Operation op) throws RemoteException, FileNotFoundException, IOException {
     String path = "./"+i+"/"+fileName; // path to input file
 		FileStream file = new FileStream(path);
     //figure out which of the peers will be invloved in transaction
@@ -95,7 +91,9 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     ChordMessageInterface peer2 = this.locateRightNode(guid2);
     ChordMessageInterface peer3 = this.locateRightNode(guid3);
 
-    Transaction t = new Transaction(Transaction.Operation.WRITE, fileHashed, true, file);
+
+
+    Transaction t = new Transaction(op, fileHashed, true, file);
 
     Boolean p1 = peer1.canCommit(t);
     Boolean p2 = peer2.canCommit(t);
@@ -118,19 +116,19 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       //delete the temp files; what do we use the t, for? <- after i edited
     }
   }
-  public boolean canCommit(Transaction trans) throws RemoteException {
-    // when HashMap<Integer, FileTimes> log = decodeLog();
+  public boolean canCommit(Transaction trans) throws RemoteException, FileNotFoundException, IOException{
+    HashMap<Integer, FileTimes> log = decodeLog();
     if(log == null){
       return true;
     }
     // else log exits, get the times for our transaction id
-    Filetimes times = (Filetimes) log.get(trans.id);// get our file times
+    FileTimes times = (FileTimes) log.get(trans.id);// get our file times
     int lastTimeRead = times.lastTimeRead;
     int lastTimeWritten = times.lastTimeWritten;
-    if (trans.Time > lastTimeRead && trans.Time > lastTimeWritten) {
+    if (trans.time > lastTimeRead && trans.time > lastTimeWritten) {
       //save transaction to temp dir
       String fileName = "./"+i+"/temp/"+trans.id;
-      FileStream stream = new FileStream(path);
+      FileStream stream = new FileStream(fileName);
       try {
         FileOutputStream output = new FileOutputStream(fileName);
         while (stream.available() > 0) {
@@ -144,32 +142,30 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     } else {
       return false;
     }
-    System.out.println(i+": can commit!");
-    return true;
   }
   public void doCommit(Transaction trans, int guid) throws RemoteException {
     // calling .put() here?
 
     //Integer, FileTimes
     atomicMap = new HashMap<Integer, FileTimes>();
-    //HashMap<Integer, FileTimes> atomicMap = decodeLog();
+    HashMap<Integer, FileTimes> atomicMap = decodeLog();
     FileTimes times = new FileTimes();
 
     atomicMap.put(guid, times);
 
-    if (trans.Operation.READ == "READ"){
-      this.put(guid, trans.fileStream);
+    if (trans.op == Transaction.Operation.READ){
+      this.get(guid);
       aDate = (int)(new Date().getTime()/1000);// convert
       times.lastTimeRead = aDate;
     }
 
-    if (trans.Operation.WRITE == "WRITE") {
-      this.get(guid);
+    if (trans.op == Transaction.Operation.WRITE) {
+      this.put(guid, trans.fileStream);
       aDate = (int)(new Date().getTime()/1000);
       times.lastTimeWritten = aDate;
     }
 
-    if (trans.Operation.DELETE == "DELETE"){
+    if (trans.op == Transaction.Operation.DELETE){
       this.delete(guid);
       atomicMap.remove(guid);// don't know if you can do this.
       aDate = (int)(new Date().getTime()/1000);
@@ -178,7 +174,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
 
     //save to log
     atomicMap.put(trans.id, times);
-    //encodeLog(atomicMap);
+    encodeLog(atomicMap);
   }
   public void doAbort() throws RemoteException {
     // In one of the methods we pass the t to the doAbort, we need to change that.
@@ -270,11 +266,9 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
        ois.close();
        fis.close();
     }catch(IOException ioe) {
-       ioe.printStackTrace();
-       return null;;
+       return null;
     }catch(ClassNotFoundException c) {
        System.out.println("Class not found");
-       c.printStackTrace();
        return null;
     }
     System.out.println("Deserialized HashMap..");
