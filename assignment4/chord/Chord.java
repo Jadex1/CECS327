@@ -87,7 +87,12 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     File file = new File(fileName);
     file.delete();
   }
-  public void atomicTransaction(String fileName,Transaction.Operation op) throws RemoteException, FileNotFoundException, IOException {
+  /*! \fn atomicTransaction does an atomic transaction.
+      \brief Hashes file name and attempts to read the file contained at succ of guid
+      \param String fileName the name of the file you watn to write.
+      \param Transaction Operaiton, the operatoin you want to perform.
+  */
+  public void atomicTransaction(String fileName, Transaction.Operation op) throws RemoteException, FileNotFoundException, IOException {
     String path = "./"+i+"/"+fileName; // path to input file
 		FileStream file = new FileStream(path);
     //figure out which of the peers will be invloved in transaction
@@ -117,6 +122,10 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       peer3.doAbort(t);
     }
   }
+  /*! \fn canCommit
+      \brief
+      \param transaction trans
+  */
   public boolean canCommit(Transaction trans) throws RemoteException, FileNotFoundException, IOException{
     HashMap<Integer, FileTimes> log = decodeLog();
 
@@ -150,6 +159,11 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       return false;
     }
   }
+  /*! \fn doCommit
+      \brief
+      \param Transaction trans
+      \param int guid
+  */
   public void doCommit(Transaction trans, int guid) throws RemoteException {
     atomicMap = decodeLog();
     FileTimes times = new FileTimes();
@@ -175,8 +189,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     if(atomicMap != null) {
       atomicMap.put(trans.id, times);
       encodeLog(atomicMap);
-    }
-    else {// log does not exist
+    } else {// log does not exist
       HashMap<Integer, FileTimes> atomicMap =  new HashMap<Integer, FileTimes>();
       atomicMap.put(trans.id, times);
       encodeLog(atomicMap);
@@ -245,6 +258,10 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
       rightNode = this;
     }
   }
+  /*! \fn encodeLog
+      \brief
+      \param HashMap<Integer, FileTimes> map
+  */
   public void encodeLog(HashMap<Integer, FileTimes> map) {
     try{
         FileOutputStream fos =
@@ -258,6 +275,9 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
        ioe.printStackTrace();
      }
   }
+  /*! \fn decodeLog
+      \brief Hashes file name and attempts to read the file contained at succ of guid
+  */
   public HashMap<Integer, FileTimes> decodeLog(){
     HashMap<Integer, FileTimes> map = null;
     try

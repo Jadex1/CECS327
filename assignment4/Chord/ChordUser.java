@@ -38,16 +38,17 @@ public class ChordUser {
 						if (tokens[0].equals("write")) {
 							if (tokens.length == 1){
 								writeLots(tokens,chord);
-							}
-							try {
+							} else {
 								try {
-									chord.atomicTransaction(tokens[1],Transaction.Operation.WRITE);
-								} catch(FileNotFoundException e) {
-									System.out.println("Atomic write error!:"+e);
+									try {
+										chord.atomicTransaction(tokens[1], Transaction.Operation.WRITE);
+									} catch(FileNotFoundException e) {
+										System.out.println("Atomic write error!:"+e);
+								 }
+							 } catch(IOException e) {
+								 System.out.println(e);
 							 }
-						 } catch(IOException e) {
-							 System.out.println(e);
-						 }
+							}
 						}
 						if (tokens[0].equals("read") && tokens.length == 2) {
 							try {
@@ -109,13 +110,10 @@ public class ChordUser {
 						String fileName = fileEntry.getName();
             System.out.println("Open path to file:"+fileName);
 						try {
-							try {
-								chord.atomicTransaction(fileName, Transaction.Operation.WRITE);
-							 } catch(FileNotFoundException e) {
-								 System.out.println("Atomic write error!:"+e);
-							 }
-						 } catch(IOException e) {
-							 System.out.println(e);
+							chord.atomicTransaction(fileName, Transaction.Operation.WRITE);
+						} catch(Exception e) {
+							System.out.println("Atomic write error!:"+e);
+							// System.out.println(e);
 						 }
 					 }
 				 }
