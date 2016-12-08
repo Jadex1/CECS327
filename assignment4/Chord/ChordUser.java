@@ -53,7 +53,8 @@ public class ChordUser {
 						if (tokens[0].equals("read") && tokens.length == 2) {
 							try {
 								try {
-									chord.atomicTransaction(tokens[1],Transaction.Operation.READ);
+									chord.atomicTransaction(tokens[1]+"1", Transaction.Operation.READ);
+
 							 } catch(FileNotFoundException e) {
 								 System.out.println("Atomic write read!:"+e);
 							 }

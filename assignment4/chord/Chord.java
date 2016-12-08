@@ -171,6 +171,8 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
     aDate = new Date().getTime();
     switch(trans.op) {
     case READ:
+    // get locateSuccessor(guid)  to find the gui
+    // create a message interface peer = locateSuccessor
       this.get(guid);
       times.lastTimeRead = aDate;
       break;
